@@ -140,7 +140,7 @@ class MyHomePage extends StatelessWidget {
                 icon: Icon(Icons.account_circle_outlined),
                 //Icon(currentIndex == 2 ? Icons.account_circle_outlined : Icons.account_circle_outlined, color: currentIndex == 2 ? Colors.blue : Colors.grey, size: iconSize),
                 label: 'My 프로필', // 아이콘 아래에 표시할 텍스트
-              ), //han으로 바꿈
+              ), //haha
               BottomNavigationBarItem(
                 icon: Icon(Icons.supervisor_account_outlined),
                 //Icon(currentIndex == 3 ? Icons.supervisor_account_outlined : Icons.supervisor_account_outlined, color: currentIndex == 3 ? Colors.blue : Colors.grey, size: iconSize),
