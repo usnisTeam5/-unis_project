@@ -12,7 +12,7 @@ class Profile extends StatelessWidget {
     return MaterialApp(
       home: MyProfilePage(),
       theme: ThemeData(
-        fontFamily: 'NanumSquareRound',  // 글꼴을 프로젝트에 추가해야 합니다.
+        fontFamily: 'Round',  // 글꼴을 프로젝트에 추가해야 합니다.
       ),
     );
   }
@@ -27,7 +27,7 @@ class MyProfilePage extends StatelessWidget {
         title: Text(
           "My 프로필",
           style: TextStyle(
-            fontFamily: 'NanumSquareRoundEB',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
+            fontFamily: 'ExtraBold',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
           ),
         ),
         backgroundColor: Colors.grey,
@@ -71,19 +71,19 @@ class ProfileInfoSection extends StatelessWidget {
                   Text(
                     "닉네임: 물만두",
                     style: TextStyle(
-                      fontFamily: 'NanumSquareRoundB',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
+                      fontFamily: 'Bold',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
                     ),
                   ),
                   Text(
                     "학과(학부): 소프트웨어학부",
                     style: TextStyle(
-                      fontFamily: 'NanumSquareRoundB',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
+                      fontFamily: 'Bold',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
                     ),
                   ),
                   Text(
                     "보유 포인트: 2000",
                     style: TextStyle(
-                      fontFamily: 'NanumSquareRoundB',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
+                      fontFamily: 'Bold',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
                     ),
                   ),
                 ],
@@ -129,7 +129,7 @@ class StatsSection extends StatelessWidget {
               Text(
                 "질문",
                 style: TextStyle(
-                  fontFamily: 'NanumSquareRoundEB',
+                  fontFamily: 'ExtraBold',
                   fontSize: width * 0.05,
                 ),
               ),
@@ -140,7 +140,7 @@ class StatsSection extends StatelessWidget {
                 child: Text(
                   "0", // 이 값을 실제 질문의 수로 대체하세요
                   style: TextStyle(
-                    fontFamily: 'NanumSquareRoundEB',
+                    fontFamily: 'ExtraBold',
                     fontSize: width * 0.05,
                   ),
                 ),
@@ -152,7 +152,7 @@ class StatsSection extends StatelessWidget {
               Text(
                 "답변",
                 style: TextStyle(
-                  fontFamily: 'NanumSquareRoundEB',
+                  fontFamily: 'ExtraBold',
                   fontSize: width * 0.05,
                 ),
               ),
@@ -163,7 +163,7 @@ class StatsSection extends StatelessWidget {
                 child: Text(
                   "0", // 이 값을 실제 답변의 수로 대체하세요
                   style: TextStyle(
-                    fontFamily: 'NanumSquareRoundEB',
+                    fontFamily: 'ExtraBold',
                     fontSize: width * 0.05,
                   ),
                 ),
@@ -175,7 +175,7 @@ class StatsSection extends StatelessWidget {
               Text(
                 "가입 스터디",
                 style: TextStyle(
-                  fontFamily: 'NanumSquareRoundEB',
+                  fontFamily: 'ExtraBold',
                   fontSize: width * 0.05,
                 ),
               ),
@@ -186,7 +186,7 @@ class StatsSection extends StatelessWidget {
                 child: Text(
                   "0", // 이 값을 실제 가입 스터디의 수로 대체하세요
                   style: TextStyle(
-                    fontFamily: 'NanumSquareRoundEB',
+                    fontFamily: 'ExtraBold',
                     fontSize: width * 0.05,
                   ),
                 ),

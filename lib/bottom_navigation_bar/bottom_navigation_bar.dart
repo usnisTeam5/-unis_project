@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../question/question.dart';
 import '../profile/profile.dart';
+import '../menu/menu.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -12,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       // 앱 전체 테마 설정
       theme: ThemeData(
-        fontFamily: 'NanumSquareRound', // 글꼴 테마 설정
+        fontFamily: 'Round', // 글꼴 테마 설정
       ),
       home: MyHomePage(), // 홈 화면 설정
     );
@@ -34,7 +36,7 @@ class HomeController {
 // MyHomePage 클래스: 홈 화면 구성
 class MyHomePage extends StatelessWidget {
   final HomeController _controller = HomeController(); // HomeController 인스턴스 생성
-
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
@@ -43,6 +45,8 @@ class MyHomePage extends StatelessWidget {
     double fontSize = height * 0.02; // 텍스트 크기 설정
 
     return Scaffold(
+      key: scaffoldKey, // key를 Scaffold에 할당합니다
+      endDrawer: HomeScreen(),
       body: Stack(
         children: [
           ValueListenableBuilder<int>(
@@ -62,49 +66,7 @@ class MyHomePage extends StatelessWidget {
               }
             },
           ),
-          Positioned(
-            bottom: 20,
-            right: 20,
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(bottom: 20), // 원 사이의 간격을 조정
-                  width: width * 0.10,
-                  height: width * 0.10,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Icon(Icons.notifications_outlined, size: width * 0.06,color: Colors.grey,),
-                ),
-                Container(
-                  width: width * 0.10,
-                  height: width * 0.10,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Icon(Icons.menu_outlined, size: width * 0.06, color: Colors.grey,),
-                ),
-              ],
-            ),
-          ),
+          alram_and_menu(width: width, scaffoldKey: scaffoldKey ),
         ],
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(
@@ -149,6 +111,74 @@ class MyHomePage extends StatelessWidget {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class alram_and_menu extends StatelessWidget {
+  const alram_and_menu({
+    super.key,
+    required this.width,
+    required this.scaffoldKey, // 여기서 scaffoldKey를 추가합니다
+  });
+
+  final double width;
+  final GlobalKey<ScaffoldState> scaffoldKey; // 여기서 scaffoldKey를 추가합니다
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: 20,
+      right: 20,
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () {
+              scaffoldKey.currentState?.openEndDrawer(); // 여기서 drawer를 열어줍니다
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 20), // 원 사이의 간격을 조정
+              width: width * 0.10,
+              height: width * 0.10,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Icon(Icons.notifications_outlined, size: width * 0.06,color: Colors.grey,),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              scaffoldKey.currentState?.openEndDrawer(); // 여기서 drawer를 열어줍니다
+            },
+            child: Container( // 목록
+              width: width * 0.10,
+              height: width * 0.10,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Icon(Icons.menu_outlined, size: width * 0.06, color: Colors.grey,),
+            ),
+          ),
+        ],
       ),
     );
   }
