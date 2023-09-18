@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
+//func( int a, int b) // func( a : 1 , b : 2)
 // HomeController 클래스: 하단바 상태 관리와 로직 처리
 class HomeController {
   final ValueNotifier<int> _currentIndexNotifier = ValueNotifier<int>(0);
