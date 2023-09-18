@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import '../question/question.dart';
+import '../profile/profile.dart';
 void main() {
   runApp(MyApp());
 }
@@ -47,9 +48,18 @@ class MyHomePage extends StatelessWidget {
           ValueListenableBuilder<int>(
             valueListenable: _controller.currentIndexNotifier,
             builder: (context, currentIndex, _) {
-              return Center(
-                child: Text(['문답', '내 문답', 'My 프로필', '스터디'][currentIndex]),
-              );
+              switch (currentIndex) {
+                case 0:
+                  return const Question();  // question.dart 파일의 MyApp 클래스를 여기서 호출
+                case 1:
+                  return Center(child: Text('내 문답'));
+                case 2:
+                  return const Profile();
+                case 3:
+                  return Center(child: Text('스터디'));
+                default:
+                  return Center(child: Text('문답'));
+              }
             },
           ),
           Positioned(

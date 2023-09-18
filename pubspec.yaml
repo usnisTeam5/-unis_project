@@ -60,16 +60,16 @@ flutter:
   uses-material-design: true
 
   fonts:
-    - family: NanumSquareRoundLight
+    - family: NanumSquareRoundL
       fonts:
         - asset: fonts/NanumSquareRoundL.ttf
-    - family: NanumSquareRound
+    - family: NanumSquareR
       fonts:
         - asset: fonts/NanumSquareRoundR.ttf
-    - family: NanumSquareRoundBold
+    - family: NanumSquareRB
       fonts:
         - asset: fonts/NanumSquareRoundB.ttf
-    - family: NanumSquareRoundExtraBold
+    - family: NanumSquareRoundEB
       fonts:
         - asset: fonts/NanumSquareRoundEB.ttf
   # To add assets to your application, add an assets section, like this:
