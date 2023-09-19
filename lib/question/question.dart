@@ -22,23 +22,36 @@ class QuestionPage extends StatelessWidget {
     final double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: <Color>[
+                Colors.green.shade200,
+                Colors.blue,
+              ],
+            ),
+          ),
+        ),
         title: Text(
           '궁금한 게 생겼을 때 질문하세요!',
           style: TextStyle(
-            fontFamily: 'NanumSquareRoundEB',
+            fontFamily: 'ExtraBold',
           ),
         ),
         actions: [
           TextButton(
             onPressed: () {},
             child: Text(
-              'Question',
+              '질문하기',
               style: TextStyle(
-                color: Colors.white,
+                fontFamily: 'ExtraBold',
+                color: Colors.blue,
               ),
             ),
             style: TextButton.styleFrom(
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.horizontal(
                   left: Radius.circular(30),
