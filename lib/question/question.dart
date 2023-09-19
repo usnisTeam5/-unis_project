@@ -20,29 +20,35 @@ class QuestionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
           '궁금한 게 생겼을 때 질문하세요!',
           style: TextStyle(
-            fontFamily: 'NanumSquareRoundEB',
+            fontFamily: 'ExtraBold',
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: () {},
-            child: Text(
-              'Question',
-              style: TextStyle(
-                color: Colors.white,
+          ConstrainedBox(
+            constraints: BoxConstraints.tightFor(height: 300.0),
+            child: TextButton(
+              onPressed: () {},
+              // TODO: 버튼이 눌렸을 때 실행할 로직을 여기에 작성
+              child: Text(
+                '질문하기',
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontFamily: 'Bold',
+                ),
               ),
-            ),
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.blue,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.horizontal(
-                  left: Radius.circular(30),
-                  right: Radius.circular(30),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.horizontal(
+                    left: Radius.circular(30),
+                    right: Radius.circular(30),
+                  ),
                 ),
               ),
             ),
@@ -64,9 +70,9 @@ class QuestionPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Advice/Problem: Advice #${index + 1}'),
-                  Text('Subject: Subject #${index + 1}'),
-                  Text('Amount: \$${(index + 1) * 10}'),
+                  Text('조언/문제: 조언 #${index + 1}'),
+                  Text('과목: 과목명 #${index + 1}'),
+                  Text('금액: \$${(index + 1) * 10}'),
                 ],
               ),
             );

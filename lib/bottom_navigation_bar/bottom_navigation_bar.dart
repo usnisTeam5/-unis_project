@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../myQHistory/myQHistory.dart';
 import '../question/question.dart';
 import '../profile/profile.dart';
 void main() {
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       // 앱 전체 테마 설정
       theme: ThemeData(
-        fontFamily: 'NanumSquareRound', // 글꼴 테마 설정
+        fontFamily: 'Round', // 글꼴 테마 설정
       ),
       home: MyHomePage(), // 홈 화면 설정
     );
@@ -52,7 +53,7 @@ class MyHomePage extends StatelessWidget {
                 case 0:
                   return const Question();  // question.dart 파일의 MyApp 클래스를 여기서 호출
                 case 1:
-                  return Center(child: Text('내 문답'));
+                  return const MyQHistory();
                 case 2:
                   return const Profile();
                 case 3:
