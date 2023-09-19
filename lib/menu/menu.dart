@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const Menu());
+  runApp(const MenuApp());
 }
 
-class Menu extends StatelessWidget {
-  const Menu({Key? key}) : super(key: key);
+class MenuApp extends StatelessWidget {
+  const MenuApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomeScreen(),
+      home: Menu(),
     );
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(

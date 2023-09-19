@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../question/question.dart';
 import '../profile/profile.dart';
 import '../menu/menu.dart';
-
+import '../notifier/notifier.dart';
 void main() {
   runApp(MyApp());
 }
@@ -46,7 +46,8 @@ class MyHomePage extends StatelessWidget {
 
     return Scaffold(
       key: scaffoldKey, // key를 Scaffold에 할당합니다
-      endDrawer: HomeScreen(),
+      endDrawer: Menu(),
+      drawer: Notifier(),
       body: Stack(
         children: [
           ValueListenableBuilder<int>(
@@ -135,7 +136,7 @@ class alram_and_menu extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
-              scaffoldKey.currentState?.openEndDrawer(); // 여기서 drawer를 열어줍니다
+              scaffoldKey.currentState?.openDrawer(); // 여기서 drawer를 열어줍니다
             },
             child: Container(
               margin: const EdgeInsets.only(bottom: 20), // 원 사이의 간격을 조정
