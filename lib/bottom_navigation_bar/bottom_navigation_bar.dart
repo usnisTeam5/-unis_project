@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../myQHistory/myQHistory.dart';
 import '../question/question.dart';
 import '../profile/profile.dart';
 import '../menu/menu.dart';
@@ -57,7 +58,7 @@ class MyHomePage extends StatelessWidget {
                 case 0:
                   return const Question();  // question.dart 파일의 MyApp 클래스를 여기서 호출
                 case 1:
-                  return Center(child: Text('내 문답'));
+                  return const MyQHistory();
                 case 2:
                   return const Profile();
                 case 3:
@@ -103,7 +104,7 @@ class MyHomePage extends StatelessWidget {
                 icon: Icon(Icons.account_circle_outlined),
                 //Icon(currentIndex == 2 ? Icons.account_circle_outlined : Icons.account_circle_outlined, color: currentIndex == 2 ? Colors.blue : Colors.grey, size: iconSize),
                 label: 'My 프로필', // 아이콘 아래에 표시할 텍스트
-              ),
+              ), //haha
               BottomNavigationBarItem(
                 icon: Icon(Icons.supervisor_account_outlined),
                 //Icon(currentIndex == 3 ? Icons.supervisor_account_outlined : Icons.supervisor_account_outlined, color: currentIndex == 3 ? Colors.blue : Colors.grey, size: iconSize),

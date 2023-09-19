@@ -20,6 +20,7 @@ class QuestionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
@@ -77,9 +78,9 @@ class QuestionPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Advice/Problem: Advice #${index + 1}'),
-                  Text('Subject: Subject #${index + 1}'),
-                  Text('Amount: \$${(index + 1) * 10}'),
+                  Text('조언/문제: 조언 #${index + 1}'),
+                  Text('과목: 과목명 #${index + 1}'),
+                  Text('금액: \$${(index + 1) * 10}'),
                 ],
               ),
             );

@@ -63,7 +63,7 @@ class Header extends StatelessWidget {
           ),
 
           _buildTab(0, '알림'),
-          _buildTab(1, '1대1 대화'),
+          _buildTab(1, '대화'),
         ],
       ),
     );
