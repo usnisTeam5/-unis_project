@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../departement_select_signup/department_select_signup.dart';
+import 'department_select_signup.dart';
 void main() {
   runApp(User_agreement());
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../register/register.dart';
+import 'register.dart';
 void main() {
   runApp(Department_selection_screen());
 }

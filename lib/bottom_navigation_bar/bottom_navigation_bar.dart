@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:unis_project/find_study/find_study.dart';
+import 'package:unis_project/my_quiz/my_quiz.dart';
+import 'package:unis_project/my_study/my_study.dart';
 import '../myQHistory/myQHistory.dart';
 import '../question/question.dart';
 import '../profile/profile.dart';
 import '../menu/menu.dart';
 import '../notifier/notifier.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -56,19 +60,21 @@ class MyHomePage extends StatelessWidget {
             builder: (context, currentIndex, _) {
               switch (currentIndex) {
                 case 0:
-                  return const Question();  // question.dart 파일의 MyApp 클래스를 여기서 호출
+                  return const QuestionPage();  // question.dart 파일의 MyApp 클래스를 여기서 호출
                 case 1:
                   return const MyQHistory();
                 case 2:
                   return const Profile();
                 case 3:
-                  return Center(child: Text('스터디'));
+                  return StudyScreen();
+                case 4:
+                  return QuizScreen();
                 default:
                   return Center(child: Text('문답'));
               }
             },
           ),
-          alram_and_menu(width: width, scaffoldKey: scaffoldKey ),
+          alram_and_menu(width: width, scaffoldKey: scaffoldKey ,controller: _controller),
         ],
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(
@@ -110,6 +116,11 @@ class MyHomePage extends StatelessWidget {
                 //Icon(currentIndex == 3 ? Icons.supervisor_account_outlined : Icons.supervisor_account_outlined, color: currentIndex == 3 ? Colors.blue : Colors.grey, size: iconSize),
                 label: '스터디', // 아이콘 아래에 표시할 텍스트
               ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.question_mark_outlined),
+                //Icon(currentIndex == 3 ? Icons.supervisor_account_outlined : Icons.supervisor_account_outlined, color: currentIndex == 3 ? Colors.blue : Colors.grey, size: iconSize),
+                label: '퀴즈', // 아이콘 아래에 표시할 텍스트
+              ),
             ],
           );
         },
@@ -123,11 +134,12 @@ class alram_and_menu extends StatelessWidget {
     super.key,
     required this.width,
     required this.scaffoldKey, // 여기서 scaffoldKey를 추가합니다
+    required this.controller,
   });
 
   final double width;
   final GlobalKey<ScaffoldState> scaffoldKey; // 여기서 scaffoldKey를 추가합니다
-
+  final HomeController controller;
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -140,7 +152,7 @@ class alram_and_menu extends StatelessWidget {
               scaffoldKey.currentState?.openDrawer(); // 여기서 drawer를 열어줍니다
             },
             child: Container(
-              margin: const EdgeInsets.only(bottom: 20), // 원 사이의 간격을 조정
+              margin: const EdgeInsets.only(bottom: 10), // 원 사이의 간격을 조정
               width: width * 0.10,
               height: width * 0.10,
               decoration: BoxDecoration(
@@ -163,6 +175,7 @@ class alram_and_menu extends StatelessWidget {
               scaffoldKey.currentState?.openEndDrawer(); // 여기서 drawer를 열어줍니다
             },
             child: Container( // 목록
+              margin: const EdgeInsets.only(bottom: 10), // 원 사이의 간격을 조정
               width: width * 0.10,
               height: width * 0.10,
               decoration: BoxDecoration(
@@ -179,6 +192,40 @@ class alram_and_menu extends StatelessWidget {
               ),
               child: Icon(Icons.menu_outlined, size: width * 0.06, color: Colors.grey,),
             ),
+          ),
+          ValueListenableBuilder<int>(
+            valueListenable: controller.currentIndexNotifier,
+            builder: (context, currentIndex, _) {
+              return Visibility(
+                visible: currentIndex == 3,
+                child: GestureDetector(
+                  onTap: () {
+                    // 스터디 찾기를 호출합니다.
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => FindStudyScreen()),
+                    );
+                  },
+                  child: Container(
+                    width: width * 0.10,
+                    height: width * 0.10,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Icon(Icons.add, size: width * 0.06,color: Colors.grey,),
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),

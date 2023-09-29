@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-
+import '../chat/chat.dart';
 void main() {
   runApp(const Question());
 }
 
 class Question extends StatelessWidget {
-  const Question({super.key});
+  const Question({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +16,8 @@ class Question extends StatelessWidget {
 }
 
 class QuestionPage extends StatelessWidget {
+  const QuestionPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
@@ -35,57 +37,123 @@ class QuestionPage extends StatelessWidget {
             ),
           ),
         ),
-        title: Text(
-          '궁금한 게 생겼을 때 질문하세요!',
-          style: TextStyle(
-            fontFamily: 'ExtraBold',
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: Text(
-              '질문하기',
-              style: TextStyle(
-                fontFamily: 'ExtraBold',
-                color: Colors.blue,
-              ),
-            ),
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.horizontal(
-                  left: Radius.circular(30),
-                  right: Radius.circular(30),
+        title: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return Row(
+              children: [
+                Container(
+                  width: constraints.maxWidth * 0.8,  // 80% of AppBar width for title
+                  child: Text(
+                    '궁금한 게 생겼을 때 질문하세요!',
+                    style: TextStyle(
+                      fontFamily: 'ExtraBold',
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-        ],
+                Container(
+                  width: constraints.maxWidth * 0.15,  // 20% of AppBar width for button
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => QuestionFormPage()),
+                      );
+                    },
+                    child: Text(
+                      '질문하기',
+                      style: TextStyle(
+                        fontFamily: 'ExtraBold',
+                        color: Colors.blue,
+                      ),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.horizontal(
+                          left: Radius.circular(30),
+                          right: Radius.circular(30),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
+
       body: Container(
         color: Colors.grey,
         child: ListView.builder(
           itemCount: 10,
           itemBuilder: (context, index) {
-            return Container(
-              margin: EdgeInsets.all(10),
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('조언/문제: 조언 #${index + 1}'),
-                  Text('과목: 과목명 #${index + 1}'),
-                  Text('금액: \$${(index + 1) * 10}'),
-                ],
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ChatScreen()),
+                );
+              },
+              child: Container(
+                margin: EdgeInsets.all(10),
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('질문  '),
+                        Text('컴퓨터 그래픽스'),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text('${(index + 1) * 2000}'),
+                        Icon(Icons.monetization_on_outlined)  // 여기에 포인트 아이콘을 사용했습니다.
+                      ],
+                    ),
+                  ],
+                ),
               ),
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class QuestionFormPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('질문하기'),
+      ),
+      // ... (여기에 폼과 관련된 코드 추가)
+    );
+  }
+}
+
+class DetailPage extends StatelessWidget {
+  final int index;
+
+  DetailPage({required this.index});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Detail Page'),
+      ),
+      body: Center(
+        child: Text('Item #$index'),
       ),
     );
   }

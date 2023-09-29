@@ -30,6 +30,20 @@ class MyProfilePage extends StatelessWidget {
             fontFamily: 'ExtraBold',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
           ),
         ),
+        leading: IconButton(
+          icon: Icon(Icons.people),  // '친구' 아이콘을 대표하는 아이콘을 선택하세요.
+          onPressed: () {
+            // 여기에 아이콘을 탭할 때 수행할 작업을 추가하세요.
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),  // 톱니바퀴 아이콘
+            onPressed: () {
+              // 여기에 아이콘을 탭할 때 수행할 작업을 추가하세요.
+            },
+          ),
+        ],
         backgroundColor: Colors.grey,
       ),
       body: SingleChildScrollView(

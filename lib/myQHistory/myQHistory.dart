@@ -1,129 +1,130 @@
 import 'package:flutter/material.dart';
+import 'package:unis_project/chat/chat.dart';
+void main() => runApp(MyApp());
 
-void main() {
-  runApp(const MyQHistory());
-}
-
-class MyQHistory extends StatelessWidget {
-  const MyQHistory({super.key});
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '내 문답',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        fontFamily: 'Round', // 글꼴 테마 설정
       ),
-      home: MyQHistoryPage(),
+      home: MyQHistory(),
     );
   }
 }
 
-class MyQHistoryPage extends StatefulWidget {
+class MyQHistory extends StatefulWidget {
+  const MyQHistory({super.key});
+
   @override
-  _MyQHistoryPageState createState() => _MyQHistoryPageState();
+  _QuestionAnswerScreenState createState() => _QuestionAnswerScreenState();
 }
 
-class _MyQHistoryPageState extends State<MyQHistoryPage> {
-  bool _isQuestionSelected = true;
-  bool _showList = false;
+class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProviderStateMixin {
+  TabController? _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(),
-      body: Column(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text('내 문답'),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.purple],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: Material(
+            color: Colors.white,  // TabBar의 배경색을 흰색으로 설정
+            child: TabBar(
+              controller: _tabController,
+              tabs: [
+                Tab(text: '질문 목록 >'),
+                Tab(text: '답변 목록 >'),
+              ],
+              indicatorColor: Colors.black,  // 선택된 탭의 표시자 색상을 변경합니다.
+              labelColor: Colors.black,  // 선택된 탭의 레이블 색상을 변경합니다.
+              unselectedLabelColor: Colors.grey,  // 선택되지 않은 탭의 레이블 색상을 변경합니다.
+            ),
+          ),
+        ),
+        ),
+      body: TabBarView(
+        controller: _tabController,
         children: [
-          buildToggleButtonRow(),
-          buildQuestionListToggleButton(),
-          Expanded(child: _showList ? QuestionList() : Container()),
+          buildListView('문제', '컴퓨터그래픽스', '진행'),
+          buildListView('문제', '컴퓨터그래픽스', '완료'),
         ],
       ),
     );
   }
 
-  AppBar buildAppBar() {
-    return AppBar(
-      title: Text(
-        '내 문답',
-        style: TextStyle(
-          color: Colors.blue,
-          fontFamily: 'Bold',
-        ),
-      ),
-      backgroundColor: Colors.white,
-      centerTitle: true,
-    );
-  }
-
-  Row buildToggleButtonRow() {
-    return Row(
-      children: [
-        buildElevatedButton('질문 목록', _isQuestionSelected),
-        buildElevatedButton('답변 목록', !_isQuestionSelected),
-      ],
-    );
-  }
-
-  Expanded buildElevatedButton(String text, bool isSelected) {
-    return Expanded(
-      child: ElevatedButton(
-        onPressed: () {
-          setState(() {
-            _isQuestionSelected = !_isQuestionSelected;
-          });
-        },
-        child: Text(text),
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                (Set<MaterialState> states) {
-              return isSelected ? Colors.white : Colors.blue;
-            },
-          ),
-          foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                (Set<MaterialState> states) {
-              return isSelected ? Colors.blue : Colors.white;
-            },
-          ),
-          padding: MaterialStateProperty.all<EdgeInsets>(
-            EdgeInsets.symmetric(vertical: 20.0),
-          ),
-        ),
-      ),
-    );
-  }
-
-  ElevatedButton buildQuestionListToggleButton() {
-    return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          _showList = !_showList;
-        });
-      },
-      child: Text('문제 목록'),
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Colors.grey),
-        elevation: MaterialStateProperty.all(0),
-        padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 20.0)),
-      ),
-    );
-  }
-}
-
-class QuestionList extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  ListView buildListView(String title, String subject, String status) {
     return ListView.builder(
       itemCount: 10,
       itemBuilder: (context, index) {
-        return Container(
-          margin: EdgeInsets.all(10),
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(30),
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChatScreen()),
+            );
+          },
+          child: Card(
+            margin: EdgeInsets.all(10),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '$title ',
+                          style: TextStyle(color: Colors.blue, fontSize: 16),
+                        ),
+                        TextSpan(
+                          text: subject,
+                          style: TextStyle(color: Colors.black, fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      status,
+                      style: TextStyle(color: Colors.grey[700], fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-          child: Text('문제 #${index + 1}'),
         );
       },
     );

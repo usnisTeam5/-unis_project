@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:unis_project/user_agreement/user_agreement.dart';
+import 'package:unis_project/bottom_navigation_bar/bottom_navigation_bar.dart';
+import 'package:unis_project/register/user_agreement.dart';
 
 void main() => runApp(UnisApp());
 
@@ -28,7 +29,10 @@ class _LoginScreenState extends State<LoginScreen> {
   void _login() {
     final id = _idController.text;
     final password = _passwordController.text;
-
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MyHomePage()),
+    );
     // 백엔드와의 통신 코드를 이곳에 추가하세요.
     // 예: _authenticate(id, password);
   }
