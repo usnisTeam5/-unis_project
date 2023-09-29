@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:unis_project/bottom_navigation_bar/bottom_navigation_bar.dart';
+import 'package:unis_project/password_reset/password_reset.dart';
 import 'package:unis_project/register/user_agreement.dart';
 
 void main() => runApp(UnisApp());
@@ -134,6 +135,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextButton(
                     onPressed: () {
                       // 비밀번호 찾기 창으로 이동
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PasswordResetPage()),
+                      );
                     },
                     child: Text(
                       '비밀번호 찾기',

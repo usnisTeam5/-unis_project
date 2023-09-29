@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+//import 'package:circle_avatar/circle_avatar.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 void main() {
   runApp(const Profile());
@@ -59,9 +62,27 @@ class MyProfilePage extends StatelessWidget {
     );
   }
 }
-
-class ProfileInfoSection extends StatelessWidget {
+class ProfileInfoSection extends StatefulWidget {
   @override
+  _ProfileInfoSectionState createState() => _ProfileInfoSectionState();
+}
+
+class _ProfileInfoSectionState extends State<ProfileInfoSection>{
+
+  XFile? _image; //이미지를 담을 변수 선언
+  final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
+  //이미지를 가져오는 함수
+  Future getImage(ImageSource imageSource) async {
+    //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
+    final XFile? pickedFile = await picker.pickImage(source: imageSource);
+    if (pickedFile != null) {
+      setState(() {
+        _image = XFile(pickedFile.path); //가져온 이미지를 _image에 저장
+      });
+    }
+  }
+
+@override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16.0),
@@ -74,9 +95,14 @@ class ProfileInfoSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(
-                radius: 50.0,
-                // backgroundImage: AssetImage('path/to/your/image.jpg'), // 이미지를 assets에 추가하고 여기에 경로를 지정하세요
+              GestureDetector(
+                onTap: () {getImage(ImageSource.gallery);},
+                child: CircleAvatar(
+                  radius: 50.0,
+                  backgroundImage: _image != null
+                      ? FileImage(File(_image!.path)) as ImageProvider
+                      : AssetImage('image/unis.png'),
+                ),
               ),
               SizedBox(width: 16.0),
               Column(
