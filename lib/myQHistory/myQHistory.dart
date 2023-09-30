@@ -171,7 +171,7 @@ class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProv
                   ),
                   child: Text(
                     status,
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'Bold'),
                   ),
                 )
               ],
