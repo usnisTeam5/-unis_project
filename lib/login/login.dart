@@ -3,6 +3,17 @@ import 'package:unis_project/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:unis_project/password_reset/password_reset.dart';
 import 'package:unis_project/register/user_agreement.dart';
 
+
+// 메인 그라데이션
+class MainGradient extends LinearGradient {
+  MainGradient()
+      : super(
+    colors: [Color(0xFF59D9D5), Color(0xFF2A7CC1)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+}
+
 void main() => runApp(UnisApp());
 
 class UnisApp extends StatelessWidget {
@@ -51,27 +62,26 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ShaderMask(
-                shaderCallback: (bounds) => LinearGradient(
-                  colors: [Colors.lightBlueAccent, Colors.blue],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ).createShader(bounds),
+                shaderCallback: (bounds) => MainGradient().createShader(bounds),
                 child: Text(
                   '유니스',
                   style: TextStyle(
-                    color: Colors.white,  // This color will be ignored since we've applied shader
+                    color: Colors.white,
                     fontFamily: 'ExtraBold',
                     fontSize: width * 0.1,
                   ),
                 ),
               ),
               const SizedBox(height: 20),
-              Text(
-                '스터디 🔗 문제풀이',
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontFamily: 'Bold',
-                  fontSize: width * 0.03,
+              ShaderMask(
+                shaderCallback: (bounds) => MainGradient().createShader(bounds),
+                child: Text(
+                  '스터디 🔗 문제풀이',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Bold',
+                    fontSize: width * 0.03,
+                  ),
                 ),
               ),
               SizedBox(height: 60),
@@ -101,11 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
-                  gradient: LinearGradient(
-                    colors: [Colors.lightBlueAccent, Colors.blueAccent],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                  gradient: MainGradient(),
                 ),
                 child: Material(
                   color: Colors.transparent,

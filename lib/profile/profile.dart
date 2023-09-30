@@ -88,8 +88,8 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
       padding: EdgeInsets.all(16.0),
       margin: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.grey,
-        borderRadius: BorderRadius.circular(16.0),
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(40.0),
       ),
       child: Column(
         children: [
@@ -158,8 +158,8 @@ class StatsSection extends StatelessWidget {
       padding: EdgeInsets.all(16.0),
       margin: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.grey,
-        borderRadius: BorderRadius.circular(16.0),
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(30.0),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -169,6 +169,7 @@ class StatsSection extends StatelessWidget {
               Text(
                 "질문",
                 style: TextStyle(
+                  color: Colors.grey[700],
                   fontFamily: 'ExtraBold',
                   fontSize: width * 0.05,
                 ),
@@ -180,6 +181,7 @@ class StatsSection extends StatelessWidget {
                 child: Text(
                   "0", // 이 값을 실제 질문의 수로 대체하세요
                   style: TextStyle(
+                    color: Colors.lightBlue[900],
                     fontFamily: 'ExtraBold',
                     fontSize: width * 0.05,
                   ),
@@ -192,6 +194,7 @@ class StatsSection extends StatelessWidget {
               Text(
                 "답변",
                 style: TextStyle(
+                  color: Colors.grey[700],
                   fontFamily: 'ExtraBold',
                   fontSize: width * 0.05,
                 ),
@@ -203,6 +206,7 @@ class StatsSection extends StatelessWidget {
                 child: Text(
                   "0", // 이 값을 실제 답변의 수로 대체하세요
                   style: TextStyle(
+                    color: Colors.lightBlue[900],
                     fontFamily: 'ExtraBold',
                     fontSize: width * 0.05,
                   ),
@@ -215,6 +219,7 @@ class StatsSection extends StatelessWidget {
               Text(
                 "가입 스터디",
                 style: TextStyle(
+                  color: Colors.grey[700],
                   fontFamily: 'ExtraBold',
                   fontSize: width * 0.05,
                 ),
@@ -226,6 +231,7 @@ class StatsSection extends StatelessWidget {
                 child: Text(
                   "0", // 이 값을 실제 가입 스터디의 수로 대체하세요
                   style: TextStyle(
+                    color: Colors.lightBlue[900],
                     fontFamily: 'ExtraBold',
                     fontSize: width * 0.05,
                   ),

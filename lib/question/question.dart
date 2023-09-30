@@ -15,6 +15,15 @@ class Question extends StatelessWidget {
   }
 }
 
+class MainGradient extends LinearGradient {
+  MainGradient()
+      : super(
+    colors: [Color(0xFF59D9D5), Color(0xFF2A7CC1)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+}
+
 class QuestionPage extends StatelessWidget {
   const QuestionPage({super.key});
 
@@ -46,6 +55,7 @@ class QuestionPage extends StatelessWidget {
                   child: Text(
                     '궁금한 게 생겼을 때 질문하세요!',
                     style: TextStyle(
+                      color: Colors.white,
                       fontFamily: 'ExtraBold',
                     ),
                   ),
@@ -84,7 +94,7 @@ class QuestionPage extends StatelessWidget {
       ),
 
       body: Container(
-        color: Colors.grey,
+        color: Colors.grey[300],
         child: ListView.builder(
           itemCount: 10,
           itemBuilder: (context, index) {
