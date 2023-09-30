@@ -51,7 +51,8 @@ class QuestionPage extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  width: constraints.maxWidth * 0.15,  // 20% of AppBar width for button
+                  padding: EdgeInsets.only(right: 10.0),
+                  width: 100,  // 20% of AppBar width for button
                   child: TextButton(
                     onPressed: () {
                       Navigator.push(

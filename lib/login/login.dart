@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:unis_project/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:unis_project/password_reset/password_reset.dart';
 import 'package:unis_project/register/user_agreement.dart';
-
+import '../css/css.dart';
 void main() => runApp(UnisApp());
 
 class UnisApp extends StatelessWidget {
@@ -46,42 +46,22 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(32.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ShaderMask(
-                shaderCallback: (bounds) => LinearGradient(
-                  colors: [Colors.lightBlueAccent, Colors.blue],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ).createShader(bounds),
-                child: Text(
-                  '유니스',
-                  style: TextStyle(
-                    color: Colors.white,  // This color will be ignored since we've applied shader
-                    fontFamily: 'ExtraBold',
-                    fontSize: width * 0.1,
-                  ),
-                ),
-              ),
+              GradientText(width: width, tSize: 0.15, text:'유니스', tStyle: 'ExtraBold' ),
               const SizedBox(height: 20),
-              Text(
-                '스터디 🔗 문제풀이',
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontFamily: 'Bold',
-                  fontSize: width * 0.03,
-                ),
-              ),
+              GradientText2(width: width, tSize: 0.05, text:'스터디 🔗 문제풀이', tStyle: 'Bold' ),
               SizedBox(height: 60),
               TextField(
                 controller: _idController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  labelText: '아이디 입력',
+                  labelText: '  포탈 아이디 입력',
+                  counterText: "",  // 이 속성을 추가하여 글자 수 레이블을 숨깁니다.
                 ),
                 maxLength: 20,
               ),
@@ -90,9 +70,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _passwordController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  labelText: '비밀번호 입력',
+                  labelText: '  비밀번호 입력',
+                  counterText: "",
                 ),
                 maxLength: 12,
                 obscureText: true,
@@ -100,17 +81,13 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 20),
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  gradient: LinearGradient(
-                    colors: [Colors.lightBlueAccent, Colors.blueAccent],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                  borderRadius: BorderRadius.circular(16.0),
+                  gradient: MainGradient(),
                 ),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(16.0),
                     onTap: _login,
                     child: Center(
                       child: Padding(
