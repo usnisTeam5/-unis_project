@@ -152,8 +152,8 @@ class alram_and_menu extends StatelessWidget {
             },
             child: Container(
               margin: const EdgeInsets.only(bottom: 10), // 원 사이의 간격을 조정
-              width: width * 0.10,
-              height: width * 0.10,
+              width: width * 0.13,
+              height: width * 0.13,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,
@@ -174,9 +174,9 @@ class alram_and_menu extends StatelessWidget {
               scaffoldKey.currentState?.openEndDrawer(); // 여기서 drawer를 열어줍니다
             },
             child: Container( // 목록
-              margin: const EdgeInsets.only(bottom: 10), // 원 사이의 간격을 조정
-              width: width * 0.10,
-              height: width * 0.10,
+              //margin: const EdgeInsets.only(bottom: 10), // 원 사이의 간격을 조정
+              width: width * 0.13,
+              height: width * 0.13,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,
@@ -206,8 +206,9 @@ class alram_and_menu extends StatelessWidget {
                     );
                   },
                   child: Container(
-                    width: width * 0.10,
-                    height: width * 0.10,
+                    margin: const EdgeInsets.only(top: 10),
+                    width: width * 0.13,
+                    height: width * 0.13,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.white,

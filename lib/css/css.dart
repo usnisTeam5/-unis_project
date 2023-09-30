@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+
+// APPBAR 글씨 bold, 크기 width * 0.6
+//GradientText(width: width, text: '내 문답', tSize: 0.06, tStyle: 'Bold'), 참고하세요
+
 class GradientText extends StatelessWidget {
   const GradientText({
     super.key,
@@ -73,3 +77,4 @@ class MainGradient extends LinearGradient {
     end: Alignment.bottomRight,
   );
 }
+

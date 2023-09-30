@@ -34,7 +34,7 @@ class StudyScreen extends StatelessWidget {
               '내 스터디',
               style: TextStyle(
                 // Assume the font family 'Bold' is defined elsewhere in your project
-                fontFamily: 'Bold',
+                fontFamily: 'ExtraBold',
                 fontSize: 24,
                 color: Colors.white,
               ),
