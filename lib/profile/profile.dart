@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 //import 'package:circle_avatar/circle_avatar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'friend.dart';
 
 void main() {
   runApp(const Profile());
@@ -15,7 +16,7 @@ class Profile extends StatelessWidget {
     return MaterialApp(
       home: MyProfilePage(),
       theme: ThemeData(
-        fontFamily: 'Round',  // 글꼴을 프로젝트에 추가해야 합니다.
+        fontFamily: 'Round',
       ),
     );
   }
@@ -30,21 +31,22 @@ class MyProfilePage extends StatelessWidget {
         title: Text(
           "My 프로필",
           style: TextStyle(
-            fontFamily: 'ExtraBold',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
+            fontFamily: 'ExtraBold',
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.people),  // '친구' 아이콘을 대표하는 아이콘을 선택하세요.
+          icon: Icon(Icons.people),
           onPressed: () {
-            // 여기에 아이콘을 탭할 때 수행할 작업을 추가하세요.
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FriendsList()),
+            );
           },
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),  // 톱니바퀴 아이콘
-            onPressed: () {
-              // 여기에 아이콘을 탭할 때 수행할 작업을 추가하세요.
-            },
+            icon: Icon(Icons.settings),
+            onPressed: () {},
           ),
         ],
         backgroundColor: Colors.grey,
@@ -53,7 +55,6 @@ class MyProfilePage extends StatelessWidget {
         child: Column(
           children: [
             ProfileInfoSection(),
-            //IntroSection(),
             StatsSection(),
             CoursesSection(),
           ],
@@ -62,6 +63,14 @@ class MyProfilePage extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
 class ProfileInfoSection extends StatefulWidget {
   @override
   _ProfileInfoSectionState createState() => _ProfileInfoSectionState();
@@ -88,8 +97,8 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
       padding: EdgeInsets.all(16.0),
       margin: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.grey,
-        borderRadius: BorderRadius.circular(16.0),
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(40.0),
       ),
       child: Column(
         children: [
@@ -158,8 +167,8 @@ class StatsSection extends StatelessWidget {
       padding: EdgeInsets.all(16.0),
       margin: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.grey,
-        borderRadius: BorderRadius.circular(16.0),
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(30.0),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -169,6 +178,7 @@ class StatsSection extends StatelessWidget {
               Text(
                 "질문",
                 style: TextStyle(
+                  color: Colors.grey[700],
                   fontFamily: 'ExtraBold',
                   fontSize: width * 0.05,
                 ),
@@ -180,6 +190,7 @@ class StatsSection extends StatelessWidget {
                 child: Text(
                   "0", // 이 값을 실제 질문의 수로 대체하세요
                   style: TextStyle(
+                    color: Colors.lightBlue[900],
                     fontFamily: 'ExtraBold',
                     fontSize: width * 0.05,
                   ),
@@ -192,6 +203,7 @@ class StatsSection extends StatelessWidget {
               Text(
                 "답변",
                 style: TextStyle(
+                  color: Colors.grey[700],
                   fontFamily: 'ExtraBold',
                   fontSize: width * 0.05,
                 ),
@@ -203,6 +215,7 @@ class StatsSection extends StatelessWidget {
                 child: Text(
                   "0", // 이 값을 실제 답변의 수로 대체하세요
                   style: TextStyle(
+                    color: Colors.lightBlue[900],
                     fontFamily: 'ExtraBold',
                     fontSize: width * 0.05,
                   ),
@@ -215,6 +228,7 @@ class StatsSection extends StatelessWidget {
               Text(
                 "가입 스터디",
                 style: TextStyle(
+                  color: Colors.grey[700],
                   fontFamily: 'ExtraBold',
                   fontSize: width * 0.05,
                 ),
@@ -226,6 +240,7 @@ class StatsSection extends StatelessWidget {
                 child: Text(
                   "0", // 이 값을 실제 가입 스터디의 수로 대체하세요
                   style: TextStyle(
+                    color: Colors.lightBlue[900],
                     fontFamily: 'ExtraBold',
                     fontSize: width * 0.05,
                   ),
