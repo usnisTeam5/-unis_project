@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 //import 'package:circle_avatar/circle_avatar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'friend.dart';
 
 void main() {
   runApp(const Profile());
@@ -15,7 +16,7 @@ class Profile extends StatelessWidget {
     return MaterialApp(
       home: MyProfilePage(),
       theme: ThemeData(
-        fontFamily: 'Round',  // 글꼴을 프로젝트에 추가해야 합니다.
+        fontFamily: 'Round',
       ),
     );
   }
@@ -30,21 +31,22 @@ class MyProfilePage extends StatelessWidget {
         title: Text(
           "My 프로필",
           style: TextStyle(
-            fontFamily: 'ExtraBold',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
+            fontFamily: 'ExtraBold',
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.people),  // '친구' 아이콘을 대표하는 아이콘을 선택하세요.
+          icon: Icon(Icons.people),
           onPressed: () {
-            // 여기에 아이콘을 탭할 때 수행할 작업을 추가하세요.
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FriendsList()),
+            );
           },
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),  // 톱니바퀴 아이콘
-            onPressed: () {
-              // 여기에 아이콘을 탭할 때 수행할 작업을 추가하세요.
-            },
+            icon: Icon(Icons.settings),
+            onPressed: () {},
           ),
         ],
         backgroundColor: Colors.grey,
@@ -53,7 +55,6 @@ class MyProfilePage extends StatelessWidget {
         child: Column(
           children: [
             ProfileInfoSection(),
-            //IntroSection(),
             StatsSection(),
             CoursesSection(),
           ],
@@ -62,6 +63,14 @@ class MyProfilePage extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
 class ProfileInfoSection extends StatefulWidget {
   @override
   _ProfileInfoSectionState createState() => _ProfileInfoSectionState();

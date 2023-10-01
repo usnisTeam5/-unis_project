@@ -35,16 +35,7 @@ class QuestionPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: <Color>[
-                Colors.green.shade200,
-                Colors.blue,
-              ],
-            ),
-          ),
+          color: Colors.white,
         ),
         title: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
@@ -55,13 +46,14 @@ class QuestionPage extends StatelessWidget {
                   child: Text(
                     '궁금한 게 생겼을 때 질문하세요!',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.blue,
                       fontFamily: 'ExtraBold',
                     ),
                   ),
                 ),
                 Container(
-                  width: constraints.maxWidth * 0.15,  // 20% of AppBar width for button
+                  padding: EdgeInsets.only(right: 10.0),
+                  width: 100,  // 20% of AppBar width for button
                   child: TextButton(
                     onPressed: () {
                       Navigator.push(

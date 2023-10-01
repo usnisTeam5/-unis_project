@@ -7,7 +7,6 @@ import '../question/question.dart';
 import '../profile/profile.dart';
 import '../menu/menu.dart';
 import '../notifier/notifier.dart';
-
 void main() {
   runApp(MyApp());
 }
