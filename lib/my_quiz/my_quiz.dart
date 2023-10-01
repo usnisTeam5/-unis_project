@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../css/css.dart';
+import '../my_quiz/quiz_folder.dart';
 void main() {
   runApp(MyApp());
 }
@@ -50,8 +51,7 @@ class QuizScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => DetailScreen(subject: subjects[index]),
-                ),
+                  builder: (context) => QuizFolderScreen()),
               );
             },
             child: Container(
@@ -87,25 +87,3 @@ final List<String> subjects = [
   '오토마타',
   '리눅스 운영체제',//
 ];//
-
-// 각 과목의 세부 정보를 표시하는 화면
-class DetailScreen extends StatelessWidget {
-  final String subject;
-
-  DetailScreen({required this.subject});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(subject),
-      ),
-      body: Center(
-        child: Text(
-          'Details for $subject',
-          style: TextStyle(fontSize: 24.0),
-        ),
-      ),
-    );
-  }
-}
