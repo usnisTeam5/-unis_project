@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 
 // APPBAR 글씨 bold, 크기 width * 0.6
 //GradientText(width: width, text: '내 문답', tSize: 0.06, tStyle: 'Bold'), 참고하세요
+//  GradientText(width: width, tSize: 0.15, text:'유니스', tStyle: 'ExtraBold' ),
+//Text('답변 목록 >', style: TextStyle(color: Colors.white, fontFamily: 'Bold', fontSize: width * 0.05))
+//color: Color(0xFF3D6094) 내 문답에서 질문 or 조언 글씨 색깔
+
+
 
 class GradientText extends StatelessWidget {
   const GradientText({

@@ -1,9 +1,5 @@
-/**
- * 내 문답
- */
-
 import 'package:flutter/material.dart';
-
+import '../css/css.dart';
 void main() {
   runApp(MyApp());
 }
@@ -13,7 +9,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        fontFamily: 'ExtraBold', // ExtraBold 글꼴을 사용하려면 앱에 폰트 파일을 추가해야 합니다.
+        fontFamily: 'Bold', // ExtraBold 글꼴을 사용하려면 앱에 폰트 파일을 추가해야 합니다.
       ),
       home: QuizScreen(),
     );
@@ -23,17 +19,24 @@ class MyApp extends StatelessWidget {
 class QuizScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
-          automaticallyImplyLeading: false,
-        title: Text('Quiz'),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.blue, Colors.purple],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        centerTitle: true,  // Title을 중앙에 배치
+        title: GradientText(width: width, text: 'Quiz', tSize: 0.06, tStyle: 'Bold'),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.0),  // Set the height of the underline
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: MainGradient(),
             ),
+            height: 2.0,  // Set the thickness of the undedsrline
           ),
         ),
       ),
@@ -52,6 +55,7 @@ class QuizScreen extends StatelessWidget {
               );
             },
             child: Container(
+              alignment: Alignment.center,
               margin: EdgeInsets.only(bottom: 10.0),
               padding: EdgeInsets.all(20.0),
               decoration: BoxDecoration(
@@ -62,6 +66,8 @@ class QuizScreen extends StatelessWidget {
                 subjects[index],
                 style: TextStyle(
                   fontSize: 20.0,
+                  fontFamily: 'Bold',
+                  color: Colors.grey,
                 ),
               ),
             ),
@@ -75,12 +81,12 @@ class QuizScreen extends StatelessWidget {
 
 // 과목 목록
 final List<String> subjects = [
-  'Mathematics',
-  'Science',
-  'History',
-  'Geography',
-  'English',
-];
+  '컴퓨터 그래픽스',
+  '수치해석',
+  '위험사회의 웰빙사이언스',
+  '오토마타',
+  '리눅스 운영체제',//
+];//
 
 // 각 과목의 세부 정보를 표시하는 화면
 class DetailScreen extends StatelessWidget {

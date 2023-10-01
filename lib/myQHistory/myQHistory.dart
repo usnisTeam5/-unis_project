@@ -87,7 +87,7 @@ class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProv
                         Tab(
                           icon: _selectedIndex == 1 ?
                                 GradientText( width: width, text: '질문 목록 >', tSize: 0.05, tStyle: 'Bold',)  // Adjust the size as neededtStyle: 'Bold'  // Adjust the style as needed
-                                : Text('질문 목록 >', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: width * 0.05))
+                                : Text('질문 목록 >', style: TextStyle(color: Colors.white, fontFamily: 'Bold', fontSize: width * 0.05))
                         ),
                         Tab(
                           icon: _selectedIndex == 0 ?
@@ -97,7 +97,7 @@ class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProv
                               tSize: 0.05,  // Adjust the size as needed
                               tStyle: 'Bold'  // Adjust the style as needed
                           )
-                          : Text('답변 목록 >', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: width * 0.05))
+                          : Text('답변 목록 >', style: TextStyle(color: Colors.white, fontFamily: 'Bold', fontSize: width * 0.05))
                         ),
                       ],
                       indicator: BoxDecoration(

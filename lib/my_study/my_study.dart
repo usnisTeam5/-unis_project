@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../css/css.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -16,36 +16,27 @@ class MyApp extends StatelessWidget {
 
 class StudyScreen extends StatelessWidget {
   final List<Study> studies = [
-    Study(title: '스터디 제목 1', subject: '과목명 1', description: '스터디 설명 1', members: '3/5명', startDate: '2023-01-01'),
-    Study(title: '스터디 제목 2', subject: '과목명 2', description: '스터디 설명 2', members: '4/5명', startDate: '2023-01-02'),
+    Study(title: '공부할 사람fsdfs', subject: '컴퓨터 그래픽스 &&,,,,,&&&', description: '스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용', members: '3/5 명', startDate: '2023-01-01'),
+    Study(title: '스터디 제목 2', subject: '과목명 2', description: '스터디 설명 2', members: '4/5 명', startDate: '2023-01-02'),
     // ... more studies
   ];
 
   @override
   Widget build(BuildContext context) {
+
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
-        title: ShaderMask(
-          shaderCallback: (bounds) => LinearGradient(
-            colors: [Colors.grey, Colors.black],
-          ).createShader(bounds),
-          child: Center(
-            child: Text(
-              '내 스터디',
-              style: TextStyle(
-                // Assume the font family 'Bold' is defined elsewhere in your project
-                fontFamily: 'ExtraBold',
-                fontSize: 24,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
+        centerTitle: true,  // Title을 중앙에 배치
+        title: GradientText(width: width, tSize: 0.06, text:'내 스터디', tStyle: 'Bold' ),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: Container(
-        color: Colors.grey[100],
+        padding: EdgeInsets.only(top: 10.0),
+        color: Colors.grey[200],
         child: ListView.builder(
           itemCount: studies.length,
           itemBuilder: (context, index) {
@@ -59,40 +50,59 @@ class StudyScreen extends StatelessWidget {
                 );
               },
               child: Card(
+                elevation: 0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+                  borderRadius: BorderRadius.circular(40.0),
                 ),
-                margin: EdgeInsets.all(10),
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 23),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
                         children: [
-                          Text(study.title),
-                          Text(study.subject),
+                          Text(study.title, style: TextStyle(color: Colors.grey[600], fontFamily: 'Bold', fontSize: width * 0.06)),
+                          SizedBox(width: 10,),
+                          Expanded(
+                            child: Text(
+                              study.subject,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: Color(0xFF3D6094),
+                                  fontFamily: 'Bold',
+                                  fontSize: width * 0.03),
+                            ),
+                          ),
                         ],
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 14),
                       Text(
                         study.description,
-                        maxLines: 2,
+                        maxLines: 3,
                         overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Colors.grey[600], fontFamily: 'Bold', fontSize: width * 0.025),
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 14),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.person),
+                              Icon(Icons.person, color: Colors.grey,),
                               SizedBox(width: 4),
-                              Text(study.members),
+                              Text(study.members, style: TextStyle(fontFamily: 'Round', fontSize: 13)),
                             ],
                           ),
-                          Text(study.startDate),
+                          Row(
+                            children: [
+                              Text('시작일', style: TextStyle(fontFamily: 'Bold', fontSize: 13,color: Colors.grey[600]),),
+                              SizedBox(width: 4),
+                              Text(study.startDate, style: TextStyle(fontFamily: 'Bold', fontSize: 13, color: Colors.grey[500]),),
+                            ],
+                          ),
                         ],
                       ),
                     ],
