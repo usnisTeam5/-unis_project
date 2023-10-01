@@ -88,6 +88,7 @@ class QuestionPage extends StatelessWidget {
       body: Container(
         color: Colors.grey[300],
         child: ListView.builder(
+          physics: BouncingScrollPhysics(),
           itemCount: 10,
           itemBuilder: (context, index) {
             return GestureDetector(

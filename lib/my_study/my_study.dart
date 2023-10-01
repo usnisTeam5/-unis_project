@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../css/css.dart';
+import '../study_room/bottom_navigation_bar.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -38,6 +39,7 @@ class StudyScreen extends StatelessWidget {
         padding: EdgeInsets.only(top: 10.0),
         color: Colors.grey[200],
         child: ListView.builder(
+          physics: BouncingScrollPhysics(),
           itemCount: studies.length,
           itemBuilder: (context, index) {
             final study = studies[index];
@@ -46,7 +48,7 @@ class StudyScreen extends StatelessWidget {
                 // Navigate to study room when a study item is tapped
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => StudyRoomScreen(study: study)),
+                  MaterialPageRoute(builder: (context) => MyHomePage()),
                 );
               },
               child: Card(
@@ -131,22 +133,4 @@ class Study {
     required this.members,
     required this.startDate,
   });
-}
-
-class StudyRoomScreen extends StatelessWidget {
-  final Study study;
-
-  StudyRoomScreen({required this.study});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(study.title),
-      ),
-      body: Center(
-        child: Text('Welcome to ${study.title} room'),
-      ),
-    );
-  }
 }

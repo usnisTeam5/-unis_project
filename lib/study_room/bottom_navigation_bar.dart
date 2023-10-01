@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:unis_project/css/css.dart';
-import 'package:unis_project/find_study/find_study.dart';
-import 'package:unis_project/my_quiz/my_quiz.dart';
-import 'package:unis_project/my_study/my_study.dart';
-import '../myQHistory/myQHistory.dart';
-import '../question/question.dart';
-import '../profile/profile.dart';
+import '../chat/chat.dart';
 import '../menu/menu.dart';
 import '../notifier/notifier.dart';
+import 'home.dart';
 void main() {
   runApp(MyApp());
 }
@@ -60,17 +56,13 @@ class MyHomePage extends StatelessWidget {
             builder: (context, currentIndex, _) {
               switch (currentIndex) {
                 case 0:
-                  return const QuestionPage();  // question.dart 파일의 MyApp 클래스를 여기서 호출
+                  return Home();  // question.dart 파일의 MyApp 클래스를 여기서 호출
                 case 1:
-                  return const MyQHistory();
+                  return ChatScreen();
                 case 2:
-                  return const Profile();
-                case 3:
-                  return StudyScreen();
-                case 4:
-                  return QuizScreen();
+                  return Center(child: Text('퀴즈!!'));
                 default:
-                  return Center(child: Text('문답'));
+                  return Center(child: Text('퀴즈!!'));
               }
             },
           ),
@@ -97,33 +89,21 @@ class MyHomePage extends StatelessWidget {
             items: [
               BottomNavigationBarItem(
                 icon: currentIndex == 0
-                    ? GradientIcon(iconData: Icons.question_answer_outlined)
-                    : Icon(Icons.question_answer_outlined),
-                label: '문답',
+                    ? GradientIcon(iconData: Icons.home)
+                    : Icon(Icons.home),
+                label: '홈',
               ),
               BottomNavigationBarItem(
                 icon: currentIndex == 1
-                    ? GradientIcon(iconData: Icons.folder_outlined)
-                    : Icon(Icons.folder_outlined),
-                label: '내 문답',
+                    ? GradientIcon(iconData: Icons.chat_bubble_outline)
+                    : Icon(Icons.chat_bubble_outline_outlined),
+                label: '채팅',
               ),
               BottomNavigationBarItem(
                 icon: currentIndex == 2
-                    ? GradientIcon(iconData: Icons.account_circle_outlined)
-                    : Icon(Icons.account_circle_outlined),
-                label: 'My 프로필',
-              ),
-              BottomNavigationBarItem(
-                icon: currentIndex == 3
-                    ? GradientIcon(iconData: Icons.supervisor_account_outlined)
-                    : Icon(Icons.supervisor_account_outlined),
-                label: '스터디',
-              ),
-              BottomNavigationBarItem(
-                icon: currentIndex == 4
-                    ? GradientIcon(iconData: Icons.question_mark_outlined)
-                    : Icon(Icons.question_mark_outlined),
-                label: '퀴즈',
+                    ? GradientIcon(iconData: Icons.quiz_outlined)
+                    : Icon(Icons.quiz_outlined),
+                label: '퀴즈 등록',
               ),
             ],
           );
@@ -149,69 +129,21 @@ class alram_and_menu extends StatelessWidget {
     return Positioned(
       bottom: 20,
       right: 20,
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: () {
-              scaffoldKey.currentState?.openDrawer(); // 여기서 drawer를 열어줍니다
-            },
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 10), // 원 사이의 간격을 조정
-              width: width * 0.13,
-              height: width * 0.13,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Icon(Icons.notifications_outlined, size: width * 0.06,color: Colors.grey,),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              scaffoldKey.currentState?.openEndDrawer(); // 여기서 drawer를 열어줍니다
-            },
-            child: Container( // 목록
-              //margin: const EdgeInsets.only(bottom: 10), // 원 사이의 간격을 조정
-              width: width * 0.13,
-              height: width * 0.13,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: Icon(Icons.menu_outlined, size: width * 0.06, color: Colors.grey,),
-            ),
-          ),
-          ValueListenableBuilder<int>(
-            valueListenable: controller.currentIndexNotifier,
-            builder: (context, currentIndex, _) {
-              return Visibility(
-                visible: currentIndex == 3,
-                child: GestureDetector(
+      child: ValueListenableBuilder<int>(
+        valueListenable: controller.currentIndexNotifier,
+        builder: (context, currentIndex, _) {
+          return Visibility(
+            visible: currentIndex == 0,
+            child: Column(
+              children: [
+                GestureDetector(
                   onTap: () {
-                    // 스터디 찾기를 호출합니다.
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => FindStudyScreen()),
-                    );
+                    scaffoldKey.currentState?.openDrawer(); // 여기서 drawer를 열어줍니다
                   },
+
                   child: Container(
-                    margin: const EdgeInsets.only(top: 10),
+                    margin: const EdgeInsets.only(bottom: 10),
+                    // 원 사이의 간격을 조정
                     width: width * 0.13,
                     height: width * 0.13,
                     decoration: BoxDecoration(
@@ -226,13 +158,40 @@ class alram_and_menu extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: Icon(Icons.add, size: width * 0.06,color: Colors.grey,),
+                    child: Icon(
+                      Icons.notifications_outlined, size: width * 0.06,
+                      color: Colors.grey,),
                   ),
                 ),
-              );
-            },
-          ),
-        ],
+                GestureDetector(
+                  onTap: () {
+                    scaffoldKey.currentState
+                        ?.openEndDrawer(); // 여기서 drawer를 열어줍니다
+                  },
+                  child: Container( // 목록
+                    //margin: const EdgeInsets.only(bottom: 10), // 원 사이의 간격을 조정
+                    width: width * 0.13,
+                    height: width * 0.13,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Icon(Icons.menu_outlined, size: width * 0.06,
+                      color: Colors.grey,),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

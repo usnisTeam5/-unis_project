@@ -83,3 +83,24 @@ class MainGradient extends LinearGradient {
   );
 }
 
+class GradientIcon extends StatelessWidget {
+  final IconData iconData;
+
+  const GradientIcon({super.key,
+    required this.iconData
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      shaderCallback: (bounds) => LinearGradient(
+      colors: [Color(0xFF59D9D5), Color(0xFF2A7CC1)],
+      begin: Alignment.topLeft,
+      end: Alignment.topCenter,
+      ).createShader(bounds),
+      child: Icon(
+        iconData,
+      ),
+    );
+  }
+}

@@ -42,6 +42,7 @@ class QuizScreen extends StatelessWidget {
         ),
       ),
       body: ListView.builder(
+        physics: BouncingScrollPhysics(),
         padding: EdgeInsets.all(10.0),
         itemCount: subjects.length,
         itemBuilder: (context, index) {

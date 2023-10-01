@@ -125,6 +125,7 @@ class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProv
 
   ListView buildListView(String title, String subject, String status) {
     return ListView.builder(
+      physics: BouncingScrollPhysics(),
       itemCount: 10,
       itemBuilder: (context, index) {
         return GestureDetector(
