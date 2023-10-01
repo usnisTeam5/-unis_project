@@ -25,10 +25,8 @@ class _QuizScreenState extends State<QuizFolderScreen> {
   // 과목 목록
   final List<String> subjects = [
     '중간고사',
-    '기말고사'
     'ㄴㅇㄹㄴㅇㄹ',
-    'ㄴㅇㄹㄴㅇㄹㄴ',
-    'ㄴㅇㄹㄴㅇㄹㄴㅇㄹ',
+    'ㄴㅁㅇㄹㅇㅀ',
   ];
 
   @override
@@ -47,6 +45,15 @@ class _QuizScreenState extends State<QuizFolderScreen> {
             Navigator.pop(context);  // 로그인 화면으로 되돌아가기
           },
         ),
+        actions: [  // `actions` 속성을 사용하여 IconButton을 추가합니다.
+          IconButton(
+            icon: Icon(Icons.add, size: 30,),
+            color: Colors.grey,
+            onPressed: () {
+              //Navigator.pop(context);  // 로그인 화면으로 되돌아가기
+            },
+          ),
+        ],
         elevation: 0,
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
@@ -81,10 +88,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                     color: Colors.grey[300],
                     thickness: 3.0,
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-                    height: (subjects.length * 125.0) + (10.0 * (subjects.length - 1)),  // assuming each item is 70.0 high and 10.0 padding between items
-                    child: Column(
+                  Column(
                       children: subjects.map((subject) {
                         return GestureDetector(
                           onTap: () {
@@ -96,7 +100,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                             );
                           },
                           child: Container(
-                            margin: EdgeInsets.only(bottom: 10.0),
+                            margin: EdgeInsets.symmetric(vertical: 10.0,horizontal: 30),
                             padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 27),
                             decoration: BoxDecoration(
                               color: Colors.grey[200],
@@ -143,7 +147,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                         );
                       }).toList(),
                     ),
-                  ),
+                  SizedBox(height: 10,),
                 ],
               ),
             ),
@@ -165,69 +169,66 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                     color: Colors.grey[300],
                     thickness: 3.0,
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-                    height: (subjects.length * 125.0) + (10.0 * (subjects.length - 1)),  // assuming each item is 70.0 high and 10.0 padding between items
-                    child: Column(
-                      children: subjects.map((subject) {
-                        return GestureDetector(
-                          onTap: () {
-                            // 화면 전환 로직
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => QuizFolderScreen()),
-                            );
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: 10.0),
-                            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 27),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,  // 아이템을 세로축 왼쪽으로 정렬
-                              children: [
-                                Text(
-                                  subject,
-                                  style: TextStyle(
-                                    fontSize: 24.0,
-                                    fontFamily: 'Bold',
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                                SizedBox(height: 20,),
-                                Row(
-                                  children: [
-                                    Text(
-                                      '12/32',
-                                      style: TextStyle(
-                                        fontSize: 14.0,
-                                        color: Colors.grey[600],
-                                      ),
-                                    ),
-                                    Spacer(flex: 1),  // 사용 가능한 공간을 차지합니다.
-                                    GestureDetector(
-                                      onTap: () {
-                                        // onTap 로직
-                                        // 예를 들어, 다음 화면으로 이동하거나 다이얼로그를 표시
-                                      },
-                                      child: Icon(
-                                        Icons.add,
-                                        color: Color(0xFF3D6094),
-                                        size: 24,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                  Column(
+                    children: subjects.map((subject) {
+                      return GestureDetector(
+                        onTap: () {
+                          // 화면 전환 로직
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => QuizFolderScreen()),
+                          );
+                        },
+                        child: Container(
+                          margin: EdgeInsets.symmetric(vertical: 10.0,horizontal: 30),
+                          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 27),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(15.0),
                           ),
-                        );
-                      }).toList(),
-                    ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,  // 아이템을 세로축 왼쪽으로 정렬
+                            children: [
+                              Text(
+                                subject,
+                                style: TextStyle(
+                                  fontSize: 24.0,
+                                  fontFamily: 'Bold',
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                              SizedBox(height: 20,),
+                              Row(
+                                children: [
+                                  Text(
+                                    '12/32',
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                  Spacer(flex: 1),  // 사용 가능한 공간을 차지합니다.
+                                  GestureDetector(
+                                    onTap: () {
+                                      // onTap 로직
+                                      // 예를 들어, 다음 화면으로 이동하거나 다이얼로그를 표시
+                                    },
+                                    child: Icon(
+                                      Icons.add,
+                                      color: Color(0xFF3D6094),
+                                      size: 24,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   ),
+                  SizedBox(height: 10,),
                 ],
               ),
             ),
