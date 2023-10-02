@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../chat/chat.dart';
+import '../css/css.dart';
+
 void main() {
   runApp(const Question());
 }
@@ -15,66 +17,46 @@ class Question extends StatelessWidget {
   }
 }
 
-class MainGradient extends LinearGradient {
-  MainGradient()
-      : super(
-    colors: [Color(0xFF59D9D5), Color(0xFF2A7CC1)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-}
-
 class QuestionPage extends StatelessWidget {
-  const QuestionPage({super.key});
+  const QuestionPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
-
     return Scaffold(
       appBar: AppBar(
-        flexibleSpace: Container(
-          color: Colors.white,
-        ),
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        elevation: 0,
         title: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  width: constraints.maxWidth * 0.8,  // 80% of AppBar width for title
-                  child: Text(
-                    '궁금한 게 생겼을 때 질문하세요!',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontFamily: 'ExtraBold',
-                    ),
-                  ),
+                GradientText(
+                  width: constraints.maxWidth * 1.25,
+                  text: '  궁금한 게 생겼을 때 질문하세요!',
+                  tStyle: 'ExtraBold',
+                  tSize: 0.04,
                 ),
-                Container(
-                  padding: EdgeInsets.only(right: 10.0),
-                  width: 100,  // 20% of AppBar width for button
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => QuestionFormPage()),
-                      );
-                    },
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => QuestionFormPage()),
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 6.0),
+                    decoration: BoxDecoration(
+                      gradient: MainGradient(),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
                     child: Text(
                       '질문하기',
                       style: TextStyle(
                         fontFamily: 'ExtraBold',
-                        color: Colors.blue,
-                      ),
-                    ),
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.horizontal(
-                          left: Radius.circular(30),
-                          right: Radius.circular(30),
-                        ),
+                        color: Colors.white,
+                        fontSize: 18,
                       ),
                     ),
                   ),
@@ -84,48 +66,85 @@ class QuestionPage extends StatelessWidget {
           },
         ),
       ),
-
       body: Container(
-        color: Colors.grey[300],
+        color: Colors.grey[200],
         child: ListView.builder(
           physics: BouncingScrollPhysics(),
           itemCount: 10,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ChatScreen()),
-                );
-              },
-              child: Container(
-                margin: EdgeInsets.all(10),
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
+          itemBuilder: (context, index) => QuestionItem(index),
+        ),
+      ),
+    );
+  }
+}
+
+class QuestionItem extends StatelessWidget {
+  final int index;
+
+  QuestionItem(this.index);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ChatScreen()),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only( // 리스트 마진
+          top: index == 0 ? 20 : 10,
+          bottom: 10,
+          left: 30,
+          right: 30,
+        ),
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '  질문   ',
+                  style: TextStyle(
+                    color: Color(0xFF3D6094),
+                    fontFamily: 'Bold',
+                    fontSize: 17,
+                  ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('질문  '),
-                        Text('컴퓨터 그래픽스'),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text('${(index + 1) * 2000}'),
-                        Icon(Icons.monetization_on_outlined)  // 여기에 포인트 아이콘을 사용했습니다.
-                      ],
-                    ),
-                  ],
+                Text(
+                  '컴퓨터 그래픽스',
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontFamily: 'Round',
+                    fontSize: 17,
+                  ),
                 ),
-              ),
-            );
-          },
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  '${(index + 1) * 2000}',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontFamily: 'Bold',
+                  ),
+                ),
+                SizedBox(width: 5), // 2000과 아이콘 사이의 간격
+                Icon(
+                  Icons.monetization_on_outlined,
+                  color: Colors.yellow[600],
+                )
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -139,7 +158,6 @@ class QuestionFormPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('질문하기'),
       ),
-      // ... (여기에 폼과 관련된 코드 추가)
     );
   }
 }
