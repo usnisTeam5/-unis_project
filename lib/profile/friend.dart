@@ -66,45 +66,48 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Container(
-            height: tabBarHeight,
-            color: Colors.white,
-            child: TabBar(
-              controller: _tabController,
-              tabs: [
-                Tab(child: gradientTabText(width, '친구 리스트', 0)),
-                Tab(child: gradientTabText(width, '찜 리스트', 1)),
-                Tab(child: gradientTabText(width, '차단 리스트', 2)),
-              ],
-              indicatorColor: Colors.white,
-              labelColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              height: tabBarHeight,
+              color: Colors.white,
+              child: TabBar(
+                controller: _tabController,
+                tabs: [
+                  Tab(child: gradientTabText(width, '친구 리스트', 0)),
+                  Tab(child: gradientTabText(width, '찜 리스트', 1)),
+                  Tab(child: gradientTabText(width, '차단 리스트', 2)),
+                ],
+                indicatorColor: Colors.white,
+                labelColor: Colors.white,
+              ),
             ),
-          ),
-          Container(
-            height: 2.0,
-            decoration: BoxDecoration(
-              gradient: MainGradient(),
+            Container(
+              height: 2.0,
+              decoration: BoxDecoration(
+                gradient: MainGradient(),
+              ),
             ),
-          ),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                buildListView(),
-                buildListView(),
-                buildListView(),
-              ],
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  buildListView(),
+                  buildListView(),
+                  buildListView(),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   ListView buildListView() {
     return ListView.builder(
+      padding: EdgeInsets.zero,
       itemCount: 20,
       itemBuilder: (context, index) {
         return Container(
