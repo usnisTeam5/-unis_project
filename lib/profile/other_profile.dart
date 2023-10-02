@@ -44,6 +44,7 @@ class OthersProfilePage extends StatelessWidget {
         child: Column(
           children: [
             OthersProfileInfoSection(),
+            StatsSection(),
             SatisfactionAndReportSection(),
           ],
         ),
@@ -165,10 +166,8 @@ class SatisfactionAndReportSection extends StatelessWidget {
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(30.0),
       ),
-      child: Column(
-        children: [
-          StatsSection(),
-          Row(
+      child:
+        Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
@@ -202,8 +201,6 @@ class SatisfactionAndReportSection extends StatelessWidget {
               ),
             ],
           ),
-        ],
-      ),
     );
   }
 }

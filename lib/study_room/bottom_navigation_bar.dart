@@ -104,7 +104,7 @@ class MyHomePage extends StatelessWidget {
                 icon: currentIndex == 2
                     ? GradientIcon(iconData: Icons.quiz_outlined)
                     : Icon(Icons.quiz_outlined),
-                label: '퀴즈 등록',
+                label: '퀴즈 생성',
               ),
             ],
           );
