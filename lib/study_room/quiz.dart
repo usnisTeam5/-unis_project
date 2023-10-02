@@ -76,11 +76,6 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                     children: subjects.map((subject) {
                       return GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => QuizFolderScreen()),
-                          );
                         },
                         child: Container(
                           margin: EdgeInsets.symmetric(vertical: 10.0,horizontal: 30),
