@@ -204,7 +204,7 @@ class _QuestionTypeSelectionState extends State<QuestionTypeSelection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //SizedBox(height: 3,),
+          SizedBox(height: 5,),
           Text(
             '   문제 유형',
             style: TextStyle(color: Colors.grey, fontFamily: 'Bold', fontSize: 20),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../css/css.dart';
+import '../my_quiz/solve.dart';
 void main() {
   runApp(MyApp());
 }
@@ -96,7 +97,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => QuizFolderScreen()),
+                                  builder: (context) => Solve()),
                             );
                           },
                           child: Container(
@@ -177,7 +178,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => QuizFolderScreen()),
+                                builder: (context) => Solve()),
                           );
                         },
                         child: Container(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../css/css.dart';
 void main() {
   runApp(NotifierApp());
 }
@@ -42,58 +42,57 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Container(
       height: 60.0,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.green.shade200, Colors.blue.shade500],
+          color: Colors.white,
         ),
-      ),
       child: Row(
         children: [
           IconButton(
             padding: const EdgeInsets.only(left: 16.0),
             icon: Icon(
               Icons.arrow_back_ios,
-              color: Colors.white,
+              color: Colors.grey[400],
             ),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
-
-          _buildTab(0, '알림'),
-          _buildTab(1, '대화'),
+          _buildTab(0, '알림',width),
+          _buildTab(1, '대화',width),
         ],
       ),
     );
   }
 
-  Widget _buildTab(int index, String title) {
+  Widget _buildTab(int index, String title , double width) {
+
+    //final height = MediaQuery.of(context).size.height;
+
     final isSelected = selectedIndex == index;
-    return Expanded(
-      child: GestureDetector(
-        child: Center(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            decoration: BoxDecoration(
-              color: isSelected ? Colors.white : Colors.transparent,
-              borderRadius: BorderRadius.circular(30.0),
-            ),
-            child: Text(
-              title,
-              style: TextStyle(
-                color: isSelected ? Colors.black : Colors.white,
-                fontSize: 22.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+    return GestureDetector(
+      child: Center(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.white : Colors.transparent,
+            borderRadius: BorderRadius.circular(30.0),
           ),
+          child:
+          isSelected ? GradientText(width: width, text: title, tStyle: 'Bold', tSize: 0.06)
+                    :  Text( title, style: TextStyle(
+                              color:  Colors.grey[300],
+                              fontSize: width*0.06,
+                              fontWeight: FontWeight.bold,
+                              ),
+                      ),
         ),
-        onTap: () {
-          onTabSelected(index);
-        },
       ),
+      onTap: () {
+        onTabSelected(index);
+      },
     );
   }
 }
@@ -144,6 +143,15 @@ class _CustomDrawerState extends State<Notifier> {
                   _selectedIndex = index;
                 });
               },
+            ),
+            PreferredSize(
+              preferredSize: Size.fromHeight(1.0),  // Set the height of the underline
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: MainGradient(),
+                ),
+                height: 2.0,  // Set the thickness of the undedsrline
+              ),
             ),
             Expanded(
               child: _screens[_selectedIndex],
