@@ -59,8 +59,41 @@ class _QuizScreenState extends State<QuizFolderScreen> {
               size: 30,
             ),
             color: Colors.grey,
-            onPressed: () {
-              //Navigator.pop(context);  // 로그인 화면으로 되돌아가기
+            onPressed: () async {
+                String? folderName = await showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    final TextEditingController _controller = TextEditingController();
+                    return AlertDialog(
+                      title: Text('폴더 추가',style: TextStyle(fontFamily: 'Round'),),
+                      content: TextField(
+                        controller: _controller,
+                        decoration: InputDecoration(
+                          labelText: '폴더 이름',
+                        ),
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text('취소'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: Text('추가'),
+                          onPressed: () {
+                            Navigator.of(context).pop(_controller.text);
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+                if (folderName != null && folderName.isNotEmpty) {
+                  setState(() {
+                    folders.add(folderName);
+                  });
+                }
             },
           ),
         ],

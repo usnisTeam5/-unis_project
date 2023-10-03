@@ -1,6 +1,8 @@
   import 'package:flutter/material.dart';
+import 'package:unis_project/find_study/create_study.dart';
   import '../css/css.dart';
   import '../study_room/bottom_navigation_bar.dart';
+  import '../find_study/find_study.dart';
   void main() => runApp(MyApp());
 
   class MyApp extends StatelessWidget {
@@ -94,16 +96,51 @@
             ),
           ),
         ),
-        body: TabBarView(
-          controller: _tabController,
+        body: Stack(
           children: [
-            // 각 탭에 대한 내용을 여기에 추가합니다.
-            _buildTabContent('전체'),
-            _buildTabContent('잔여석'),
-            _buildTabContent('공개'),
-          ],
-        ),
-      );
+            TabBarView(
+            controller: _tabController,
+            children: [
+              // 각 탭에 대한 내용을 여기에 추가합니다.
+              _buildTabContent('전체'),
+              _buildTabContent('잔여석'),
+              _buildTabContent('공개'),
+            ],
+          ),
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child:GestureDetector(
+                        onTap: () {
+                          // 스터디 찾기를 호출합니다.
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => CreateStudy()),
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          width: width * 0.13,
+                          height: width * 0.13,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Icon(Icons.add, size: width * 0.06,color: Colors.grey,),
+                        ),
+                      ),
+                    ),
+              ],
+            ),
+          );
     }
 
     Widget _buildTabContent(String tabLabel) {

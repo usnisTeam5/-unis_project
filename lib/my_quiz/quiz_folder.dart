@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../css/css.dart';
 import '../my_quiz/solve.dart';
+import '../my_quiz/edit_quiz.dart';
 void main() {
   runApp(MyApp());
 }
@@ -30,6 +31,43 @@ class _QuizScreenState extends State<QuizFolderScreen> {
     'ㄴㅁㅇㄹㅇㅀ',
   ];
 
+  void _addNewFolder() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        String? newFolderName;
+        return AlertDialog(
+          title: Text('새 폴더 생성'),
+          content: TextField(
+            onChanged: (value) {
+              newFolderName = value;
+            },
+            decoration: InputDecoration(labelText: '폴더 이름'),
+          ),
+          actions: [
+            TextButton(
+              child: Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('추가'),
+              onPressed: () {
+                if (newFolderName != null && newFolderName!.isNotEmpty) {
+                  setState(() {
+                    subjects.add(newFolderName!);
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -46,15 +84,6 @@ class _QuizScreenState extends State<QuizFolderScreen> {
             Navigator.pop(context);  // 로그인 화면으로 되돌아가기
           },
         ),
-        actions: [  // `actions` 속성을 사용하여 IconButton을 추가합니다.
-          IconButton(
-            icon: Icon(Icons.add, size: 30,),
-            color: Colors.grey,
-            onPressed: () {
-              //Navigator.pop(context);  // 로그인 화면으로 되돌아가기
-            },
-          ),
-        ],
         elevation: 0,
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
@@ -83,7 +112,24 @@ class _QuizScreenState extends State<QuizFolderScreen> {
               child: ExpansionTile(
                 initiallyExpanded: true,
                 title: Text('   학습중', style: TextStyle(color: Colors.grey, fontFamily: 'Bold', fontSize: width * 0.06)),
-                trailing: Icon(Icons.menu_outlined, size: width * 0.06, color: Colors.grey,),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min, // Row의 크기를 내부 위젯 크기에 맞춤
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.add,
+                        size: 30.0,
+                      ),
+                      color: Color(0xFF3D6094),
+                      onPressed: _addNewFolder,
+                    ),
+                    Icon(
+                      Icons.menu_outlined,
+                      size: width * 0.06,
+                      color: Colors.grey,
+                    ),
+                  ],
+                ),
                 children: [
                   Divider(  // 여기에 Divider 추가
                     color: Colors.grey[300],
@@ -131,8 +177,12 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                                     Spacer(flex: 1),  // 사용 가능한 공간을 차지합니다.
                                     GestureDetector(
                                       onTap: () {
-                                        // onTap 로직
-                                        // 예를 들어, 다음 화면으로 이동하거나 다이얼로그를 표시
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                            builder: (context) => EditQuizScreen(folderName: subject),
+                                          ),
+                                        );
                                       },
                                       child: Icon(
                                         Icons.add,
@@ -164,7 +214,24 @@ class _QuizScreenState extends State<QuizFolderScreen> {
               child: ExpansionTile(
                 initiallyExpanded: true,
                 title: Text('   학습완료', style: TextStyle(color: Colors.grey, fontFamily: 'Bold', fontSize: width * 0.06)),
-                trailing: Icon(Icons.menu_outlined, size: width * 0.06, color: Colors.grey,),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min, // Row의 크기를 내부 위젯 크기에 맞춤
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.add,
+                        size: 30.0,
+                      ),
+                      color: Color(0xFF3D6094),
+                      onPressed: _addNewFolder,
+                    ),
+                    Icon(
+                      Icons.menu_outlined,
+                      size: width * 0.06,
+                      color: Colors.grey,
+                    ),
+                  ],
+                ),
                 children: [
                   Divider(  // 여기에 Divider 추가
                     color: Colors.grey[300],
@@ -212,8 +279,12 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                                   Spacer(flex: 1),  // 사용 가능한 공간을 차지합니다.
                                   GestureDetector(
                                     onTap: () {
-                                      // onTap 로직
-                                      // 예를 들어, 다음 화면으로 이동하거나 다이얼로그를 표시
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EditQuizScreen(folderName: subject),
+                                        ),
+                                      );
                                     },
                                     child: Icon(
                                       Icons.add,
