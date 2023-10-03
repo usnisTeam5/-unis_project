@@ -122,7 +122,7 @@ class QuestionItem extends StatelessWidget {
                   '컴퓨터 그래픽스',
                   style: TextStyle(
                     color: Colors.grey[700],
-                    fontFamily: 'Round',
+                    fontFamily: 'Bold',
                     fontSize: 17,
                   ),
                 ),
@@ -137,7 +137,7 @@ class QuestionItem extends StatelessWidget {
                     fontFamily: 'Bold',
                   ),
                 ),
-                SizedBox(width: 5), // 2000과 아이콘 사이의 간격
+                SizedBox(width: 7), // 2000과 아이콘 사이의 간격
                 Icon(
                   Icons.monetization_on_outlined,
                   color: Colors.yellow[600],
