@@ -131,32 +131,34 @@ class _CustomDrawerState extends State<Notifier> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      child: Drawer(
-        child: Column(
-          children: [
-            Header(
-              selectedIndex: _selectedIndex,
-              onTabSelected: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-            ),
-            PreferredSize(
-              preferredSize: Size.fromHeight(1.0),  // Set the height of the underline
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: MainGradient(),
-                ),
-                height: 2.0,  // Set the thickness of the undedsrline
+    return SafeArea(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        child: Drawer(
+          child: Column(
+            children: [
+              Header(
+                selectedIndex: _selectedIndex,
+                onTabSelected: (index) {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
               ),
-            ),
-            Expanded(
-              child: _screens[_selectedIndex],
-            ),
-          ],
+              PreferredSize(
+                preferredSize: Size.fromHeight(1.0),  // Set the height of the underline
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: MainGradient(),
+                  ),
+                  height: 2.0,  // Set the thickness of the undedsrline
+                ),
+              ),
+              Expanded(
+                child: _screens[_selectedIndex],
+              ),
+            ],
+          ),
         ),
       ),
     );

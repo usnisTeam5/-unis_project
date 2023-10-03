@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:unis_project/search_department/search_department.dart';
+import 'package:unis_project/search_subject/search_subject.dart';
 import 'register.dart';
 void main() {
   runApp(Department_selection_screen());
@@ -29,7 +31,8 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-
+    selectedDepartments = selectedDepartments.toSet().toList(); // 중복제거
+    selectedCourses = selectedCourses.toSet().toList();
     return Scaffold(
       appBar: AppBar(
         title: Text('학과 및 수강 과목 설정', style: TextStyle(fontFamily: 'Round')),
@@ -58,7 +61,7 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
             TextField(
               readOnly: true,
               onTap: () async {
-                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen()));
+                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => SearchDepartment()));
                 if (result != null && selectedDepartments.length < 2) {
                   setState(() {
                     selectedDepartments.add(result);
@@ -102,10 +105,10 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
             TextField(
               readOnly: true,
               onTap: () async {
-                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen()));
+                final List<String>? result = await Navigator.push(context, MaterialPageRoute(builder: (context) => SearchSubject()));
                 if (result != null) {
                   setState(() {
-                    selectedCourses.add(result);
+                    selectedCourses.addAll(result);
                   });
                 }
               },
@@ -167,21 +170,3 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
   }
 }
 
-class SearchScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('검색', style: TextStyle(fontFamily: 'Round')),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context, '검색 결과');
-          },
-          child: Text('검색 결과 반환', style: TextStyle(fontFamily: 'Round')),
-        ),
-      ),
-    );
-  }
-}

@@ -40,8 +40,8 @@ class _CreateStudyState extends State<CreateStudy> {
           content: Container(
             width: double.maxFinite,
             child: ListView.builder(
-              shrinkWrap: true,  // 리스트의 크기를 내용에 맞게 조절
-              itemCount: 5,  // 5개의 항목 (1명 ~ 5명)
+              shrinkWrap: true, // 리스트의 크기를 내용에 맞게 조절
+              itemCount: 5, // 5개의 항목 (1명 ~ 5명)
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
                   title: Text('${index + 1}명'),
@@ -167,94 +167,97 @@ class _CreateStudyState extends State<CreateStudy> {
               // 아래는 단순한 예시입니다.
 
               Container(
-                padding: EdgeInsets.only(top: 5, bottom: 5),
+                padding: EdgeInsets.only(top: 5, bottom: 5,right: 20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: Colors.grey[200],
                 ),
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 25,
+                    GestureDetector(
+                      onTap: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SubjectSelector()),
+                        );
+                        // 반환된 결과를 처리하는 코드
+                        if (result != null) {
+                          setState(() {
+                            subject = result;
+                          });
+                        }
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 12.0),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 25,
+                            ),
+                            subject == null
+                                ? Text(
+                                    '과목 선택',
+                                    style: TextStyle(
+                                        color: Colors.grey[400],
+                                        fontFamily: 'Bold',
+                                        fontSize: width * 0.045),
+                                  )
+                                : Text(
+                                    subject!.length > 18
+                                        ? subject!.substring(0, 18) + '...'
+                                        : subject!,
+                                    style: TextStyle(
+                                        color: Colors.grey[900],
+                                        fontFamily: 'Bold',
+                                        fontSize: width * 0.04),
+                                  ),
+                            Spacer(),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 25,
+                              color: Colors.grey[400],
+                            ),
+                          ],
                         ),
-                        subject == null
-                            ? Text(
-                                '과목 선택',
-                                style: TextStyle(
-                                    color: Colors.grey[400],
-                                    fontFamily: 'Bold',
-                                    fontSize: width * 0.045),
-                              )
-                            : Text(
-                                subject!.length > 18
-                                    ? subject!.substring(0, 18) + '...'
-                                    : subject!,
-                                style: TextStyle(
-                                    color: Colors.grey[900],
-                                    fontFamily: 'Bold',
-                                    fontSize: width * 0.04),
-                              ),
-                        Spacer(),
-                        IconButton(
-                          icon: Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 25,
-                          ),
-                          color: Colors.grey[400],
-                          onPressed: () async {
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SubjectSelector()),
-                            );
-
-                            // 반환된 결과를 처리하는 코드
-                            if (result != null) {
-                              setState(() {
-                                subject = result;
-                              });
-                            }
-                            //print('받은 데이터: $result');
-                          },
-                        ),
-                      ],
+                      ),
                     ),
                     Container(
                       // SizedBox를 Container로 변경
                       height: 1.0,
                       color: Colors.white,
                     ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 25,
+                    GestureDetector(
+                      onTap: _selectNumberOfPeople,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 12.0),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 25,
+                            ),
+                            Text(
+                              numberOfPeople,
+                              style: numberOfPeople == '인원 선택'
+                                  ? TextStyle(
+                                      color: Colors.grey[400],
+                                      fontFamily: 'Bold',
+                                      fontSize: width * 0.045,
+                                    )
+                                  : TextStyle(
+                                      color: Colors.grey[900],
+                                      fontFamily: 'Bold',
+                                      fontSize: width * 0.04),
+                            ),
+                            Spacer(),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 25,
+                              color: Colors.grey[400],
+                            ),
+                          ],
                         ),
-                        Text(
-                          numberOfPeople,
-                          style: numberOfPeople == '인원 선택'
-                              ? TextStyle(
-                                  color: Colors.grey[400],
-                                  fontFamily: 'Bold',
-                                  fontSize: width * 0.045,
-                                )
-                              : TextStyle(
-                                  color: Colors.grey[900],
-                                  fontFamily: 'Bold',
-                                  fontSize: width * 0.04),
-                        ),
-                        Spacer(),
-                        IconButton(
-                          icon: Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 25,
-                          ),
-                          color: Colors.grey[400],
-                          onPressed:
-                              _selectNumberOfPeople, // 아이콘 버튼을 누르면 인원 선택 다이얼로그가 표시됩니다.
-                        ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
