@@ -30,6 +30,7 @@ class StudyScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: true,  // Title을 중앙에 배치
         title: GradientText(width: width, tSize: 0.06, text:'내 스터디', tStyle: 'Bold' ),
         backgroundColor: Colors.white,

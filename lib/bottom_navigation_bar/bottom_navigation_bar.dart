@@ -8,6 +8,7 @@ import '../question/question.dart';
 import '../profile/profile.dart';
 import '../menu/menu.dart';
 import '../notifier/notifier.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -49,85 +50,101 @@ class MyHomePage extends StatelessWidget {
     double iconSize = width * 0.10; // 아이콘 크기 설정
     double fontSize = height * 0.02; // 텍스트 크기 설정
 
-    return Scaffold(
-      key: scaffoldKey, // key를 Scaffold에 할당합니다
-      endDrawer: Menu(),
-      drawer: Notifier(),
-      body: Stack(
-        children: [
-          ValueListenableBuilder<int>(
-            valueListenable: _controller.currentIndexNotifier,
-            builder: (context, currentIndex, _) {
-              switch (currentIndex) {
-                case 0:
-                  return const QuestionPage();  // question.dart 파일의 MyApp 클래스를 여기서 호출
-                case 1:
-                  return const MyQHistory();
-                case 2:
-                  return const Profile();
-                case 3:
-                  return StudyScreen();
-                case 4:
-                  return QuizScreen();
-                default:
-                  return Center(child: Text('문답'));
-              }
-            },
-          ),
-          alram_and_menu(width: width, scaffoldKey: scaffoldKey ,controller: _controller),
-        ],
-      ),
-      bottomNavigationBar: ValueListenableBuilder<int>(
-        valueListenable: _controller.currentIndexNotifier,
-        builder: (context, currentIndex, _) {
-          return BottomNavigationBar(
-            currentIndex: currentIndex,
-            onTap: _controller.onItemTapped,
-            // 아이템 선택 시 컨트롤러의 메서드 호출
-            selectedFontSize: fontSize,
-            // 선택된 아이템의 텍스트 크기 설정
-            unselectedFontSize: fontSize,
-            // 선택되지 않은 아이템의 텍스트 크기 설정
-            //selectedItemColor: Colors.blue,
-            // 선택된 아이템의 색상
-            unselectedItemColor: Colors.grey,
-            // 선택되지 않은 아이템의 색상
-            type: BottomNavigationBarType.fixed,
-            // 모든 아이콘 아래에 항상 레이블 표시
-            items: [
-              BottomNavigationBarItem(
-                icon: currentIndex == 0
-                    ? GradientIcon(iconData: Icons.question_answer_outlined)
-                    : Icon(Icons.question_answer_outlined),
-                label: '문답',
-              ),
-              BottomNavigationBarItem(
-                icon: currentIndex == 1
-                    ? GradientIcon(iconData: Icons.folder_outlined)
-                    : Icon(Icons.folder_outlined),
-                label: '내 문답',
-              ),
-              BottomNavigationBarItem(
-                icon: currentIndex == 2
-                    ? GradientIcon(iconData: Icons.account_circle_outlined)
-                    : Icon(Icons.account_circle_outlined),
-                label: 'My 프로필',
-              ),
-              BottomNavigationBarItem(
-                icon: currentIndex == 3
-                    ? GradientIcon(iconData: Icons.supervisor_account_outlined)
-                    : Icon(Icons.supervisor_account_outlined),
-                label: '스터디',
-              ),
-              BottomNavigationBarItem(
-                icon: currentIndex == 4
-                    ? GradientIcon(iconData: Icons.question_mark_outlined)
-                    : Icon(Icons.question_mark_outlined),
-                label: '퀴즈',
-              ),
-            ],
-          );
-        },
+    return WillPopScope(
+      onWillPop: () async {
+        if (scaffoldKey.currentState!.isDrawerOpen) {
+          // Drawer가 열려있으면 닫습니다.
+          Navigator.of(context).pop();
+          return false;
+        }
+        if (scaffoldKey.currentState!.isEndDrawerOpen) {
+          // Drawer가 열려있으면 닫습니다.
+          Navigator.of(context).pop();
+          return false;
+        }
+        // 뒤로 가기 동작 방지
+        return false;
+      },
+      child: Scaffold(
+        key: scaffoldKey, // key를 Scaffold에 할당합니다
+        endDrawer: Menu(),
+        drawer: Notifier(),
+        body: Stack(
+          children: [
+            ValueListenableBuilder<int>(
+              valueListenable: _controller.currentIndexNotifier,
+              builder: (context, currentIndex, _) {
+                switch (currentIndex) {
+                  case 0:
+                    return const QuestionPage();  // question.dart 파일의 MyApp 클래스를 여기서 호출
+                  case 1:
+                    return const MyQHistory();
+                  case 2:
+                    return const Profile();
+                  case 3:
+                    return StudyScreen();
+                  case 4:
+                    return QuizScreen();
+                  default:
+                    return Center(child: Text('문답'));
+                }
+              },
+            ),
+            alram_and_menu(width: width, scaffoldKey: scaffoldKey ,controller: _controller),
+          ],
+        ),
+        bottomNavigationBar: ValueListenableBuilder<int>(
+          valueListenable: _controller.currentIndexNotifier,
+          builder: (context, currentIndex, _) {
+            return BottomNavigationBar(
+              currentIndex: currentIndex,
+              onTap: _controller.onItemTapped,
+              // 아이템 선택 시 컨트롤러의 메서드 호출
+              selectedFontSize: fontSize,
+              // 선택된 아이템의 텍스트 크기 설정
+              unselectedFontSize: fontSize,
+              // 선택되지 않은 아이템의 텍스트 크기 설정
+              //selectedItemColor: Colors.blue,
+              // 선택된 아이템의 색상
+              unselectedItemColor: Colors.grey,
+              // 선택되지 않은 아이템의 색상
+              type: BottomNavigationBarType.fixed,
+              // 모든 아이콘 아래에 항상 레이블 표시
+              items: [
+                BottomNavigationBarItem(
+                  icon: currentIndex == 0
+                      ? GradientIcon(iconData: Icons.question_answer_outlined)
+                      : Icon(Icons.question_answer_outlined),
+                  label: '문답',
+                ),
+                BottomNavigationBarItem(
+                  icon: currentIndex == 1
+                      ? GradientIcon(iconData: Icons.folder_outlined)
+                      : Icon(Icons.folder_outlined),
+                  label: '내 문답',
+                ),
+                BottomNavigationBarItem(
+                  icon: currentIndex == 2
+                      ? GradientIcon(iconData: Icons.account_circle_outlined)
+                      : Icon(Icons.account_circle_outlined),
+                  label: 'My 프로필',
+                ),
+                BottomNavigationBarItem(
+                  icon: currentIndex == 3
+                      ? GradientIcon(iconData: Icons.supervisor_account_outlined)
+                      : Icon(Icons.supervisor_account_outlined),
+                  label: '스터디',
+                ),
+                BottomNavigationBarItem(
+                  icon: currentIndex == 4
+                      ? GradientIcon(iconData: Icons.question_mark_outlined)
+                      : Icon(Icons.question_mark_outlined),
+                  label: '퀴즈',
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
