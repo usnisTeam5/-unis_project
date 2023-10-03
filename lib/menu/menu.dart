@@ -63,6 +63,16 @@ class Menu extends StatelessWidget {
                   // Navigate to the app settings screen
                 },
               ),
+              ListTile(
+                title: Text(
+                  '포인트 충전 및 현금화',
+                  style: TextStyle(color: Colors.blue, fontFamily: 'Bold'),
+                ),
+                trailing: Icon(Icons.navigate_next, color: Colors.blue),
+                onTap: () {
+                  // Navigate to the app settings screen
+                },
+              ),
             ],
           ),
     );
