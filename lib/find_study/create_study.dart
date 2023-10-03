@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../css/css.dart';
+import '../subject_selector/subject_selector.dart';
 
 void main() => runApp(FriendsList());
 
@@ -15,7 +16,50 @@ class FriendsList extends StatelessWidget {
   }
 }
 
-class CreateStudy extends StatelessWidget {
+class CreateStudy extends StatefulWidget {
+  @override
+  _CreateStudyState createState() => _CreateStudyState();
+}
+
+class _CreateStudyState extends State<CreateStudy> {
+  final titleController = TextEditingController();
+  final passwordController = TextEditingController();
+  final descriptionController = TextEditingController();
+  String? subject = null;
+  String numberOfPeople = '인원 선택';
+
+  Future<void> _selectNumberOfPeople() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        String? selectedValue; // 선택된 인원
+
+        return AlertDialog(
+          title: Text('인원 선택'),
+          content: Container(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,  // 리스트의 크기를 내용에 맞게 조절
+              itemCount: 5,  // 5개의 항목 (1명 ~ 5명)
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text('${index + 1}명'),
+                  onTap: () {
+                    setState(() {
+                      numberOfPeople = '${index + 1}명';
+                    });
+                    Navigator.of(context).pop(); // 선택 후 다이얼로그 닫기
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -38,7 +82,12 @@ class CreateStudy extends StatelessWidget {
           IconButton(
             icon: GradientIcon(iconData: Icons.check),
             onPressed: () {
-              //Navigator.pop(context);  // 로그인 화면으로 되돌아가기
+              print("제목: ${titleController.text}");
+              print("비밀번호: ${passwordController.text}");
+              print("설명: ${descriptionController.text}");
+              print("과목명: ${subject}");
+              print("인원수: ${numberOfPeople}");
+              Navigator.pop(context);
             },
           ),
         ],
@@ -66,6 +115,7 @@ class CreateStudy extends StatelessWidget {
           child: Column(
             children: [
               TextField(
+                controller: titleController, // 컨트롤러 연결
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide.none,
@@ -92,6 +142,7 @@ class CreateStudy extends StatelessWidget {
               ),
               SizedBox(height: 10),
               TextField(
+                controller: passwordController, // 컨트롤러 연결
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide.none,
@@ -128,13 +179,23 @@ class CreateStudy extends StatelessWidget {
                         SizedBox(
                           width: 25,
                         ),
-                        Text(
-                          '과목 선택',
-                          style: TextStyle(
-                              color: Colors.grey[400],
-                              fontFamily: 'Bold',
-                              fontSize: width * 0.045),
-                        ),
+                        subject == null
+                            ? Text(
+                                '과목 선택',
+                                style: TextStyle(
+                                    color: Colors.grey[400],
+                                    fontFamily: 'Bold',
+                                    fontSize: width * 0.045),
+                              )
+                            : Text(
+                                subject!.length > 18
+                                    ? subject!.substring(0, 18) + '...'
+                                    : subject!,
+                                style: TextStyle(
+                                    color: Colors.grey[900],
+                                    fontFamily: 'Bold',
+                                    fontSize: width * 0.04),
+                              ),
                         Spacer(),
                         IconButton(
                           icon: Icon(
@@ -142,8 +203,20 @@ class CreateStudy extends StatelessWidget {
                             size: 25,
                           ),
                           color: Colors.grey[400],
-                          onPressed: () {
-                            // 과목선택
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SubjectSelector()),
+                            );
+
+                            // 반환된 결과를 처리하는 코드
+                            if (result != null) {
+                              setState(() {
+                                subject = result;
+                              });
+                            }
+                            //print('받은 데이터: $result');
                           },
                         ),
                       ],
@@ -159,11 +232,17 @@ class CreateStudy extends StatelessWidget {
                           width: 25,
                         ),
                         Text(
-                          '인원 선택',
-                          style: TextStyle(
-                              color: Colors.grey[400],
-                              fontFamily: 'Bold',
-                              fontSize: width * 0.045),
+                          numberOfPeople,
+                          style: numberOfPeople == '인원 선택'
+                              ? TextStyle(
+                                  color: Colors.grey[400],
+                                  fontFamily: 'Bold',
+                                  fontSize: width * 0.045,
+                                )
+                              : TextStyle(
+                                  color: Colors.grey[900],
+                                  fontFamily: 'Bold',
+                                  fontSize: width * 0.04),
                         ),
                         Spacer(),
                         IconButton(
@@ -172,9 +251,8 @@ class CreateStudy extends StatelessWidget {
                             size: 25,
                           ),
                           color: Colors.grey[400],
-                          onPressed: () {
-                            // 과목선택
-                          },
+                          onPressed:
+                              _selectNumberOfPeople, // 아이콘 버튼을 누르면 인원 선택 다이얼로그가 표시됩니다.
                         ),
                       ],
                     ),
@@ -183,6 +261,7 @@ class CreateStudy extends StatelessWidget {
               ),
               SizedBox(height: 10),
               TextField(
+                controller: descriptionController, // 컨트롤러 연결
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide.none,
