@@ -9,6 +9,15 @@ import 'package:flutter/material.dart';
 //final width = MediaQuery.of(context).size.width;
 //final height = MediaQuery.of(context).size.height;
 
+// 18자 넘어가면 ... 처리
+// Text( // 18자 넘어가면 ... 처리
+//   subject!.length > 18 ? subject!.substring(0, 18) + '...' : subject!,
+//   style: TextStyle(
+//   color: Colors.grey[900],
+//   fontFamily: 'Bold',
+//   fontSize: width * 0.04
+//   ),
+// ),
 class GradientText extends StatelessWidget {
   const GradientText({
     super.key,

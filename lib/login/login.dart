@@ -2,8 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:unis_project/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:unis_project/password_reset/password_reset.dart';
 import 'package:unis_project/register/user_agreement.dart';
+import 'package:flutter/services.dart';
 import '../css/css.dart';
-void main() => runApp(UnisApp());
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  runApp(UnisApp());
+}
 
 class UnisApp extends StatelessWidget {
   @override
