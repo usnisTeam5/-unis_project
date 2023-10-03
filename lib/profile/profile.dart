@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'friend.dart';
+import 'package:unis_project/profile/profile_settings.dart';
+import 'package:unis_project/css/css.dart';
 
 void main() {
   runApp(const Profile());
@@ -25,13 +27,24 @@ class Profile extends StatelessWidget {
 class MyProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Text(
-          "My 프로필",
-          style: TextStyle(
-            fontFamily: 'ExtraBold',
+        title: GradientText(width: width, text: 'My 프로필', tSize: 0.06, tStyle: 'Bold'),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: MainGradient(),
+            ),
+            height: 2.0,
           ),
         ),
         leading: IconButton(
@@ -42,14 +55,20 @@ class MyProfilePage extends StatelessWidget {
               MaterialPageRoute(builder: (context) => FriendsList()),
             );
           },
+          color: Colors.grey[400],
         ),
         actions: [
           IconButton(
             icon: Icon(Icons.settings),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfileSettings()),
+              );
+            },
+            color: Colors.grey[400],
           ),
         ],
-        backgroundColor: Colors.grey,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -63,6 +82,7 @@ class MyProfilePage extends StatelessWidget {
     );
   }
 }
+
 
 
 
