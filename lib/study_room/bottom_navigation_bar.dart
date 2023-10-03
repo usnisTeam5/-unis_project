@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:unis_project/css/css.dart';
+import 'package:unis_project/study_room/quiz.dart';
 import '../chat/chat.dart';
 import '../menu/menu.dart';
 import '../notifier/notifier.dart';
@@ -60,7 +61,7 @@ class MyHomePage extends StatelessWidget {
                 case 1:
                   return ChatScreen();
                 case 2:
-                  return Center(child: Text('퀴즈!!'));
+                  return QuizFolderScreen();
                 default:
                   return Center(child: Text('퀴즈!!'));
               }
@@ -103,7 +104,7 @@ class MyHomePage extends StatelessWidget {
                 icon: currentIndex == 2
                     ? GradientIcon(iconData: Icons.quiz_outlined)
                     : Icon(Icons.quiz_outlined),
-                label: '퀴즈 등록',
+                label: '퀴즈 생성',
               ),
             ],
           );

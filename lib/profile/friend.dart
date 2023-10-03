@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../css/css.dart';
-
+import '../profile/other_profile.dart';
 void main() => runApp(FriendsList());
 
 class FriendsList extends StatelessWidget {
@@ -110,30 +110,38 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
       padding: EdgeInsets.zero,
       itemCount: 20,
       itemBuilder: (context, index) {
-        return Container(
-          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: Colors.grey.shade300,
-              ),
-            ),
-          ),
-          child: Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: Colors.grey[300],
-                radius: 20,
-              ),
-              SizedBox(width: 20),
-              Text(
-                '친구$index',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
+        return GestureDetector(  // GestureDetector를 추가
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => OthersProfilePage()),
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: Colors.grey.shade300,
                 ),
               ),
-            ],
+            ),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: Colors.grey[300],
+                  radius: 20,
+                ),
+                SizedBox(width: 20),
+                Text(
+                  '친구$index',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

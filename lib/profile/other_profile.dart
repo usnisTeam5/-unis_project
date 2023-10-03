@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-//import 'package:circle_avatar/circle_avatar.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'friend.dart';
-
+// import 'package:image_picker/image_picker.dart'; // 필요하다면 import하세요
+// import 'dart:io'; // 필요하다면 import하세요
+// import 'friend.dart'; // 필요하다면 import하세요
+import '../css/css.dart';
 void main() {
-  runApp(const Profile());
+  runApp(const OthersProfile());
 }
 
-class Profile extends StatelessWidget {
-  const Profile({super.key});
+class OthersProfile extends StatelessWidget {
+  const OthersProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MyProfilePage(),
+      home: OthersProfilePage(),
       theme: ThemeData(
         fontFamily: 'Round',
       ),
@@ -22,41 +21,31 @@ class Profile extends StatelessWidget {
   }
 }
 
-class MyProfilePage extends StatelessWidget {
+class OthersProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          "My 프로필",
-          style: TextStyle(
-            fontFamily: 'ExtraBold',
-          ),
-        ),
+        title: GradientText(width: width, text: '프로필', tSize: 0.06, tStyle: 'Bold'),
         leading: IconButton(
-          icon: Icon(Icons.people),
+          icon: Icon(Icons.arrow_back_ios, color: Colors.grey,),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => FriendsList()),
-            );
+            Navigator.pop(context);
+             // Navigator.push(context, MaterialPageRoute(builder: (context)> FriendsList())); // 필요하다면 이동
           },
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {},
-          ),
-        ],
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ProfileInfoSection(),
+            OthersProfileInfoSection(),
             StatsSection(),
-            CoursesSection(),
+            SatisfactionAndReportSection(),
           ],
         ),
       ),
@@ -64,30 +53,8 @@ class MyProfilePage extends StatelessWidget {
   }
 }
 
-
-
-
-class ProfileInfoSection extends StatefulWidget {
+class OthersProfileInfoSection extends StatelessWidget {
   @override
-  _ProfileInfoSectionState createState() => _ProfileInfoSectionState();
-}
-
-class _ProfileInfoSectionState extends State<ProfileInfoSection>{
-
-  XFile? _image; //이미지를 담을 변수 선언
-  final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
-  //이미지를 가져오는 함수
-  Future getImage(ImageSource imageSource) async {
-    //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
-    final XFile? pickedFile = await picker.pickImage(source: imageSource);
-    if (pickedFile != null) {
-      setState(() {
-        _image = XFile(pickedFile.path); //가져온 이미지를 _image에 저장
-      });
-    }
-  }
-
-@override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16.0),
@@ -100,14 +67,9 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
         children: [
           Row(
             children: [
-              GestureDetector(
-                onTap: () {getImage(ImageSource.gallery);},
-                child: CircleAvatar(
-                  radius: 50.0,
-                  backgroundImage: _image != null
-                      ? FileImage(File(_image!.path)) as ImageProvider
-                      : AssetImage('image/unis.png'),
-                ),
+              CircleAvatar(
+                radius: 50.0,
+                backgroundImage: AssetImage('assets/unis.png'),
               ),
               SizedBox(width: 16.0),
               Column(
@@ -116,26 +78,30 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
                   Text(
                     "닉네임: 물만두",
                     style: TextStyle(
-                      fontFamily: 'Bold',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
+                      fontFamily: 'Bold',
                     ),
                   ),
                   Text(
                     "학과(학부): 소프트웨어학부",
                     style: TextStyle(
-                      fontFamily: 'Bold',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
-                    ),
-                  ),
-                  Text(
-                    "보유 포인트: 2000",
-                    style: TextStyle(
-                      fontFamily: 'Bold',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
+                      fontFamily: 'Bold',
                     ),
                   ),
                 ],
               ),
             ],
           ),
-          SizedBox(height: 16.0),  // 추가적인 공간을 제공하여 섹션 사이에 간격을 만듭니다.
+          SizedBox(height: 16.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              InteractionButton(label: "찜"),
+              InteractionButton(label: "대화"),
+              InteractionButton(label: "친추"),
+              InteractionButton(label: "차단"),
+            ],
+          ),
+          SizedBox(height: 16.0),
           TextField(
             maxLength: 15,
             decoration: InputDecoration(
@@ -144,6 +110,97 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
           ),
         ],
       ),
+    );
+  }
+}
+
+class InteractionButton extends StatefulWidget {
+  final String label;
+
+  InteractionButton({required this.label});
+
+  @override
+  _InteractionButtonState createState() => _InteractionButtonState();
+}
+
+class _InteractionButtonState extends State<InteractionButton> {
+  bool _isTapped = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _isTapped = !_isTapped;
+        });
+      },
+      child: Container(
+        width: 50,  // 원의 너비를 설정
+        height: 50,  // 원의 높이를 설정
+        decoration: BoxDecoration(
+          color: _isTapped ? Colors.grey : Colors.grey[200],
+          shape: BoxShape.circle,  // 원형으로 설정
+          border: Border.all(color: Colors.black, width: 2),  // 테두리를 추가
+        ),
+        child: Center(  // 텍스트를 중앙에 배치
+          child: Text(
+            widget.label,
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class SatisfactionAndReportSection extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      margin: EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(30.0),
+      ),
+      child:
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "만족도: 5.0",
+                style: TextStyle(
+                  color: Colors.grey[700],
+                  fontFamily: 'ExtraBold',
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("신고하기"),
+                        content: Text("신고할 목록을 선택하세요."),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text("취소"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                child: Text("신고하기"),
+              ),
+            ],
+          ),
     );
   }
 }
@@ -250,45 +307,3 @@ class StatsSection extends StatelessWidget {
   }
 }
 
-
-
-enum CourseStatus { ongoing, completed }
-
-class CoursesSection extends StatelessWidget {
-  // 각각의 수강 중인 과목과 수강한 과목을 여기에 나열하세요.
-  final List<String> ongoingCourses = ['과목 1', '과목 2'];
-  final List<String> completedCourses = ['과목 A', '과목 B'];
-
-  @override
-  Widget build(BuildContext context) {
-    return ExpansionPanelList(
-      expansionCallback: (int index, bool isExpanded) {
-        // 이 부분에서 상태를 업데이트하여 패널을 확장하거나 축소하세요
-      },
-      children: [
-        ExpansionPanel(
-          headerBuilder: (BuildContext context, bool isExpanded) {
-            return ListTile(
-              title: Text('수강 중인 과목'),
-            );
-          },
-          body: Column(
-            children: ongoingCourses.map((course) => ListTile(title: Text(course))).toList(),
-          ),
-          isExpanded: false, // 이 값을 패널의 현재 상태에 따라 업데이트하세요
-        ),
-        ExpansionPanel(
-          headerBuilder: (BuildContext context, bool isExpanded) {
-            return ListTile(
-              title: Text('수강한 과목'),
-            );
-          },
-          body: Column(
-            children: completedCourses.map((course) => ListTile(title: Text(course))).toList(),
-          ),
-          isExpanded: false, // 이 값을 패널의 현재 상태에 따라 업데이트하세요
-        ),
-      ],
-    );
-  }
-}

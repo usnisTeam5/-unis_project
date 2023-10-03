@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../css/css.dart';
 void main() {
   runApp(const MenuApp());
 }
@@ -80,9 +80,7 @@ class Header extends StatelessWidget {
       height: 60.0, // 원하는 높이로 설정
       //padding: EdgeInsets.all(16.0), // 내부 패딩 추가
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.green.shade200, Colors.blue.shade500],
-        ),
+        gradient: MainGradient(),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
