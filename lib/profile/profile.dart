@@ -107,13 +107,13 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
     }
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.0),
-      margin: EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(30.0),
+      margin: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: Colors.grey[100],
         borderRadius: BorderRadius.circular(40.0),
       ),
       child: Column(
@@ -121,7 +121,9 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
           Row(
             children: [
               GestureDetector(
-                onTap: () {getImage(ImageSource.gallery);},
+                onTap: () {
+                  getImage(ImageSource.gallery);
+                },
                 child: CircleAvatar(
                   radius: 50.0,
                   backgroundImage: _image != null
@@ -129,37 +131,51 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
                       : AssetImage('image/unis.png'),
                 ),
               ),
-              SizedBox(width: 16.0),
+              SizedBox(width: 20.0),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "닉네임: 물만두",
+                    "닉네임 : 물만두",
                     style: TextStyle(
-                      fontFamily: 'Bold',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
+                      fontFamily: 'Bold',
+                      color: Colors.grey[700],
                     ),
                   ),
+                  SizedBox(height: 10.0), // <-- Add vertical spacing
                   Text(
-                    "학과(학부): 소프트웨어학부",
+                    "학과(학부) : 소프트웨어학부",
                     style: TextStyle(
-                      fontFamily: 'Bold',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
+                      fontFamily: 'Bold',
+                      color: Colors.grey[700],
                     ),
                   ),
-                  Text(
-                    "보유 포인트: 2000",
-                    style: TextStyle(
-                      fontFamily: 'Bold',  // 해당 폰트를 프로젝트에 추가하고, 이름을 확인하세요
-                    ),
+                  SizedBox(height: 10.0), // <-- Add vertical spacing
+                  Row(  // <-- Wrap with Row
+                    children: [
+                      Text(
+                        "보유 포인트 : 2000",
+                        style: TextStyle(
+                          fontFamily: 'Bold',
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                      SizedBox(width: 7), // Horizontal spacing
+                      Icon(
+                        Icons.monetization_on_outlined,
+                        color: Colors.yellow[600],
+                      ),
+                    ],
                   ),
                 ],
               ),
             ],
           ),
-          SizedBox(height: 16.0),  // 추가적인 공간을 제공하여 섹션 사이에 간격을 만듭니다.
+          SizedBox(height: 16.0),
           TextField(
             maxLength: 15,
             decoration: InputDecoration(
-              labelText: '자기소개',
+              labelText: '나를 소개하세요',
             ),
           ),
         ],
@@ -180,89 +196,94 @@ class StatsSection extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
 
     return Container(
-      padding: EdgeInsets.all(16.0),
-      margin: EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(30.0),
+      margin: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(30.0),
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(40.0),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Column(
-            children: [
-              Text(
-                "질문",
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontFamily: 'ExtraBold',
-                  fontSize: width * 0.05,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  // "질문" 숫자를 클릭했을 때의 행동을 여기에 구현
-                },
-                child: Text(
-                  "0", // 이 값을 실제 질문의 수로 대체하세요
-                  style: TextStyle(
-                    color: Colors.lightBlue[900],
-                    fontFamily: 'ExtraBold',
-                    fontSize: width * 0.05,
-                  ),
-                ),
-              ),
-            ],
+          _buildStatColumn("질문", "0", width, context),
+          _buildStatColumn("답변", "0", width, context),
+          _buildStatColumn("가입 스터디", "0", width, context),
+        ],
+      ),
+    );
+  }
+
+  Column _buildStatColumn(String title, String number, double width, BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            color: Colors.grey[600],
+            fontFamily: 'ExtraBold',
+            fontSize: width * 0.05,
           ),
-          Column(
-            children: [
-              Text(
-                "답변",
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontFamily: 'ExtraBold',
-                  fontSize: width * 0.05,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  // "답변" 숫자를 클릭했을 때의 행동을 여기에 구현
-                },
-                child: Text(
-                  "0", // 이 값을 실제 답변의 수로 대체하세요
-                  style: TextStyle(
-                    color: Colors.lightBlue[900],
-                    fontFamily: 'ExtraBold',
-                    fontSize: width * 0.05,
-                  ),
-                ),
-              ),
-            ],
+        ),
+        SizedBox(height: 10.0),  // <-- Add vertical spacing
+        GestureDetector(
+          onTap: () {
+            // Your onTap code here...
+          },
+          child: Text(
+            number,
+            style: TextStyle(
+              color: Color(0xFF678DBE),
+              fontFamily: 'ExtraBold',
+              fontSize: width * 0.10,
+            ),
           ),
-          Column(
-            children: [
-              Text(
-                "가입 스터디",
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontFamily: 'ExtraBold',
-                  fontSize: width * 0.05,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  // "가입 스터디" 숫자를 클릭했을 때의 행동을 여기에 구현
-                },
-                child: Text(
-                  "0", // 이 값을 실제 가입 스터디의 수로 대체하세요
-                  style: TextStyle(
-                    color: Colors.lightBlue[900],
-                    fontFamily: 'ExtraBold',
-                    fontSize: width * 0.05,
-                  ),
-                ),
-              ),
-            ],
+        ),
+      ],
+    );
+  }
+}
+
+
+
+
+
+
+class CoursesSection extends StatefulWidget {
+  @override
+  _CoursesSectionState createState() => _CoursesSectionState();
+}
+
+class _CoursesSectionState extends State<CoursesSection> {
+  final List<String> ongoingCourses = ['과목 1', '과목 2'];
+  final List<String> completedCourses = ['과목 A', '과목 B'];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(35),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            offset: Offset(2, 2),
+            blurRadius: 5,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: ListView(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,  // Limits the height of ListView to its children's heights
+        children: [
+          ExpansionTile(
+            title: Text('수강 중인 과목'),
+            children: ongoingCourses.map((course) => ListTile(title: Text(course))).toList(),
+          ),
+          ExpansionTile(
+            title: Text('수강한 과목'),
+            children: completedCourses.map((course) => ListTile(title: Text(course))).toList(),
           ),
         ],
       ),
@@ -270,45 +291,3 @@ class StatsSection extends StatelessWidget {
   }
 }
 
-
-
-enum CourseStatus { ongoing, completed }
-
-class CoursesSection extends StatelessWidget {
-  // 각각의 수강 중인 과목과 수강한 과목을 여기에 나열하세요.
-  final List<String> ongoingCourses = ['과목 1', '과목 2'];
-  final List<String> completedCourses = ['과목 A', '과목 B'];
-
-  @override
-  Widget build(BuildContext context) {
-    return ExpansionPanelList(
-      expansionCallback: (int index, bool isExpanded) {
-        // 이 부분에서 상태를 업데이트하여 패널을 확장하거나 축소하세요
-      },
-      children: [
-        ExpansionPanel(
-          headerBuilder: (BuildContext context, bool isExpanded) {
-            return ListTile(
-              title: Text('수강 중인 과목'),
-            );
-          },
-          body: Column(
-            children: ongoingCourses.map((course) => ListTile(title: Text(course))).toList(),
-          ),
-          isExpanded: false, // 이 값을 패널의 현재 상태에 따라 업데이트하세요
-        ),
-        ExpansionPanel(
-          headerBuilder: (BuildContext context, bool isExpanded) {
-            return ListTile(
-              title: Text('수강한 과목'),
-            );
-          },
-          body: Column(
-            children: completedCourses.map((course) => ListTile(title: Text(course))).toList(),
-          ),
-          isExpanded: false, // 이 값을 패널의 현재 상태에 따라 업데이트하세요
-        ),
-      ],
-    );
-  }
-}
