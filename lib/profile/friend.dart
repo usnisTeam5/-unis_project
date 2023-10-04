@@ -8,7 +8,7 @@ class FriendsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        fontFamily: 'Round',
+        fontFamily: 'Bold',
       ),
       home: MyListScreen(),
     );
@@ -47,14 +47,14 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
       width: width,
       text: text,
       tStyle: 'Bold',
-      tSize: 0.04,
+      tSize: 0.05,
     )
         : Text(
       text,
       style: TextStyle(
         color: Colors.grey[300],
-        fontWeight: FontWeight.bold,
-        fontSize: width * 0.04,
+        fontFamily: 'Bold',
+        fontSize: width * 0.05,
       ),
     );
   }
@@ -110,7 +110,7 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
       padding: EdgeInsets.zero,
       itemCount: 20,
       itemBuilder: (context, index) {
-        return GestureDetector(  // GestureDetector를 추가
+        return GestureDetector(
           onTap: () {
             Navigator.push(
               context,
@@ -137,6 +137,7 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
                   '친구$index',
                   style: TextStyle(
                     fontSize: 16,
+                    fontFamily: 'Round',
                     color: Colors.grey[600],
                   ),
                 ),
