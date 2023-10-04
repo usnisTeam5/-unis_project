@@ -12,6 +12,12 @@ class Question extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: (context, child) {
+        return MediaQuery(
+          child: child!,
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+        );
+      },
       home: QuestionPage(),
     );
   }
@@ -56,7 +62,7 @@ class QuestionPage extends StatelessWidget {
                       style: TextStyle(
                         fontFamily: 'ExtraBold',
                         color: Colors.white,
-                        fontSize: 18,
+                        fontSize: constraints.maxWidth *0.04,
                       ),
                     ),
                   ),

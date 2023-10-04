@@ -5,7 +5,13 @@ import 'package:flutter_flip_card/flutter_flip_card.dart';
 
 void main() {
   runApp(
-    const MaterialApp(
+    MaterialApp(
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: child!,
+        );
+      },
       debugShowCheckedModeBanner: false,
       home: Solve(),
     ),

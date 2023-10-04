@@ -10,6 +10,12 @@ class Department_selection_screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: child!,
+        );
+      },
       theme: ThemeData(
         fontFamily: 'Round', // 글꼴 테마 설정
       ),
@@ -29,8 +35,8 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
     selectedDepartments = selectedDepartments.toSet().toList(); // 중복제거
     selectedCourses = selectedCourses.toSet().toList();
     return Scaffold(
@@ -47,7 +53,7 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
         ],
       ),
       body: Container(
-        padding: EdgeInsets.all(screenWidth * 0.05),
+        padding: EdgeInsets.all(width * 0.05),
         child: Column(
           children: [
             // Department Selection
@@ -73,7 +79,7 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
               ),
             ),
             Container(
-              height: screenHeight * 0.2,  // 높이 설정
+              height: height * 0.2,  // 높이 설정
               child: ListView(
                 shrinkWrap: true,
                 children: selectedDepartments.map((department) {
@@ -117,7 +123,7 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
               ),
             ),
             Container(
-              height: screenHeight * 0.3,  // 높이 설정
+              height: height * 0.3,  // 높이 설정
               child: ListView(
                 shrinkWrap: true,
                 children: selectedCourses.map((course) {
@@ -137,15 +143,29 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
             ),
 
             Spacer(),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: <Widget>[
                 ElevatedButton(
-                  onPressed: () {Navigator.pop(context);},
-                  child: Text('이전', style: TextStyle(fontFamily: 'Round')),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(width * 0.2, height * 0.05),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () {
+                    // 이전 버튼 클릭 로직
+                    Navigator.pop(context);
+                  },
+                  child: Text('이전'),
                 ),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(width * 0.2, height * 0.05),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   onPressed: () {
                     if (selectedDepartments.isEmpty || selectedCourses.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -159,13 +179,14 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
                       );
                     }
                   },
-                  child: Text('다음', style: TextStyle(fontFamily: 'Round')),
+                  child: Text('다음'),
                 ),
               ],
+              ),
+           // SizedBox(height: height * 0.05),
+              ],
             ),
-          ],
         ),
-      ),
     );
   }
 }

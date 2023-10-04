@@ -10,6 +10,12 @@ class User_agreement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: child!,
+        );
+      },
       home: UserAgreementScreen(),
     );
   }
@@ -25,8 +31,8 @@ class _UserAgreementScreenState extends State<UserAgreementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(
@@ -44,13 +50,13 @@ class _UserAgreementScreenState extends State<UserAgreementScreen> {
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(screenWidth * 0.05),
+        padding: EdgeInsets.all(width * 0.05),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "회원가입을 위해 아래의 유니스 회원 가입에 필요한 내용을 자세히 읽고 동의합니다",
-              style: TextStyle(fontSize: screenWidth * 0.04, fontFamily: 'Round'),
+              style: TextStyle(fontSize: width * 0.04, fontFamily: 'Round'),
             ),
             Divider(),
             AgreementItem(index: 0, title: "이용약관 동의", isChecked: _isChecked, onCheckedChanged: _onCheckedChanged),
@@ -61,16 +67,22 @@ class _UserAgreementScreenState extends State<UserAgreementScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
-                  onPressed: null,
-                  child: Text(
-                    "이전",
-                    style: TextStyle(color: Colors.blue, fontFamily: 'Round'),
-                  ),
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1, vertical: screenHeight * 0.02),
+                    minimumSize: Size(width * 0.2, height * 0.05),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
+                  onPressed: null,
+                  child: Text('이전'),
                 ),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(width * 0.2, height * 0.05),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   onPressed: () {
                     if (_isChecked.every((isChecked) => isChecked)) {
                       // 모든 체크박스가 체크된 경우, 다음 화면으로 이동
@@ -87,13 +99,7 @@ class _UserAgreementScreenState extends State<UserAgreementScreen> {
                       );
                     }
                   },
-                  child: Text(
-                    "다음",
-                    style: TextStyle(color: Colors.white, fontFamily: 'Round'),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1, vertical: screenHeight * 0.02),
-                  ),
+                  child: Text('다음'),
                 ),
               ],
             ),

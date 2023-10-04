@@ -18,6 +18,11 @@ import 'package:flutter/material.dart';
 //   fontSize: width * 0.04
 //   ),
 // ),
+
+// SingleChildScrollView(
+// child: Container(
+// height: height - AppBar().preferredSize.height - MediaQuery.of(context).padding.top,
+// 침범하는거 막을 때 이렇게 쓰면 딱 맞음
 class GradientText extends StatelessWidget {
   const GradientText({
     super.key,
