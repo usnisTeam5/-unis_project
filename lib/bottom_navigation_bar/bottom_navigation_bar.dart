@@ -48,7 +48,7 @@ class MyHomePage extends StatelessWidget {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     double iconSize = width * 0.10; // 아이콘 크기 설정
-    double fontSize = height * 0.02; // 텍스트 크기 설정
+    double fontSize = width * 0.03; // 텍스트 크기 설정
 
     return WillPopScope(
       onWillPop: () async {
@@ -182,9 +182,9 @@ class alram_and_menu extends StatelessWidget {
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3),
+                    spreadRadius: 3,
+                    blurRadius: 5,
+                    offset: Offset(0, 2),
                   ),
                 ],
               ),
@@ -205,9 +205,9 @@ class alram_and_menu extends StatelessWidget {
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3),
+                    spreadRadius: 3,
+                    blurRadius: 5,
+                    offset: Offset(0, 2),
                   ),
                 ],
               ),
@@ -237,9 +237,9 @@ class alram_and_menu extends StatelessWidget {
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: Offset(0, 3),
+                          spreadRadius: 3,
+                          blurRadius: 5,
+                          offset: Offset(0, 2),
                         ),
                       ],
                     ),
