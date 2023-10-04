@@ -3,6 +3,7 @@ import 'package:unis_project/find_study/create_study.dart';
   import '../css/css.dart';
   import '../study_room/bottom_navigation_bar.dart';
   import '../find_study/find_study.dart';
+  import 'dart:math';
   void main() => runApp(MyApp());
 
   class MyApp extends StatelessWidget {
@@ -60,10 +61,7 @@ import 'package:unis_project/find_study/create_study.dart';
 
     @override
     Widget build(BuildContext context) {
-      final width = MediaQuery
-          .of(context)
-          .size
-          .width;
+      final  width = min(MediaQuery.of(context).size.width,500.0);
       final height = MediaQuery
           .of(context)
           .size
@@ -150,10 +148,7 @@ import 'package:unis_project/find_study/create_study.dart';
     }
 
     Widget _buildTabContent(String tabLabel) {
-      final width = MediaQuery
-          .of(context)
-          .size
-          .width;
+      final  width = min(MediaQuery.of(context).size.width,500.0);
       final height = MediaQuery
           .of(context)
           .size

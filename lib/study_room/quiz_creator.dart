@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:unis_project/my_quiz/solve.dart';
 import '../css/css.dart';
-import '../file_selector/file_selector.dart';
+import 'dart:math';
 void main() {
   runApp(MyApp());
 }
@@ -55,7 +55,7 @@ class _QuizScreenState extends State<QuizCreator> {
   @override
   Widget build(BuildContext context) {
 
-    final width = MediaQuery.of(context).size.width;
+    final width = min(MediaQuery.of(context).size.width ,500.0);
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(

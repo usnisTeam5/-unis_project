@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../css/css.dart';
 import '../file_selector/file_selector.dart';
 import '../study_room/quiz_creator.dart';
-
+import 'dart:math';
 void main() {
   runApp(MyApp());
 }
@@ -42,7 +42,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final width = min(MediaQuery.of(context).size.width,500.0);
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(

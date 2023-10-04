@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'dart:math';
 void main() => runApp(Register());
 
 class Register extends StatelessWidget {
@@ -37,7 +37,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
+    final double width = min(MediaQuery.of(context).size.width,500.0);
     final double height = MediaQuery.of(context).size.height;
 
     return Scaffold(

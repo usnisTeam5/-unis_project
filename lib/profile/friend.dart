@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../css/css.dart';
 import '../profile/other_profile.dart';
+import 'dart:math';
 void main() => runApp(FriendsList());
 
 class FriendsList extends StatelessWidget {
@@ -67,7 +68,7 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    double width = min(MediaQuery.of(context).size.width,500.0);
     double tabBarHeight = MediaQuery.of(context).size.height * 0.08;
 
     return Scaffold(

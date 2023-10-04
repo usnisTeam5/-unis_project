@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'department_select_signup.dart';
+import 'dart:math';
 void main() {
   runApp(User_agreement());
 }
@@ -31,7 +32,7 @@ class _UserAgreementScreenState extends State<UserAgreementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
+    final double width =  min(MediaQuery.of(context).size.width,500);
     final double height = MediaQuery.of(context).size.height;
 
     return Scaffold(

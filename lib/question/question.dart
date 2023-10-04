@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../chat/chat.dart';
 import '../css/css.dart';
-
+import 'dart:math';
 void main() {
   runApp(const Question());
 }
@@ -28,6 +28,10 @@ class QuestionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final width = min(MediaQuery.of(context).size.width,500.0);
+    final height = min(MediaQuery.of(context).size.height,700.0);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -39,10 +43,10 @@ class QuestionPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GradientText(
-                  width: constraints.maxWidth * 1.25,
+                  width: width,
                   text: '  궁금한 게 생겼을 때 질문하세요!',
                   tStyle: 'ExtraBold',
-                  tSize: 0.04,
+                  tSize: 0.045,
                 ),
                 InkWell(
                   onTap: () {
@@ -62,7 +66,7 @@ class QuestionPage extends StatelessWidget {
                       style: TextStyle(
                         fontFamily: 'ExtraBold',
                         color: Colors.white,
-                        fontSize: constraints.maxWidth *0.04,
+                        fontSize: width *0.04,
                       ),
                     ),
                   ),

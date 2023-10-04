@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 //Text('답변 목록 >', style: TextStyle(color: Colors.white, fontFamily: 'Bold', fontSize: width * 0.05))
 //color: Color(0xFF3D6094) 내 문답에서 질문 or 조언 글씨 색깔
 
-//final width = MediaQuery.of(context).size.width;
-//final height = MediaQuery.of(context).size.height;
+//final width = min(MediaQuery.of(context).size.width,500.0);
+//final height = min(MediaQuery.of(context).size.height,700.0);
 
 // 18자 넘어가면 ... 처리
 // Text( // 18자 넘어가면 ... 처리

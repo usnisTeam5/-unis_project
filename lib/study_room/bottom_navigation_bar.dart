@@ -5,6 +5,7 @@ import '../chat/chat.dart';
 import '../menu/menu.dart';
 import '../notifier/notifier.dart';
 import 'home.dart';
+import 'dart:math';
 void main() {
   runApp(MyApp());
 }
@@ -47,7 +48,7 @@ class MyHomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
+    final double width = min(MediaQuery.of(context).size.width,500.0);
     final double height = MediaQuery.of(context).size.height;
     double iconSize = width * 0.10; // 아이콘 크기 설정
     double fontSize = width * 0.03;// 텍스트 크기 설정

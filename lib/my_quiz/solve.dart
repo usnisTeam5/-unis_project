@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import '../css/css.dart';
 import 'package:flutter_flip_card/flutter_flip_card.dart';
-
+import 'dart:math';
 void main() {
   runApp(
     MaterialApp(
@@ -41,7 +41,7 @@ class _SolveState extends State<Solve> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final  width = min(MediaQuery.of(context).size.width,500.0);
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(

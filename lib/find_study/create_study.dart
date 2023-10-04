@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../css/css.dart';
 import '../subject_selector/subject_selector.dart';
-
+import 'dart:math';
 void main() => runApp(FriendsList());
 
 class FriendsList extends StatelessWidget {
@@ -68,7 +68,7 @@ class _CreateStudyState extends State<CreateStudy> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final width = min(MediaQuery.of(context).size.width,500.0);
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(

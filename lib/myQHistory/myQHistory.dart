@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:unis_project/chat/chat.dart';
 import 'package:unis_project/css/css.dart';
-
+import 'dart:math';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -53,7 +53,7 @@ class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final width = min(MediaQuery.of(context).size.width,500.0);
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(

@@ -4,7 +4,7 @@ import 'package:unis_project/password_reset/password_reset.dart';
 import 'package:unis_project/register/user_agreement.dart';
 import 'package:flutter/services.dart';
 import '../css/css.dart';
-
+import 'dart:math';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final width = min(MediaQuery.of(context).size.width,500.0);
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(

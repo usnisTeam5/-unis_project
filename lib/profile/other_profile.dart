@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // import 'dart:io'; // 필요하다면 import하세요
 // import 'friend.dart'; // 필요하다면 import하세요
 import '../css/css.dart';
+import 'dart:math';
 void main() {
   runApp(const OthersProfile());
 }
@@ -31,7 +32,7 @@ class OthersProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final width = MediaQuery.of(context).size.width;
+    final width = min(MediaQuery.of(context).size.width,500.0);
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -220,7 +221,7 @@ enum StatsCategory {
 class StatsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    double width = min(MediaQuery.of(context).size.width,500.0);
 
     return Container(
       padding: EdgeInsets.all(16.0),
