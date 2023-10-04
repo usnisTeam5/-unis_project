@@ -6,12 +6,7 @@ import 'dart:math';
 void main() {
   runApp(
     MaterialApp(
-      builder: (context, child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-          child: child!,
-        );
-      },
+
       debugShowCheckedModeBanner: false,
       home: Solve(),
     ),

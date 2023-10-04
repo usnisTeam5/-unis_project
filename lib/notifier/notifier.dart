@@ -9,12 +9,7 @@ class NotifierApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      builder: (context, child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-          child: child!,
-        );
-      },
+
       home: HomeScreen(),
     );
   }
@@ -49,7 +44,7 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final width = min(MediaQuery.of(context).size.width,500.0);
     return Container(
       height: 60.0,
       decoration: BoxDecoration(

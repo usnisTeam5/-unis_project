@@ -15,12 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      builder: (context, child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-          child: child!,
-        );
-      },
+
       // 앱 전체 테마 설정
       theme: ThemeData(
         fontFamily: 'Round', // 글꼴 테마 설정
