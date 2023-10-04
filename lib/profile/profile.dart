@@ -71,6 +71,7 @@ class MyProfilePage extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Column(
           children: [
             ProfileInfoSection(),
@@ -274,7 +275,7 @@ class _CoursesSectionState extends State<CoursesSection> {
         ],
       ),
       child: ListView(
-        physics: NeverScrollableScrollPhysics(),
+        physics: BouncingScrollPhysics(),
         shrinkWrap: true,  // Limits the height of ListView to its children's heights
         children: [
           ExpansionTile(
