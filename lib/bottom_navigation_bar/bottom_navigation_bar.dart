@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:unis_project/css/css.dart';
+import '../css/css.dart';
 import 'package:unis_project/find_study/find_study.dart';
 import 'package:unis_project/my_quiz/my_quiz.dart';
 import 'package:unis_project/my_study/my_study.dart';
@@ -105,6 +105,8 @@ class MyHomePage extends StatelessWidget {
             return BottomNavigationBar(
               currentIndex: currentIndex,
               onTap: _controller.onItemTapped,
+              selectedLabelStyle: TextStyle(fontFamily: 'Round'),
+              unselectedLabelStyle: TextStyle(fontFamily: 'Round'),
               // 아이템 선택 시 컨트롤러의 메서드 호출
               selectedFontSize: fontSize,
               // 선택된 아이템의 텍스트 크기 설정

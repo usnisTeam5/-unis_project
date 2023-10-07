@@ -1,8 +1,8 @@
   import 'package:flutter/material.dart';
 import 'package:unis_project/find_study/create_study.dart';
-  import '../css/css.dart';
+  import '../../../css/css.dart';
   import '../study_room/bottom_navigation_bar.dart';
-  import '../find_study/find_study.dart';
+  import 'find_study.dart';
   import 'dart:math';
   void main() => runApp(MyApp());
 

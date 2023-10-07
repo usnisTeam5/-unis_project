@@ -20,9 +20,26 @@ import 'package:flutter/material.dart';
 // ),
 
 // SingleChildScrollView(
-// child: Container(
+// child: Container( // container 대신 padding 으로 해도 오류 안남.
 // height: height - AppBar().preferredSize.height - MediaQuery.of(context).padding.top,
 // 침범하는거 막을 때 이렇게 쓰면 딱 맞음
+
+// final result = await Navigator.push(
+// context,
+// MaterialPageRoute(
+// builder: (context) => SubjectSelector()),
+// ); 콜백함수
+
+// Navigator.push(
+// context,
+// MaterialPageRoute(builder: (context) => MyHomePage()),
+// );
+
+//import 'package:intl/intl.dart'; 숫자 표기법 1,000,000 같은 것 처리
+// String formatNumber(int number) {
+//   final formatter = NumberFormat('#,###');
+//   return formatter.format(number);
+// }
 class GradientText extends StatelessWidget {
   const GradientText({
     super.key,

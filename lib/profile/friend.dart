@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../css/css.dart';
-import '../profile/other_profile.dart';
+import 'other_profile.dart';
 import 'dart:math';
 void main() => runApp(FriendsList());
 

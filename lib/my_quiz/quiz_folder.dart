@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../css/css.dart';
-import '../my_quiz/solve.dart';
+import 'solve.dart';
 import '../my_quiz/edit_quiz.dart';
 import 'dart:math';
 void main() {

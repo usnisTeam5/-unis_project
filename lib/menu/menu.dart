@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:unis_project/chat/chat.dart';
+import 'package:unis_project/menu/notice.dart';
+import 'package:unis_project/menu/point_charge.dart';
+import 'package:unis_project/menu/point_withdraw.dart';
+import 'package:unis_project/menu/setting.dart';
 import '../css/css.dart';
 import 'dart:math';
 void main() {
@@ -33,6 +38,10 @@ class Menu extends StatelessWidget {
                   ),
                   trailing: Icon(Icons.navigate_next, color: Colors.blue),
                   onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => NoticeScreen()),
+                    );
                     // Navigate to the notice screen
                   },
                 ),
@@ -54,6 +63,10 @@ class Menu extends StatelessWidget {
                   trailing: Icon(Icons.navigate_next, color: Colors.blue),
                   onTap: () {
                     // Navigate to the customer service screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ChatScreen()),
+                    );
                   },
                 ),
                 ListTile(
@@ -63,16 +76,38 @@ class Menu extends StatelessWidget {
                   ),
                   trailing: Icon(Icons.navigate_next, color: Colors.blue),
                   onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingsScreen()),
+                    );
                     // Navigate to the app settings screen
                   },
                 ),
                 ListTile(
                   title: Text(
-                    '포인트 충전 및 현금화',
+                    '포인트 충전',
                     style: TextStyle(color: Colors.blue, fontFamily: 'Bold'),
                   ),
                   trailing: Icon(Icons.navigate_next, color: Colors.blue),
                   onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PointChargeScreen()),
+                    );
+                    // Navigate to the app settings screen
+                  },
+                ),
+                ListTile(
+                  title: Text(
+                    '포인트 현금화',
+                    style: TextStyle(color: Colors.blue, fontFamily: 'Bold'),
+                  ),
+                  trailing: Icon(Icons.navigate_next, color: Colors.blue),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CoinWithdrawalScreen()),
+                    );
                     // Navigate to the app settings screen
                   },
                 ),

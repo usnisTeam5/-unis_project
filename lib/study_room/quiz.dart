@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../css/css.dart';
 import '../file_selector/file_selector.dart';
-import '../study_room/quiz_creator.dart';
+import 'quiz_creator.dart';
 import 'dart:math';
+import 'package:flutter/services.dart';
 void main() {
   runApp(MyApp());
 }
@@ -72,6 +73,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                         decoration: InputDecoration(
                           labelText: '폴더 이름',
                         ),
+                        maxLength: 10,
                       ),
                       actions: <Widget>[
                         TextButton(
