@@ -71,20 +71,6 @@ class Menu extends StatelessWidget {
                 ),
                 ListTile(
                   title: Text(
-                    '앱 설정',
-                    style: TextStyle(color: Colors.blue, fontFamily: 'Bold'),
-                  ),
-                  trailing: Icon(Icons.navigate_next, color: Colors.blue),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SettingsScreen()),
-                    );
-                    // Navigate to the app settings screen
-                  },
-                ),
-                ListTile(
-                  title: Text(
                     '포인트 충전',
                     style: TextStyle(color: Colors.blue, fontFamily: 'Bold'),
                   ),
@@ -107,6 +93,20 @@ class Menu extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => CoinWithdrawalScreen()),
+                    );
+                    // Navigate to the app settings screen
+                  },
+                ),
+                ListTile(
+                  title: Text(
+                    '앱 설정',
+                    style: TextStyle(color: Colors.blue, fontFamily: 'Bold'),
+                  ),
+                  trailing: Icon(Icons.navigate_next, color: Colors.blue),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingsScreen()),
                     );
                     // Navigate to the app settings screen
                   },

@@ -73,8 +73,8 @@ class NoticeScreen extends StatelessWidget {
                     return AlertDialog(
                       title: Image.asset(
                         'image/gongji_top.jpg',
-                        fit: BoxFit.cover,  // 이미지를 잘라내고 표시
-                        width: double.infinity,  // 이미지의 너비를 최대로 설정
+                         fit: BoxFit.cover,  // 이미지를 잘라내고 표시
+                        //width: double.infinity,  // 이미지의 너비를 최대로 설정
                       ),
                       content: SingleChildScrollView(
                         child: Column(
