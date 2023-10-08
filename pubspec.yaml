@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  image_picker: ^1.0.4
+  image_picker: ^0.8.4+10
   circle_avatar: ^1.0.1
   file_picker: ^5.5.0
   # The following adds the Cupertino Icons font to your application.
@@ -39,6 +39,8 @@ dependencies:
   flutter_login: ^4.2.1
   flutter_card_swiper: ^6.0.0
   flutter_flip_card: ^0.0.4
+  flutter_image_compress: ^1.0.0
+  dependencies:
 
 dev_dependencies:
   flutter_test:

@@ -1,15 +1,30 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+
+import 'package:unis_project/css/css.dart';
+import 'package:unis_project/chat/report.dart';
+import 'package:unis_project/chat/countdown.dart';
+import 'image_picker_popup.dart';
+
+import 'package:flutter/scheduler.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:convert';
+
 //import 'package:intl/intl.dart';
 //import 'package:http/http.dart' as http;
-import 'dart:convert';
+
 
 void main() {
   runApp(MyApp());
 }
 
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
     return MaterialApp(
       home: ChatScreen(),
       theme: ThemeData(
@@ -27,12 +42,13 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final ScrollController _scrollController = ScrollController();
   final TextEditingController _messageController = TextEditingController();
-  List<String> _messages = [];
+  List<Message> _messages = [];
   bool _isMine = false;
   DateTime _time = DateTime.now().add(Duration(minutes: 20));
 
-  Future<void> _sendMessage(String message) async {
+  // Future<void> _sendMessage(String message) async {
   //   // final response = await http.post(
   //   //   Uri.parse('https://your-backend-url.com/send-message'),
   //   //   body: {'message': message},
@@ -41,9 +57,133 @@ class _ChatScreenState extends State<ChatScreen> {
   //   if (response.statusCode == 200) {
   //     final data = jsonDecode(response.body);
   //   }
+  // }
+
+  /* Future<void> _sendMessage(String message) async {
+    if (message.isNotEmpty) {
+      setState(() {
+        _messages.add(Message(text: message, sender: 'yourUserName', isMine: true));
+        _messageController.clear();
+      });
+    }
+    // 서버로 보낼 메시지 전송 로직 추가
+  } */
+
+
+
+  void _onImagePicked(String imagePath) {
+    setState(() {
+      _messages.add(Message(
+        imagePath: imagePath,
+        sender: 'YourName',
+        isMine: true,
+        senderImageURL: "your_image_url",
+        senderName: 'YourName',
+        sentAt: DateTime.now(),
+      ));
+      // _scrollToBottom(); // If you have a scroll-to-bottom function
+    });
   }
 
-   Future<void> _fetchMessages() async {
+  void _showReportDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => ReportPopup(),
+    );
+  }
+
+
+  int messageSendCount = 0;
+
+  void _sendMessage(String text, String sender, bool isMine) {
+    if (text.isEmpty) { // 메시지 입력 안 하면 팝업
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('알림'),
+            content: Text('답변을 입력해주세요'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('확인'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    setState(() {
+      messageSendCount++;
+      _messages.add(Message(
+        text: text,
+        sender: sender,
+        isMine: isMine,
+        senderImageURL: "your_image_url",
+        senderName: sender,
+        sentAt: DateTime.now(),
+      ));
+      _messageController.clear();
+    });
+
+    // 스크롤을 바닥으로 이동
+    _scrollToBottom();
+
+    Future.delayed(Duration(seconds: 1), () {
+      setState(() {
+        _messages.add(Message(
+          text: '자동 응답: $text',
+          sender: '봇',
+          isMine: false,
+          senderImageURL: "bot_image_url",
+          senderName: '봇',
+          sentAt: DateTime.now(),
+        ));
+      });
+      // 스크롤을 바닥으로 이동
+      _scrollToBottom();
+    });
+
+    // 메시지가 최초로 보내졌을 때 팝업 표시
+    if (messageSendCount == 1) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('알림'),
+            content: Text('답변이 제출되었습니다'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('확인'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  void _scrollToBottom() {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+
+
+
+
+
+  Future<void> _fetchMessages() async {
   //   // final response = await http.get(
   //   //   Uri.parse('https://your-backend-url.com/fetch-messages'),
   //   // );
@@ -67,168 +207,252 @@ class _ChatScreenState extends State<ChatScreen> {
   //   });
   // }
 
+
+
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: Colors.white,
-        leading: TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text('포기하기', style: TextStyle(color: Colors.black, fontSize: 10)),
-        ),
-        title: Center(
-          child: Text(
-            '과목명',
-            style: TextStyle(color: Colors.black),
+        toolbarHeight: 55,
+        leadingWidth: 105,
+        leading: Container(
+          margin: EdgeInsets.all(10),
+          child: TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              '포기하기',
+              style: TextStyle(
+                fontFamily: 'ExtraBold',
+                color: Colors.white,
+                fontSize: 15,
+              ),
+            ),
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.symmetric(vertical: 6, horizontal: 15),
+              backgroundColor: Colors.grey[400],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              setState(() {
-                _messages.add(_messageController.text);
-                _isMine = !_isMine;
-                _sendMessage(_messageController.text);
-                _messageController.clear();
-              });
-            },
-            child: Text('답변하기', style: TextStyle(color: Colors.black)),
+          title: Center(
+            child: Text(
+              '과목명',
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontFamily: 'Bold'
+              ),
+            ),
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Container(
-            color: Colors.grey[200],
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: Countdown(
-                  endTime: _time,
+          actions: [
+            Container(
+              margin: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                gradient: MainGradient(),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: TextButton(
+                onPressed: () {
+                  setState(() {
+                    _isMine = !_isMine;
+                    _sendMessage(_messageController.text, "", true); // myname
+                    _messageController.clear();
+                  });
+                },
+                child: Text(
+                  '답변하기',
+                  style: TextStyle(
+                    fontFamily: 'ExtraBold',
+                    color: Colors.white,
+                    fontSize: 15,
+                  ),
+                ),
+                style: TextButton.styleFrom(
+                  primary: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  padding: EdgeInsets.symmetric(vertical: 6, horizontal: 15),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment:
-                    _isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),  // 이 라인을 추가합니다.
-                        decoration: BoxDecoration(
-                          color: _isMine ? Colors.lightBlue : Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(_messages[index]),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-          Row(
+          ],
+        ),
+
+
+        body: Container(
+          color: Colors.grey[200],
+          child: Column(
             children: [
-              IconButton(
-                icon: Icon(Icons.report),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          ListTile(
-                            leading: Icon(Icons.photo_library),
-                            title: Text('앨범 선택'),
-                            onTap: () {},
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.camera_alt),
-                            title: Text('사진 찍기'),
-                            onTap: () {},
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-              ),
-              Expanded(
-                child: TextField(
-                  controller: _messageController,
-                  decoration: InputDecoration(
-                    hintText: '메시지를 입력하세요',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+              Container(
+                padding: EdgeInsets.all(8),
+                color: Colors.transparent,
+                child: Center(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Countdown(
+                      endTime: _time,
                     ),
                   ),
-                  onSubmitted: (String message) {
-                    setState(() {
-                      _messages.add(message);
-                      _isMine = !_isMine;
-                      _sendMessage(message);
-                      _messageController.clear();
-                    });
+                ),
+              ),
+
+              Expanded(
+                child: ListView.builder(
+                  controller: _scrollController,
+                  itemCount: _messages.length,
+                  itemBuilder: (context, index) {
+                    final message = _messages[index];
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: message.isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+                        children: [
+                          if (message.isMine) // 내 메시지
+                            Padding(
+                                padding: const EdgeInsets.only(top: 16.0, right: 3.0),
+                                child: Text(
+                                  "${message.sentAt.hour}:${message.sentAt.minute.toString().padLeft(2, '0')}",
+                                  style: TextStyle(
+                                fontSize: 10,
+                                fontFamily: 'Round',
+                                color: Colors.black.withOpacity(0.5),
+                                  ),
+                                ),
+                            ),
+                          Container(
+                            constraints: BoxConstraints(
+                                maxWidth: MediaQuery.of(context).size.width * 0.7),
+                            decoration: BoxDecoration(
+                              color: message.isMine ? Colors.lightBlue : Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            padding: const EdgeInsets.all(8.0),
+                            child: message.text != null
+                                ? Text(
+                              message.text!,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(color: message.isMine ? Colors.white : Colors.grey[700], fontFamily: 'Round'),
+                            )
+                                : message.imagePath != null
+                                ? Image.file(
+                              File(message.imagePath!),
+                              width: 150,
+                              fit: BoxFit.cover,
+                            )
+                                : SizedBox(),
+                          ),
+                          if (!message.isMine) // 상대방 메시지
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16.0, left: 3.0),
+                              child: Text(
+                                "${message.sentAt.hour}:${message.sentAt.minute.toString().padLeft(2, '0')}",
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontFamily: 'Round',
+                                  color: Colors.black.withOpacity(0.5),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
                   },
+                ),
+              ),
+              Container(
+                color: Colors.white,
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.warning_amber_rounded),
+                      color: Colors.grey,
+                      iconSize: 30,
+                      onPressed: _showReportDialog,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.add_circle_outline_rounded),
+                      color: Colors.grey,
+                      iconSize: 30,
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return ImagePickerPopup(onImagePicked: _onImagePicked);
+                          },
+                        );
+                      },
+                    ),
+
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              constraints: BoxConstraints(
+                                  maxWidth: MediaQuery.of(context).size.width * 0.7,
+                                  maxHeight: MediaQuery.of(context).size.height * 0.7),
+                              height: 40,
+                              child: TextField(
+                                controller: _messageController,
+                                decoration: InputDecoration(
+                                  hintText: '메시지를 입력하세요',
+                                  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.send),
+                            onPressed: () {
+                              setState(() {
+                                _isMine = !_isMine;
+                                _sendMessage(_messageController.text, "", true); // "MyName" 비워둠
+                                _messageController.clear();
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
               ),
             ],
           ),
-        ],
-      ),
+        ),
     );
   }
 }
 
-class Countdown extends StatefulWidget {
-  final DateTime endTime;
+class Message {
+  final String? text; // 텍스트 메시지 (이미지일 때 null)
+  final String? imagePath; // 이미지 경로 (텍스트일 때 null)
+  final String sender;
+  final bool isMine;
+  final String senderImageURL;
+  final String senderName;
+  final DateTime sentAt;
 
-  Countdown({required this.endTime});
-
-  @override
-  _CountdownState createState() => _CountdownState();
-}
-
-class _CountdownState extends State<Countdown> {
-  late String _timeRemaining;
-
-  @override
-  void initState() {
-    super.initState();
-    _updateTime();
-  }
-
-  void _updateTime() {
-    final now = DateTime.now();
-    final remaining = widget.endTime.difference(now);
-    if (remaining.isNegative) {
-      Navigator.pop(context);
-      return;
-    }
-
-    final minutes = remaining.inMinutes;
-    final seconds = remaining.inSeconds % 60;
-    final formatted = '${minutes}m ${seconds}s';
-    setState(() {
-      _timeRemaining = formatted;
-    });
-    Future.delayed(Duration(seconds: 1), _updateTime);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(_timeRemaining);
-  }
+  Message({
+    this.text,
+    this.imagePath,
+    required this.sender,
+    required this.isMine,
+    required this.senderImageURL,
+    required this.senderName,
+    required this.sentAt,
+  });
 }
