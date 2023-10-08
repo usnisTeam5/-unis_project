@@ -11,6 +11,9 @@ class Question extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = min(MediaQuery.of(context).size.width,500.0);
+    final height = min(MediaQuery.of(context).size.height,700.0);
+
     return MaterialApp(
       builder: (context, child) {
         return MediaQuery(
@@ -31,6 +34,7 @@ class QuestionPage extends StatelessWidget {
 
     final width = min(MediaQuery.of(context).size.width,500.0);
     final height = min(MediaQuery.of(context).size.height,700.0);
+
 
     return Scaffold(
       appBar: AppBar(
@@ -80,21 +84,31 @@ class QuestionPage extends StatelessWidget {
         color: Colors.grey[200],
         child: ListView.builder(
           physics: BouncingScrollPhysics(),
-          itemCount: 10,
-          itemBuilder: (context, index) => QuestionItem(index),
+          itemCount: 15,
+          itemBuilder: (context, index) => Padding(
+            padding: EdgeInsets.only(bottom: index == 14 ? 16.0 : 8.0,
+            ),
+            child: QuestionItem(index, '컴퓨터 그래픽스'),
+          ),
         ),
       ),
     );
   }
 }
 
+
+
 class QuestionItem extends StatelessWidget {
   final int index;
+  final String subjectName;
 
-  QuestionItem(this.index);
+  QuestionItem(this.index, this.subjectName);
 
   @override
   Widget build(BuildContext context) {
+    final width = min(MediaQuery.of(context).size.width,500.0);
+    final height = min(MediaQuery.of(context).size.height,700.0);
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -105,7 +119,7 @@ class QuestionItem extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.only( // 리스트 마진
           top: index == 0 ? 20 : 10,
-          bottom: 10,
+          bottom: index == 14 ? 30 : 1,
           left: 30,
           right: 30,
         ),
@@ -130,6 +144,14 @@ class QuestionItem extends StatelessWidget {
                 ),
                 Text(
                   '컴퓨터 그래픽스',
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontFamily: 'Bold',
+                    fontSize: 17,
+                  ),
+                ),
+                Text(
+                  subjectName,
                   style: TextStyle(
                     color: Colors.grey[700],
                     fontFamily: 'Bold',
@@ -164,6 +186,9 @@ class QuestionItem extends StatelessWidget {
 class QuestionFormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final width = min(MediaQuery.of(context).size.width,500.0);
+    final height = min(MediaQuery.of(context).size.height,700.0);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('질문하기'),
@@ -179,6 +204,8 @@ class DetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = min(MediaQuery.of(context).size.width,500.0);
+    final height = min(MediaQuery.of(context).size.height,700.0);
     return Scaffold(
       appBar: AppBar(
         title: Text('Detail Page'),
