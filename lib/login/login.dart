@@ -5,6 +5,7 @@ import 'package:unis_project/register/user_agreement.dart';
 import 'package:flutter/services.dart';
 import '../css/css.dart';
 import 'dart:math';
+import 'package:provider/provider.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
