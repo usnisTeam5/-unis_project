@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:unis_project/view_model/login_result_view_model.dart';
 import '../css/css.dart';
 import 'package:unis_project/find_study/find_study.dart';
 import 'package:unis_project/my_quiz/my_quiz.dart';
@@ -10,6 +11,8 @@ import '../menu/menu.dart';
 import '../notifier/notifier.dart';
 import 'dart:io';
 import 'dart:math';
+import 'package:provider/provider.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -49,12 +52,20 @@ class HomeController {
 class MyHomePage extends StatelessWidget {
   final HomeController _controller = HomeController(); // HomeController 인스턴스 생성
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final double width = min(MediaQuery.of(context).size.width,500.0);
     final double height = MediaQuery.of(context).size.height;
     double iconSize = width * 0.10; // 아이콘 크기 설정
     double fontSize = width * 0.03; // 텍스트 크기 설정
+
+    final loginViewModel = context.watch<LoginViewModel>();
+    final key = loginViewModel.userKey;
+    final nickname = loginViewModel.userNickName;
+    print(key);
+    print(nickname);
+
 
     return WillPopScope(
       onWillPop: () async {

@@ -6,13 +6,33 @@ import 'package:flutter/services.dart';
 import '../css/css.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';
+import '../view_model/login_result_view_model.dart';
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  runApp(UnisApp());
+
+  runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<LoginViewModel>(
+            create: (context) => LoginViewModel(),
+          ),
+        ],
+        child: UnisApp(),
+        /*
+         runApp(
+            ChangeNotifierProvider(
+                create: (_) => Counts(),
+                child: MyApp(),
+           ),
+         ); 이런식으로 단일로 해도 됨.
+         */
+      ),
+  );
 }
 
 class UnisApp extends StatelessWidget {
@@ -42,19 +62,20 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> { // textfield 땜에 일단 둠.
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   void _login() {
     final id = _idController.text;
     final password = _passwordController.text;
+    final loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
+    loginViewModel.login(id, password);
+
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => MyHomePage()),
     );
-    // 백엔드와의 통신 코드를 이곳에 추가하세요.
-    // 예: _authenticate(id, password);
   }
 
   @override
