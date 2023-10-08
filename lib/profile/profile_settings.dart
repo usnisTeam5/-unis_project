@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:unis_project/css/css.dart';
-
+import 'dart:math';
 class ProfileSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    double width = min(MediaQuery.of(context).size.width,500.0);
     List<String> itemsText = ['학부 설정', '과목 설정하기', '로그아웃', '회원 탈퇴'];
 
     return Scaffold(

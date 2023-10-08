@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:unis_project/css/css.dart';
+import '../css/css.dart';
 import 'package:unis_project/find_study/find_study.dart';
 import 'package:unis_project/my_quiz/my_quiz.dart';
 import 'package:unis_project/my_study/my_study.dart';
@@ -8,7 +8,8 @@ import '../question/question.dart';
 import '../profile/profile.dart';
 import '../menu/menu.dart';
 import '../notifier/notifier.dart';
-
+import 'dart:io';
+import 'dart:math';
 void main() {
   runApp(MyApp());
 }
@@ -18,7 +19,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // 앱 전체 테마 설정
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: child!,
+        );
+      },
       theme: ThemeData(
         fontFamily: 'Round', // 글꼴 테마 설정
       ),
@@ -45,7 +51,7 @@ class MyHomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
+    final double width = min(MediaQuery.of(context).size.width,500.0);
     final double height = MediaQuery.of(context).size.height;
     double iconSize = width * 0.10; // 아이콘 크기 설정
     double fontSize = width * 0.03; // 텍스트 크기 설정
@@ -62,8 +68,8 @@ class MyHomePage extends StatelessWidget {
           Navigator.of(context).pop();
           return false;
         }
+        return await _showExitConfirmationDialog(context);
         // 뒤로 가기 동작 방지
-        return false;
       },
       child: Scaffold(
         key: scaffoldKey, // key를 Scaffold에 할당합니다
@@ -99,6 +105,8 @@ class MyHomePage extends StatelessWidget {
             return BottomNavigationBar(
               currentIndex: currentIndex,
               onTap: _controller.onItemTapped,
+              selectedLabelStyle: TextStyle(fontFamily: 'Round'),
+              unselectedLabelStyle: TextStyle(fontFamily: 'Round'),
               // 아이템 선택 시 컨트롤러의 메서드 호출
               selectedFontSize: fontSize,
               // 선택된 아이템의 텍스트 크기 설정
@@ -147,6 +155,26 @@ class MyHomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+  Future<bool> _showExitConfirmationDialog(BuildContext context) async {
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('앱 종료'),
+        content: Text('정말로 앱을 종료하시겠습니까?'),
+        actions: <Widget>[
+          TextButton(
+            child: Text('취소'),
+            onPressed: () => Navigator.of(context).pop(false),
+          ),
+          TextButton(
+            child: Text('확인'),
+            onPressed: () => exit(0),
+          ),
+        ],
+      ),
+    ) ??
+        false; // 사용자가 다이얼로그의 바깥 영역을 탭해서 다이얼로그를 닫은 경우 false를 반환합니다.
   }
 }
 

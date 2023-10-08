@@ -5,6 +5,7 @@ import 'dart:io';
 import 'friend.dart';
 import 'package:unis_project/profile/profile_settings.dart';
 import 'package:unis_project/css/css.dart';
+import 'dart:math';
 
 void main() {
   runApp(const Profile());
@@ -16,6 +17,7 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       home: MyProfilePage(),
       theme: ThemeData(
         fontFamily: 'Round',
@@ -27,7 +29,7 @@ class Profile extends StatelessWidget {
 class MyProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    double width = min(MediaQuery.of(context).size.width,500);
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -194,7 +196,7 @@ enum StatsCategory {
 class StatsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    double width = min(MediaQuery.of(context).size.width,500.0);
 
     return Container(
       padding: EdgeInsets.all(30.0),

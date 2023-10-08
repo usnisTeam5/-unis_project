@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:math';
 import 'dart:io';
 import 'package:flutter/material.dart';
 
@@ -8,10 +10,7 @@ import 'image_picker_popup.dart';
 
 import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:convert';
 
-//import 'package:intl/intl.dart';
-//import 'package:http/http.dart' as http;
 
 
 void main() {
@@ -26,6 +25,7 @@ class MyApp extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
 
     return MaterialApp(
+
       home: ChatScreen(),
       theme: ThemeData(
         textTheme: TextTheme(

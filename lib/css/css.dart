@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 //Text('답변 목록 >', style: TextStyle(color: Colors.white, fontFamily: 'Bold', fontSize: width * 0.05))
 //color: Color(0xFF3D6094) 내 문답에서 질문 or 조언 글씨 색깔
 
-//final width = MediaQuery.of(context).size.width;
-//final height = MediaQuery.of(context).size.height;
+//final width = min(MediaQuery.of(context).size.width,500.0);
+//final height = min(MediaQuery.of(context).size.height,700.0);
 
 // 18자 넘어가면 ... 처리
 // Text( // 18자 넘어가면 ... 처리
@@ -18,6 +18,28 @@ import 'package:flutter/material.dart';
 //   fontSize: width * 0.04
 //   ),
 // ),
+
+// SingleChildScrollView(
+// child: Container( // container 대신 padding 으로 해도 오류 안남.
+// height: height - AppBar().preferredSize.height - MediaQuery.of(context).padding.top,
+// 침범하는거 막을 때 이렇게 쓰면 딱 맞음
+
+// final result = await Navigator.push(
+// context,
+// MaterialPageRoute(
+// builder: (context) => SubjectSelector()),
+// ); 콜백함수
+
+// Navigator.push(
+// context,
+// MaterialPageRoute(builder: (context) => MyHomePage()),
+// );
+
+//import 'package:intl/intl.dart'; 숫자 표기법 1,000,000 같은 것 처리
+// String formatNumber(int number) {
+//   final formatter = NumberFormat('#,###');
+//   return formatter.format(number);
+// }
 class GradientText extends StatelessWidget {
   const GradientText({
     super.key,

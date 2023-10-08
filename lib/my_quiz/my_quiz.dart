@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../css/css.dart';
-import '../my_quiz/quiz_folder.dart';
+import 'quiz_folder.dart';
+import 'dart:math';
 void main() {
   runApp(MyApp());
 }
@@ -9,6 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       theme: ThemeData(
         fontFamily: 'Bold', // ExtraBold 글꼴을 사용하려면 앱에 폰트 파일을 추가해야 합니다.
       ),
@@ -21,7 +23,7 @@ class QuizScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final width = MediaQuery.of(context).size.width;
+    final  width = min(MediaQuery.of(context).size.width,500.0);
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(

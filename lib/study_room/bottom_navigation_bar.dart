@@ -5,6 +5,7 @@ import '../chat/chat.dart';
 import '../menu/menu.dart';
 import '../notifier/notifier.dart';
 import 'home.dart';
+import 'dart:math';
 void main() {
   runApp(MyApp());
 }
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       // 앱 전체 테마 설정
       theme: ThemeData(
         fontFamily: 'Round', // 글꼴 테마 설정
@@ -41,10 +43,10 @@ class MyHomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
+    final double width = min(MediaQuery.of(context).size.width,500.0);
     final double height = MediaQuery.of(context).size.height;
     double iconSize = width * 0.10; // 아이콘 크기 설정
-    double fontSize = height * 0.02; // 텍스트 크기 설정
+    double fontSize = width * 0.03;// 텍스트 크기 설정
 
     return Scaffold(
       key: scaffoldKey, // key를 Scaffold에 할당합니다
@@ -76,6 +78,8 @@ class MyHomePage extends StatelessWidget {
           return BottomNavigationBar(
             currentIndex: currentIndex,
             onTap: _controller.onItemTapped,
+            selectedLabelStyle: TextStyle(fontFamily: 'Round'),
+            unselectedLabelStyle: TextStyle(fontFamily: 'Round'),
             // 아이템 선택 시 컨트롤러의 메서드 호출
             selectedFontSize: fontSize,
             // 선택된 아이템의 텍스트 크기 설정

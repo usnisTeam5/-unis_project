@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import '../css/css.dart';
 import '../profile/other_profile.dart';
-
+import 'dart:math';
+import 'study_room_setting.dart';
 void main() => runApp(FriendsList());
 
 class FriendsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       theme: ThemeData(
         fontFamily: 'Round',
       ),
@@ -19,10 +21,7 @@ class FriendsList extends StatelessWidget {
 class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double width = min(MediaQuery.of(context).size.width,500.0);
     double tabBarHeight = MediaQuery
         .of(context)
         .size
@@ -43,6 +42,11 @@ class Home extends StatelessWidget {
             icon: Icon(Icons.settings, size: 30,),
             color: Colors.grey,
             onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => StudyRoomSetting()),
+              );
               //Navigator.pop(context);  // 로그인 화면으로 되돌아가기
             },
           ),

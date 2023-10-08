@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import '../css/css.dart';
 import '../study_room/bottom_navigation_bar.dart';
+import 'dart:math';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       theme: ThemeData(
         fontFamily: 'Round', // 글꼴 테마 설정
       ),
@@ -25,7 +27,7 @@ class StudyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final width = MediaQuery.of(context).size.width;
+    final width = min(MediaQuery.of(context).size.width,500.0);
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(

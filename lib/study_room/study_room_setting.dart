@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import '../css/css.dart';
 import '../subject_selector/subject_selector.dart';
 import 'dart:math';
-void main() => runApp(FriendsList());
+void main() => runApp(MyApp());
 
-class FriendsList extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -12,17 +12,17 @@ class FriendsList extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Round',
       ),
-      home: CreateStudy(),
+      home: StudyRoomSetting(),
     );
   }
 }
 
-class CreateStudy extends StatefulWidget {
+class StudyRoomSetting extends StatefulWidget {
   @override
-  _CreateStudyState createState() => _CreateStudyState();
+  _StudyRoomSettingState createState() => _StudyRoomSettingState();
 }
 
-class _CreateStudyState extends State<CreateStudy> {
+class _StudyRoomSettingState extends State<StudyRoomSetting> {
   final titleController = TextEditingController();
   final passwordController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -98,7 +98,7 @@ class _CreateStudyState extends State<CreateStudy> {
         centerTitle: true,
         // Title을 중앙에 배치
         title: GradientText(
-            width: width, text: '스터디 생성', tSize: 0.06, tStyle: 'Bold'),
+            width: width, text: '스터디 설정', tSize: 0.06, tStyle: 'Bold'),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1.0),
           // Set the height of the underline
@@ -175,21 +175,7 @@ class _CreateStudyState extends State<CreateStudy> {
                 ),
                 child: Column(
                   children: [
-                    InkWell(
-                      onTap: () async {
-                        final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SubjectSelector()),
-                        );
-                        // 반환된 결과를 처리하는 코드
-                        if (result != null) {
-                          setState(() {
-                            subject = result;
-                          });
-                        }
-                      },
-                      child: Padding(
+                      Padding(
                         padding: EdgeInsets.symmetric(vertical: 12.0),
                         child: Row(
                           children: [
@@ -198,21 +184,21 @@ class _CreateStudyState extends State<CreateStudy> {
                             ),
                             subject == null
                                 ? Text(
-                                    '과목 선택',
-                                    style: TextStyle(
-                                        color: Colors.grey[400],
-                                        fontFamily: 'Bold',
-                                        fontSize: width * 0.045),
-                                  )
+                              '과목 선택',
+                              style: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontFamily: 'Bold',
+                                  fontSize: width * 0.045),
+                            )
                                 : Text(
-                                    subject!.length > 18
-                                        ? subject!.substring(0, 18) + '...'
-                                        : subject!,
-                                    style: TextStyle(
-                                        color: Colors.grey[900],
-                                        fontFamily: 'Bold',
-                                        fontSize: width * 0.04),
-                                  ),
+                              subject!.length > 18
+                                  ? subject!.substring(0, 18) + '...'
+                                  : subject!,
+                              style: TextStyle(
+                                  color: Colors.grey[900],
+                                  fontFamily: 'Bold',
+                                  fontSize: width * 0.04),
+                            ),
                             Spacer(),
                             Icon(
                               Icons.arrow_forward_ios_rounded,
@@ -222,7 +208,6 @@ class _CreateStudyState extends State<CreateStudy> {
                           ],
                         ),
                       ),
-                    ),
                     Container(
                       // SizedBox를 Container로 변경
                       height: 1.0,
@@ -241,14 +226,14 @@ class _CreateStudyState extends State<CreateStudy> {
                               numberOfPeople,
                               style: numberOfPeople == '인원 선택'
                                   ? TextStyle(
-                                      color: Colors.grey[400],
-                                      fontFamily: 'Bold',
-                                      fontSize: width * 0.045,
-                                    )
+                                color: Colors.grey[400],
+                                fontFamily: 'Bold',
+                                fontSize: width * 0.045,
+                              )
                                   : TextStyle(
-                                      color: Colors.grey[900],
-                                      fontFamily: 'Bold',
-                                      fontSize: width * 0.04),
+                                  color: Colors.grey[900],
+                                  fontFamily: 'Bold',
+                                  fontSize: width * 0.04),
                             ),
                             Spacer(),
                             Icon(
@@ -283,7 +268,61 @@ class _CreateStudyState extends State<CreateStudy> {
                   ),
                   counterText: "", // 글자 수 레이블을 숨깁니다.
                 ),
+                maxLength: 200,
                 maxLines: 10,
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 20.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.0),
+                  gradient: MainGradient(),
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16.0),
+                    onTap: () {
+                      String studyTitle = "스터디 제목";
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('스터디 탈퇴',style: TextStyle(fontFamily: 'Round'),),
+                            content: Text( "'$studyTitle' 스터디를 정말 탈퇴하시겠습니까?"),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('취소'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: Text('확인'),
+                                onPressed: () {
+                                  // 탈퇴
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        child: Text(
+                          '스터디 탈퇴',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Bold',
+                            fontSize: width * 0.05,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
