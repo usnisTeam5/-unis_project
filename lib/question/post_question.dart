@@ -13,6 +13,8 @@ import 'package:unis_project/question/question.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../profile/friend.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -33,6 +35,8 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
 
 
 
@@ -198,7 +202,11 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/favoritesList');
+              Navigator.pushNamed(
+                context,
+                '/favoritesList',
+                arguments: MyListScreenArguments(1), // 1은 '찜' 탭의 인덱스
+              );
             },
             icon: Icon(Icons.favorite, color: Colors.red), // 찜 목록
           ),
