@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../css/css.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 class PointChargeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -34,8 +36,11 @@ class PointChargeScreen extends StatelessWidget {
                 '1,000,000',
                 style: TextStyle(color: Colors.black, fontSize: 14, fontFamily: 'Bold'),
               ),
-              Icon(Icons.stars, color: Colors.blue), // 포인트 아이콘
               SizedBox(width: 20), // 추가적인 공간을 위해
+              Padding(
+                padding: EdgeInsets.only(top: 3),
+                child: SvgPicture.asset('image/point.svg', width: 32, height: 32),
+              )
             ],
           ),
         ],
@@ -132,7 +137,10 @@ class PointChargeScreen extends StatelessWidget {
             children: [
               SizedBox(width: 10),
               Text('${formatNumber(point)}', style: TextStyle(fontFamily: 'Bold',color: Colors.grey[500],fontSize: 16),),
-              Icon(Icons.stars, color: Colors.blue), // 아이콘 예시로 stars 아이콘 사용
+              Padding(
+                padding: EdgeInsets.only(top: 3),
+                child: SvgPicture.asset('image/point.svg', width: 32, height: 32),
+              )
             ],
           ),
           Text('${formatNumber(point)} 원' , style: TextStyle(fontFamily: 'Bold',color: Colors.grey[500],fontSize: 16),),

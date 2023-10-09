@@ -11,8 +11,6 @@ import 'image_picker_popup.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
 
-
-
 void main() {
   runApp(MyApp());
 }
@@ -21,8 +19,8 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
+    final width = min(MediaQuery.of(context).size.width,500.0);
+    final height = min(MediaQuery.of(context).size.height,700.0);
 
     return MaterialApp(
 
@@ -211,8 +209,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
+    final width = min(MediaQuery.of(context).size.width,500.0);
+    final height = min(MediaQuery.of(context).size.height,700.0);
 
     return Scaffold(
       appBar: AppBar(
