@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:unis_project/question/question.dart';
 import '../subject_selector/subject_selector.dart';
+import '../css/css.dart';
 
 class PostSettings extends StatefulWidget {
   final bool hasUserSentMessage;
@@ -27,7 +28,26 @@ class _PostSettingsState extends State<PostSettings> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('금액 설정 및 옵션'),
+        leading: IconButton(
+          icon: Icon(Icons.keyboard_arrow_left, size: 35, color: Colors.grey),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        elevation: 0,
+        title: GradientText(width: width, text: '금액 설정 및 옵션', tSize: 0.06, tStyle: 'Bold'),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: MainGradient(),
+            ),
+            height: 2.0,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -37,9 +57,9 @@ class _PostSettingsState extends State<PostSettings> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('금액 설정', style: TextStyle(fontSize: 18)),
+                Text('금액 설정', style: TextStyle(fontSize: 18, fontFamily: 'Bold', color: Colors.grey[600])),
                 DropdownButton<int>(
-                  hint: Text('금액을 선택하세요'),
+                  hint: Text('금액을 선택하세요', style: TextStyle(fontSize: 14, fontFamily: 'Round', color: Colors.grey[400])),
                   value: selectedPost,
                   items: List.generate(201, (index) => index * 100).map((post) {
                     return DropdownMenuItem(
@@ -68,7 +88,7 @@ class _PostSettingsState extends State<PostSettings> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('과목 선택', style: TextStyle(fontSize: 18)),
+                Text('과목 선택', style: TextStyle(fontSize: 18, fontFamily: 'Bold', color: Colors.grey[600])),
                 selectedSubject != null
                     ? Text(selectedSubject!, style: TextStyle(fontSize: 16))
                     : IconButton(
@@ -88,7 +108,7 @@ class _PostSettingsState extends State<PostSettings> {
               ],
             ),
             SizedBox(height: 24),
-            Text('질문 유형 선택', style: TextStyle(fontSize: 18)),
+            Text('질문 유형 선택', style: TextStyle(fontSize: 18, fontFamily: 'Bold', color: Colors.grey[600])),
             SizedBox(height: 12),
             ElevatedButton(
               onPressed: () {
@@ -97,10 +117,10 @@ class _PostSettingsState extends State<PostSettings> {
                   isQuestionType2Selected = false;
                 });
               },
-              child: Text("문제 질문하기"),
+              child: Text("문제 질문하기", style: TextStyle(fontSize: 18, fontFamily: 'Bold')),
               style: ElevatedButton.styleFrom(
-                primary: isQuestionType1Selected ? Colors.blue : Colors.grey[300],
-                onPrimary: isQuestionType1Selected ? Colors.white : Colors.black,
+                primary: isQuestionType1Selected ? Color(0xFF2A7CC1) : Colors.grey[200],
+                onPrimary: isQuestionType1Selected ? Colors.white : Colors.white,
                 minimumSize: Size(width, 50),
               ),
             ),
@@ -112,10 +132,10 @@ class _PostSettingsState extends State<PostSettings> {
                   isQuestionType1Selected = false;
                 });
               },
-              child: Text("과목 조언 구하기"),
+              child: Text("과목 조언 구하기", style: TextStyle(fontSize: 18, fontFamily: 'Bold')),
               style: ElevatedButton.styleFrom(
-                primary: isQuestionType2Selected ? Colors.blue : Colors.grey[300],
-                onPrimary: isQuestionType2Selected ? Colors.white : Colors.black,
+                primary: isQuestionType2Selected ? Color(0xFF2A7CC1) : Colors.grey[200],
+                onPrimary: isQuestionType2Selected ? Colors.white : Colors.white,
                 minimumSize: Size(width, 50),
               ),
             ),
@@ -123,7 +143,7 @@ class _PostSettingsState extends State<PostSettings> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('익명으로 질문하기', style: TextStyle(fontSize: 18)),
+                Text('익명으로 질문하기', style: TextStyle(fontSize: 18, fontFamily: 'Bold', color: Colors.grey[600])),
                 Checkbox(
                   value: isAnonymousSelected,
                   onChanged: (value) {
@@ -135,23 +155,42 @@ class _PostSettingsState extends State<PostSettings> {
               ],
             ),
             Spacer(),
+            Spacer(),
             ElevatedButton(
               onPressed: () {
-                if (!isQuestionType1Selected && !isQuestionType2Selected) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('질문 유형을 선택해주세요')),
-                  );
-                  return;
-                }
                 if (selectedPost == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('금액을 설정해주세요')),
+                    SnackBar(
+                      content: Text(
+                        '금액을 설정해주세요',
+                        style: TextStyle(fontFamily: 'Bold', color: Colors.grey[600],),
+                      ),
+                      backgroundColor: Colors.white,
+                    ),
                   );
                   return;
                 }
                 if (selectedSubject == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('과목을 선택해주세요')),
+                    SnackBar(
+                      content: Text(
+                        '과목을 선택해주세요',
+                        style: TextStyle(fontFamily: 'Bold', color: Colors.grey[600],),
+                      ),
+                      backgroundColor: Colors.white,
+                    ),
+                  );
+                  return;
+                }
+                if (!isQuestionType1Selected && !isQuestionType2Selected) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '질문 유형을 선택해주세요',
+                        style: TextStyle(fontFamily: 'Bold', color: Colors.grey[600],),
+                      ),
+                      backgroundColor: Colors.white,
+                    ),
                   );
                   return;
                 }
@@ -160,17 +199,27 @@ class _PostSettingsState extends State<PostSettings> {
                   MaterialPageRoute(builder: (context) => QuestionPage()),
                 );
               },
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: Container(
+                width: double.infinity,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  gradient: MainGradient(),
+                ),
+                child: Center(
                   child: Text(
                     '등록하기',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: width * 0.05,
-                    ),
+                    style: TextStyle(color: Colors.white, fontSize: 20),
                   ),
                 ),
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.transparent,
+                shadowColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                padding: EdgeInsets.zero,
               ),
             ),
           ],

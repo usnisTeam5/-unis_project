@@ -21,6 +21,8 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final width = min(MediaQuery.of(context).size.width,500.0);
+    final height = min(MediaQuery.of(context).size.height,700.0);
     return MaterialApp(
       home: PostQuestionPage(),
       theme: ThemeData(
@@ -156,6 +158,8 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final width = min(MediaQuery.of(context).size.width,500.0);
+    final height = min(MediaQuery.of(context).size.height,700.0);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -191,13 +195,12 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
             },
           ),
 
-          actions: [
-          TextButton(
+        actions: [
+          IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/favoritesList');  // favorites_list.dart 파일로 이동
+              Navigator.pushNamed(context, '/favoritesList');
             },
-            child: Text('찜 목록'),
-            style: TextButton.styleFrom(primary: Colors.grey),
+            icon: Icon(Icons.favorite, color: Colors.red), // 찜 목록
           ),
           TextButton(
             onPressed: () {
@@ -208,8 +211,21 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
                 },
               );
             },
-            child: Text('금액 설정'),
-            style: TextButton.styleFrom(primary: Colors.grey),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 6.0),
+              decoration: BoxDecoration(
+                gradient: MainGradient(),
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Text(
+                '금액 설정',
+                style: TextStyle(
+                  fontFamily: 'ExtraBold',
+                  color: Colors.white,
+                  fontSize: width *0.04,
+                ),
+              ),
+            ),
           )
         ],
       ),
