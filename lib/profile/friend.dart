@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import '../css/css.dart';
 import 'other_profile.dart';
+import 'package:flutter/material.dart';
+import '../css/css.dart';
+import 'other_profile.dart';
 import 'dart:math';
+import '../profile/profile.dart'; // Adjust according to your file structure
+
 void main() => runApp(FriendsList());
 
 class FriendsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       theme: ThemeData(
         fontFamily: 'Bold',
       ),
@@ -63,7 +67,7 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    double width = min(MediaQuery.of(context).size.width,500.0);
+    double width = min(MediaQuery.of(context).size.width, 500.0);
     double tabBarHeight = MediaQuery.of(context).size.height * 0.08;
 
     return Scaffold(
@@ -74,15 +78,31 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
             Container(
               height: tabBarHeight,
               color: Colors.white,
-              child: TabBar(
-                controller: _tabController,
-                tabs: [
-                  Tab(child: gradientTabText(width, '친구 리스트', 0)),
-                  Tab(child: gradientTabText(width, '찜 리스트', 1)),
-                  Tab(child: gradientTabText(width, '차단 리스트', 2)),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey),
+                    onPressed: () {
+                      // Navigating to MyProfilePage
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyProfilePage()),
+                      );
+                    },
+                  ),
+                  Expanded(
+                    child: TabBar(
+                      controller: _tabController,
+                      tabs: [
+                        Tab(child: gradientTabText(width, '친구', 0)),
+                        Tab(child: gradientTabText(width, '찜', 1)),
+                        Tab(child: gradientTabText(width, '차단', 2)),
+                      ],
+                      indicatorColor: Colors.white,
+                      labelColor: Colors.white,
+                    ),
+                  ),
                 ],
-                indicatorColor: Colors.white,
-                labelColor: Colors.white,
               ),
             ),
             Container(
@@ -108,6 +128,7 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
   }
 
   ListView buildListView() {
+    // This code block remains unchanged from your original code.
     return ListView.builder(
       padding: EdgeInsets.zero,
       itemCount: 20,

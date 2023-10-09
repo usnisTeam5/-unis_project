@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../chat/chat.dart';
 import '../css/css.dart';
+import '../question/post_question.dart';
 import 'dart:math';
+
 void main() {
   runApp(const Question());
 }
@@ -56,7 +59,7 @@ class QuestionPage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => QuestionFormPage()),
+                      MaterialPageRoute(builder: (context) => PostQuestionPage()),
                     );
                   },
                   child: Container(
@@ -143,14 +146,6 @@ class QuestionItem extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '컴퓨터 그래픽스',
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontFamily: 'Bold',
-                    fontSize: 17,
-                  ),
-                ),
-                Text(
                   subjectName,
                   style: TextStyle(
                     color: Colors.grey[700],
@@ -169,10 +164,10 @@ class QuestionItem extends StatelessWidget {
                     fontFamily: 'Bold',
                   ),
                 ),
-                SizedBox(width: 7), // 2000과 아이콘 사이의 간격
-                Icon(
-                  Icons.monetization_on_outlined,
-                  color: Colors.yellow[600],
+                SizedBox(width: 1), // 2000과 아이콘 사이의 간격
+                Padding(
+                  padding: EdgeInsets.only(top: 3),
+                  child: SvgPicture.asset('image/point.svg', width: 32, height: 32),
                 )
               ],
             ),
@@ -183,19 +178,6 @@ class QuestionItem extends StatelessWidget {
   }
 }
 
-class QuestionFormPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final width = min(MediaQuery.of(context).size.width,500.0);
-    final height = min(MediaQuery.of(context).size.height,700.0);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('질문하기'),
-      ),
-    );
-  }
-}
 
 class DetailPage extends StatelessWidget {
   final int index;

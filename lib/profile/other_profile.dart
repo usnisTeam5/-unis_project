@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'package:image_picker/image_picker.dart'; // 필요하다면 import하세요
-// import 'dart:io'; // 필요하다면 import하세요
-// import 'friend.dart'; // 필요하다면 import하세요
+import '../chat/chat.dart';
+import 'friend.dart';
 import '../css/css.dart';
 import 'dart:math';
 void main() {
@@ -31,16 +30,27 @@ class OthersProfilePage extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: MainGradient(),
+            ),
+            height: 2.0,
+          ),
+        ),
         title: GradientText(width: width, text: '프로필', tSize: 0.06, tStyle: 'Bold'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.grey,),
+          icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey),
           onPressed: () {
             Navigator.pop(context);
-             // Navigator.push(context, MaterialPageRoute(builder: (context)> FriendsList())); // 필요하다면 이동
+            Navigator.push(context, MaterialPageRoute(builder: (context) => FriendsList()));
           },
         ),
-        backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -55,14 +65,22 @@ class OthersProfilePage extends StatelessWidget {
   }
 }
 
-class OthersProfileInfoSection extends StatelessWidget {
+class OthersProfileInfoSection extends StatefulWidget {
   @override
+  _OthersProfileInfoSectionState createState() => _OthersProfileInfoSectionState();
+}
+
+class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
+  bool _isFavoriteSelected = false;
+  bool _isPersonAddSelected = false;
+  bool _isPersonOffSelected = false;
+
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.0),
-      margin: EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(30.0),
+      margin: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: Colors.grey[100],
         borderRadius: BorderRadius.circular(40.0),
       ),
       child: Column(
@@ -83,6 +101,7 @@ class OthersProfileInfoSection extends StatelessWidget {
                       fontFamily: 'Bold',
                     ),
                   ),
+                  SizedBox(height: 10.0),
                   Text(
                     "학과(학부): 소프트웨어학부",
                     style: TextStyle(
@@ -97,10 +116,53 @@ class OthersProfileInfoSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              InteractionButton(label: "찜"),
-              InteractionButton(label: "대화"),
-              InteractionButton(label: "친추"),
-              InteractionButton(label: "차단"),
+              IconButton(
+                icon: Icon(
+                  _isFavoriteSelected ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                  color: _isFavoriteSelected ? Colors.red : Colors.grey,
+                ),
+                onPressed: () {
+                  if (!_isPersonOffSelected) { // 차단 상태가 아니라면
+                    setState(() {
+                      _isFavoriteSelected = !_isFavoriteSelected;
+                    });
+                  }
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.message_rounded, color: Colors.grey,),
+                onPressed: _isPersonOffSelected // 차단 상태라면 null, 아니라면 함수 실행
+                    ? null
+                    : () {
+                  // 메시지 버튼 로직 (차단 상태가 아니라면 실행)
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.person_add_rounded,
+                  color: _isPersonAddSelected ? Colors.blue : Colors.grey,
+                ),
+                onPressed: _isPersonOffSelected // 차단 상태라면 null, 아니라면 함수 실행
+                    ? null
+                    : () {
+                  setState(() {
+                    _isPersonAddSelected = !_isPersonAddSelected;
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.person_off_rounded,
+                  color: _isPersonOffSelected ? Colors.red : Colors.grey,
+                ),
+                onPressed: (_isFavoriteSelected || _isPersonAddSelected) // 찜하거나 친추 상태라면 null, 아니라면 함수 실행
+                    ? null
+                    : () {
+                  setState(() {
+                    _isPersonOffSelected = !_isPersonOffSelected;
+                  });
+                },
+              ),
             ],
           ),
           SizedBox(height: 16.0),
@@ -115,6 +177,9 @@ class OthersProfileInfoSection extends StatelessWidget {
     );
   }
 }
+
+
+
 
 class InteractionButton extends StatefulWidget {
   final String label;
@@ -137,14 +202,14 @@ class _InteractionButtonState extends State<InteractionButton> {
         });
       },
       child: Container(
-        width: 50,  // 원의 너비를 설정
-        height: 50,  // 원의 높이를 설정
+        width: 50,
+        height: 50,
         decoration: BoxDecoration(
-          color: _isTapped ? Colors.grey : Colors.grey[200],
-          shape: BoxShape.circle,  // 원형으로 설정
-          border: Border.all(color: Colors.black, width: 2),  // 테두리를 추가
+          color: _isTapped ? Colors.grey : Colors.grey[100],
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.black, width: 2),
         ),
-        child: Center(  // 텍스트를 중앙에 배치
+        child: Center(
           child: Text(
             widget.label,
             style: TextStyle(
@@ -161,147 +226,115 @@ class _InteractionButtonState extends State<InteractionButton> {
 class SatisfactionAndReportSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    double width = min(MediaQuery.of(context).size.width, 500.0);
+
     return Container(
       padding: EdgeInsets.all(16.0),
       margin: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: Colors.grey[100],
         borderRadius: BorderRadius.circular(30.0),
       ),
-      child:
-        Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
             children: [
-              Text(
-                "만족도: 5.0",
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontFamily: 'ExtraBold',
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("신고하기"),
-                        content: Text("신고할 목록을 선택하세요."),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text("취소"),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                child: Text("신고하기"),
-              ),
+              Text("    만족도 : ", style: TextStyle(color: Colors.grey[600], fontFamily: 'Bold', fontSize: width * 0.04),),
+              Text("5.0", style: TextStyle(color: Color(0xFF678DBE), fontFamily: 'Bold', fontSize: width * 0.04),),
             ],
           ),
+          ElevatedButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("신고하기"),
+                    content: Text("신고할 목록을 선택하세요."),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("취소"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            child: Text("신고하기"),
+            style: ElevatedButton.styleFrom(
+              primary: Colors.white,
+              onPrimary: Colors.grey,
+              textStyle: TextStyle(fontFamily: 'Bold'),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-enum StatsCategory {
-  question,
-  answer,
-  joinedStudy,
-}
+
 
 class StatsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double width = min(MediaQuery.of(context).size.width,500.0);
+    double width = min(MediaQuery.of(context).size.width, 500.0);
 
     return Container(
       padding: EdgeInsets.all(16.0),
       margin: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: Colors.grey[100],
         borderRadius: BorderRadius.circular(30.0),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Column(
-            children: [
-              Text(
-                "질문",
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontFamily: 'ExtraBold',
-                  fontSize: width * 0.05,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  // "질문" 숫자를 클릭했을 때의 행동을 여기에 구현
-                },
-                child: Text(
-                  "0", // 이 값을 실제 질문의 수로 대체하세요
-                  style: TextStyle(
-                    color: Colors.lightBlue[900],
-                    fontFamily: 'ExtraBold',
-                    fontSize: width * 0.05,
-                  ),
-                ),
-              ),
-            ],
+          Expanded(
+            child: _buildColumn("질문", "0", width),
           ),
-          Column(
-            children: [
-              Text(
-                "답변",
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontFamily: 'ExtraBold',
-                  fontSize: width * 0.05,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  // "답변" 숫자를 클릭했을 때의 행동을 여기에 구현
-                },
-                child: Text(
-                  "0", // 이 값을 실제 답변의 수로 대체하세요
-                  style: TextStyle(
-                    color: Colors.lightBlue[900],
-                    fontFamily: 'ExtraBold',
-                    fontSize: width * 0.05,
-                  ),
-                ),
-              ),
-            ],
+          Expanded(
+            child: _buildColumn("답변", "0", width),
           ),
-          Column(
-            children: [
-              Text(
-                "가입 스터디",
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontFamily: 'ExtraBold',
-                  fontSize: width * 0.05,
-                ),
+          Expanded(
+            child: _buildColumn("스터디", "0", width),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildColumn(String title, String value, double width) {
+    return Container(
+      height: 110,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontFamily: 'ExtraBold',
+              fontSize: width * 0.05,
+            ),
+          ),
+          SizedBox(height: 10.0),
+          GestureDetector(
+            onTap: () {
+              // 숫자를 클릭했을 때의 행동을 여기에 구현
+            },
+            child: Text(
+              value,
+              style: TextStyle(
+                color: Color(0xFF678DBE),
+                fontFamily: 'ExtraBold',
+                fontSize: width * 0.10,
               ),
-              GestureDetector(
-                onTap: () {
-                  // "가입 스터디" 숫자를 클릭했을 때의 행동을 여기에 구현
-                },
-                child: Text(
-                  "0", // 이 값을 실제 가입 스터디의 수로 대체하세요
-                  style: TextStyle(
-                    color: Colors.lightBlue[900],
-                    fontFamily: 'ExtraBold',
-                    fontSize: width * 0.05,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ],
       ),

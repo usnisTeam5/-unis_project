@@ -3,6 +3,7 @@ import '../css/css.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CoinWithdrawalScreen extends StatefulWidget {
   @override
@@ -133,7 +134,10 @@ class _CoinWithdrawalScreenState extends State<CoinWithdrawalScreen> {
                           ),
                         ),
                         ),
-                        Icon(Icons.stars, color: Colors.blue),
+                        Padding(
+                          padding: EdgeInsets.only(top: 3),
+                          child: SvgPicture.asset('image/point.svg', width: 32, height: 32),
+                        )
                       ],
                     ),
                     //_coinInfoRow("총 인출 금액", coinWithdraw),
@@ -268,7 +272,10 @@ class _CoinWithdrawalScreenState extends State<CoinWithdrawalScreen> {
         Row(
           children: [
             Text('${formatNumber(coin)}   ', style: TextStyle(fontFamily: 'Bold')),
-            Icon(Icons.stars, color: Colors.blue),
+            Padding(
+              padding: EdgeInsets.only(top: 3),
+              child: SvgPicture.asset('image/point.svg', width: 32, height: 32),
+            )
           ],
         ),
       ],

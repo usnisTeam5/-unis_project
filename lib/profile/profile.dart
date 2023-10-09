@@ -6,6 +6,7 @@ import 'friend.dart';
 import 'package:unis_project/profile/profile_settings.dart';
 import 'package:unis_project/css/css.dart';
 import 'dart:math';
+import 'package:flutter_svg/flutter_svg.dart';
 
 void main() {
   runApp(const Profile());
@@ -120,6 +121,7 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
         borderRadius: BorderRadius.circular(40.0),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
             children: [
@@ -163,11 +165,11 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
                           color: Colors.grey[700],
                         ),
                       ),
-                      SizedBox(width: 7), // Horizontal spacing
-                      Icon(
-                        Icons.monetization_on_outlined,
-                        color: Colors.yellow[600],
-                      ),
+                      SizedBox(width: 3),
+                      Padding(
+                        padding: EdgeInsets.only(top: 3),
+                        child: SvgPicture.asset('image/point.svg', width: 32, height: 32),
+                      )
                     ],
                   ),
                 ],
@@ -210,7 +212,7 @@ class StatsSection extends StatelessWidget {
         children: [
           _buildStatColumn("질문", "0", width, context),
           _buildStatColumn("답변", "0", width, context),
-          _buildStatColumn("가입 스터디", "0", width, context),
+          _buildStatColumn("스터디", "0", width, context),
         ],
       ),
     );
