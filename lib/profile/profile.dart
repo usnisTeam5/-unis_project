@@ -121,6 +121,7 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
         borderRadius: BorderRadius.circular(40.0),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Row(
             children: [
@@ -211,7 +212,7 @@ class StatsSection extends StatelessWidget {
         children: [
           _buildStatColumn("질문", "0", width, context),
           _buildStatColumn("답변", "0", width, context),
-          _buildStatColumn("가입 스터디", "0", width, context),
+          _buildStatColumn("스터디", "0", width, context),
         ],
       ),
     );
