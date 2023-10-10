@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../css/css.dart';
 import 'other_profile.dart';
 import 'dart:math';
-import '../profile/profile.dart'; // Adjust according to your file structure
+import '../profile/profile.dart';
 
 void main() => runApp(FriendsList());
 
@@ -98,13 +98,9 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
               child: Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey,),
+                    icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.grey,),
                     onPressed: () {
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyProfilePage()),
-                      );
+                      Navigator.pop(context);
                     },
                   ),
                   Container(

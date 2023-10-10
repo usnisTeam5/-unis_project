@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Round', // 글꼴 테마 설정
       ),
-      home: MyQHistory(selectedIndex: 1,),
+      home: MyQHistory(selectedIndex: 0,),
     );
   }
 }
