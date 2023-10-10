@@ -77,7 +77,23 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
   }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   int messageSendCount = 0;
+
+  bool hasUserSentMessage = false;
 
   void _sendMessage(String text, String sender, bool isMine) {
     if (text.isEmpty) { // 메시지 입력 안 하면 팝업
@@ -98,6 +114,37 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
       );
       return;
     }
+
+
+
+    setState(() {
+      hasUserSentMessage = false;
+      ElevatedButton(
+        onPressed: () {
+          if (text.isEmpty) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('알림'),
+                  content: Text('질문을 입력해주세요'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text('확인'),
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+        },
+        child: Text('금액 설정'),
+      );
+    });
+
+
+
 
     setState(() {
       messageSendCount++;
@@ -205,7 +252,7 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return PostSettings(hasUserSentMessage: true);
+                  return PostSettings(hasUserSentMessage: hasUserSentMessage);
                 },
               );
             },

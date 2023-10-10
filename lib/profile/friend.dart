@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../css/css.dart';
 import 'other_profile.dart';
 import 'dart:math';
-import '../profile/profile.dart'; // Adjust according to your file structure
+import '../profile/profile.dart';
 
 void main() => runApp(FriendsList());
 
