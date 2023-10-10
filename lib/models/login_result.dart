@@ -1,7 +1,7 @@
 class LoginResult {
-  final String msg;
-  final int userKey;
-  final String userNickName;
+  String msg;
+  int userKey;
+  String userNickName;
 
   LoginResult({
     required this.msg,

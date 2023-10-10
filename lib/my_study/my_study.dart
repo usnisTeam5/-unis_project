@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
 
 class StudyScreen extends StatelessWidget {
   final List<Study> studies = [
-    Study(title: '공부할 사람fsdfs', subject: '컴퓨터 그래픽스 &&,,,,,&&&', description: '스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용', members: '3/5 명', startDate: '2023-01-01'),
+    Study(title: '컴공과 학생들 모여라', subject: '휴먼인터페이스', description: '스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용', members: '3/5 명', startDate: '2023-01-01'),
     Study(title: '스터디 제목 2', subject: '과목명 2', description: '스터디 설명 2', members: '4/5 명', startDate: '2023-01-02'),
     // ... more studies
   ];
@@ -65,23 +65,20 @@ class StudyScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
-                        children: [
-                          Text(study.title, style: TextStyle(color: Colors.grey[600], fontFamily: 'Bold', fontSize: width * 0.06)),
+                          Text(study.title, style: TextStyle(color: Colors.grey[600], fontFamily: 'Bold', fontSize: width * 0.05), overflow: TextOverflow.ellipsis,),
                           SizedBox(width: 10,),
-                          Expanded(
-                            child: Text(
-                              study.subject,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  color: Color(0xFF3D6094),
-                                  fontFamily: 'Bold',
-                                  fontSize: width * 0.03),
-                            ),
+                      SizedBox(height: 14),
+                      Container(
+                        width: width-35,
+                        child: Text(
+                            study.subject,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Color(0xFF3D6094),
+                                fontFamily: 'Bold',
+                                fontSize: width * 0.03),
+                          //textAlign: TextAlign.right,
                           ),
-                        ],
                       ),
                       SizedBox(height: 14),
                       Text(

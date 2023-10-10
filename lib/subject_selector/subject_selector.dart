@@ -99,7 +99,7 @@ class _SubjectSelectorState extends State<SubjectSelector> {
             itemBuilder: (BuildContext context, int index) {
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 3.0),
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding: const EdgeInsets.only(right: 10,top: 8,bottom: 8),
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(color: Colors.grey[300]!, width: 1.0),  // 회색 테두리 추가

@@ -37,8 +37,12 @@ class HomeController {
   }
 }
 
-// MyHomePage 클래스: 홈 화면 구성
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   final HomeController _controller = HomeController(); // HomeController 인스턴스 생성
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
