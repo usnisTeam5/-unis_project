@@ -98,13 +98,9 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
               child: Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey,),
+                    icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.grey,),
                     onPressed: () {
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyProfilePage()),
-                      );
+                      Navigator.pop(context);
                     },
                   ),
                   Container(

@@ -8,6 +8,8 @@ import 'dart:math';
 import 'package:provider/provider.dart';
 import '../view_model/login_result_view_model.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
@@ -22,26 +24,22 @@ void main() async{
             create: (context) => LoginViewModel(),
           ),
         ],
-        child: UnisApp(),
-        /*
-         runApp(
-            ChangeNotifierProvider(
-                create: (_) => Counts(),
-                child: MyApp(),
-           ),
-         ); 이런식으로 단일로 해도 됨.
-         */
+        child: UnisApp(navigatorKey: navigatorKey)
       ),
   );
 }
 
 class UnisApp extends StatelessWidget {
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  UnisApp({required this.navigatorKey});
   @override
   Widget build(BuildContext context) {
     final width = min(MediaQuery.of(context).size.width,500.0);
     final height = min(MediaQuery.of(context).size.height,700.0);
 
     return MaterialApp(
+      navigatorKey: navigatorKey,
       builder: (context, child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),

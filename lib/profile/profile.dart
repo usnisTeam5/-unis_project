@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 //import 'package:circle_avatar/circle_avatar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:unis_project/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'dart:io';
 import '../menu/point_charge.dart';
 import 'friend.dart';
@@ -10,20 +11,18 @@ import 'dart:math';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:unis_project/myQHistory/myQHistory.dart';
 
-void main() {
-  runApp(const Profile());
-}
 
-class Profile extends StatelessWidget {
-  const Profile({super.key});
+class MyApp extends StatelessWidget {
+  final HomeController controller;
+
+  MyApp({required this.controller});
 
   @override
   Widget build(BuildContext context) {
     final width = min(MediaQuery.of(context).size.width,500.0);
     final height = min(MediaQuery.of(context).size.height,700.0);
     return MaterialApp(
-
-      home: MyProfilePage(),
+      home: MyProfilePage(controller: controller),
       theme: ThemeData(
         fontFamily: 'Round',
       ),
@@ -32,6 +31,10 @@ class Profile extends StatelessWidget {
 }
 
 class MyProfilePage extends StatelessWidget {
+  final HomeController controller;
+
+  MyProfilePage({required this.controller});
+
   @override
   Widget build(BuildContext context) {
     double width = min(MediaQuery.of(context).size.width,500);
@@ -82,7 +85,7 @@ class MyProfilePage extends StatelessWidget {
         child: Column(
           children: [
             ProfileInfoSection(),
-            StatsSection(),
+            StatsSection(controller: controller),
             CoursesSection(),
           ],
         ),
@@ -209,6 +212,9 @@ enum StatsCategory {
 }
 
 class StatsSection extends StatelessWidget {
+  final HomeController controller;
+
+  StatsSection({required this.controller});
   @override
   Widget build(BuildContext context) {
     double width = min(MediaQuery.of(context).size.width,500.0);
@@ -224,22 +230,13 @@ class StatsSection extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildStatColumn("질문", "0", width, context, () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => MyQHistory(selectedIndex: 0)
-                )
-            );
+            controller.onItemTapped(1);
           }),
           _buildStatColumn("답변", "0", width, context, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => MyQHistory(selectedIndex: 1)),
-            );
+            controller.onItemTapped(1);
           }),
           _buildStatColumn("스터디", "0", width, context, () {
-            onTap: () {
-            };
+            controller.onItemTapped(3);
           }),
         ],
       ),
@@ -249,12 +246,15 @@ class StatsSection extends StatelessWidget {
   Column _buildStatColumn(String title, String number, double width, BuildContext context, Null Function() param4) {
     return Column(
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontFamily: 'ExtraBold',
-            fontSize: width * 0.05,
+        GestureDetector(
+          onTap: param4,
+          child:  Text(
+            title,
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontFamily: 'ExtraBold',
+              fontSize: width * 0.05,
+            ),
           ),
         ),
         SizedBox(height: 10.0),

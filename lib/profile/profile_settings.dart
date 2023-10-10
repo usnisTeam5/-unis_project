@@ -5,6 +5,20 @@ import 'dart:math';
 import '../search_department/search_department.dart';
 import '../search_subject/search_subject.dart';
 import '../login/login.dart';
+import 'package:restart_app/restart_app.dart';
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      // 앱 전체 테마 설정
+      theme: ThemeData(
+        fontFamily: 'Round', // 글꼴 테마 설정
+      ),
+      home: ProfileSettings(), // 홈 화면 설정
+    );
+  }
+}
 
 class ProfileSettings extends StatelessWidget {
   @override
@@ -56,12 +70,10 @@ class ProfileSettings extends StatelessWidget {
                   );
                   break;
                 case '로그아웃':
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                  );
-                  break;
-              }
+                 Navigator.pop(context);
+                 Navigator.pop(context);
+                 break;
+              } //
             },
             child: Container(
               padding: const EdgeInsets.all(16.0),

@@ -48,8 +48,12 @@ class HomeController {
   }
 }
 
-// MyHomePage 클래스: 홈 화면 구성
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   final HomeController _controller = HomeController(); // HomeController 인스턴스 생성
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -79,6 +83,10 @@ class MyHomePage extends StatelessWidget {
           Navigator.of(context).pop();
           return false;
         }
+        if (_controller.currentIndexNotifier.value != 0) {
+          _controller.onItemTapped(0); // _controller의 값이 0으로 설정됩니다.
+          return false; // 실제로 앱을 종료하지 않고, 단순히 UI를 재구성합니다.
+        }
         return await _showExitConfirmationDialog(context);
         // 뒤로 가기 동작 방지
       },
@@ -97,7 +105,7 @@ class MyHomePage extends StatelessWidget {
                   case 1:
                     return const MyQHistory(selectedIndex: 0);
                   case 2:
-                    return const Profile();
+                    return MyProfilePage(controller: _controller);
                   case 3:
                     return StudyScreen();
                   case 4:
