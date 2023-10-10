@@ -48,7 +48,6 @@ class OthersProfilePage extends StatelessWidget {
           icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey),
           onPressed: () {
             Navigator.pop(context);
-            Navigator.pop(context, MaterialPageRoute(builder: (context) => FriendsList()));
           },
         ),
       ),

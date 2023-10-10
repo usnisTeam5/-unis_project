@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:unis_project/question/question.dart';
 import '../subject_selector/subject_selector.dart';
 import '../css/css.dart';
+import '../profile/friend.dart';
 
 
 
@@ -44,7 +45,9 @@ class _PostSettingsState extends State<PostSettings> {
   bool isQuestionType1Selected = false;
   bool isQuestionType2Selected = false;
   bool isAnonymousSelected = false;
+  bool isWarningSelected = false;
   String? selectedSubject;
+  String? selectedFriend;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +71,7 @@ class _PostSettingsState extends State<PostSettings> {
         automaticallyImplyLeading: false,
         centerTitle: true,
         elevation: 0,
-        title: GradientText(width: width, text: '금액 설정 및 옵션', tSize: 0.06, tStyle: 'Bold'),
+        title: GradientText(width: width, text: '금액 설정 및 옵션', tSize: 0.05, tStyle: 'Bold'),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1.0),
           child: Container(
@@ -141,17 +144,17 @@ class _PostSettingsState extends State<PostSettings> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('찜 (선택)', style: TextStyle(fontSize: 18, fontFamily: 'Bold', color: Colors.grey[600])),
-                selectedSubject != null
-                    ? Text(selectedSubject!, style: TextStyle(fontSize: 16))
+                selectedFriend != null
+                    ? Text(selectedFriend!, style: TextStyle(fontSize: 16))
                     : IconButton(
                   onPressed: () async {
                     final result = await Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => FriendsList()),
+                      MaterialPageRoute(builder: (context) => MyListScreen()),
                     );
                     if (result != null && result is String) {
                       setState(() {
-                        selectedSubject = result;
+                        selectedFriend = result;
                       });
                     }
                   },
@@ -206,16 +209,16 @@ class _PostSettingsState extends State<PostSettings> {
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 25),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('족보 금지', style: TextStyle(fontSize: 18, fontFamily: 'Bold', color: Colors.grey[600])),
+                Text('족보 관련 질문시, 해당 글의 포인트 전액을 신고자에게 전달하는 것에 동의합니다.', style: TextStyle(fontSize: 12, fontFamily: 'Bold', color: Colors.grey[400])),
                 Checkbox(
-                  value: isAnonymousSelected,
+                  value: isWarningSelected,
                   onChanged: (value) {
                     setState(() {
-                      isAnonymousSelected = value ?? false;
+                      isWarningSelected = value ?? false;
                     });
                   },
                 ),
@@ -254,6 +257,18 @@ class _PostSettingsState extends State<PostSettings> {
                     SnackBar(
                       content: Text(
                         '질문 유형을 선택해주세요',
+                        style: TextStyle(fontFamily: 'Bold', color: Colors.grey[600],),
+                      ),
+                      backgroundColor: Colors.white,
+                    ),
+                  );
+                  return;
+                }
+                if (isWarningSelected == false) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '족보 관련 주의사항에 동의해주세요.',
                         style: TextStyle(fontFamily: 'Bold', color: Colors.grey[600],),
                       ),
                       backgroundColor: Colors.white,
