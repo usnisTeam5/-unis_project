@@ -17,23 +17,40 @@ class FriendsList extends StatelessWidget {
         fontFamily: 'Bold',
       ),
       home: MyListScreen(),
+      routes: {
+        // ... 기존 라우트
+        '/favoritesList': (context) {  // MyListScreenArguments를 읽어옴
+          final args = ModalRoute.of(context)?.settings.arguments as MyListScreenArguments?;
+          return MyListScreen(initialTabIndex: args?.initialTabIndex ?? 0);
+        },
+      },
     );
   }
 }
 
+class MyListScreenArguments { //Argument 전달용 클래스
+  final int initialTabIndex;
+
+  MyListScreenArguments(this.initialTabIndex);
+}
+
 class MyListScreen extends StatefulWidget {
+  final int initialTabIndex;
+
+  MyListScreen({Key? key, this.initialTabIndex = 0}) : super(key: key);
+
   @override
   _MyListScreenState createState() => _MyListScreenState();
 }
 
 class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderStateMixin {
-  TabController? _tabController;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-    _tabController!.addListener(_handleTabSelection);
+    _tabController = TabController(length: 3, vsync: this, initialIndex: widget.initialTabIndex);
+    _tabController.addListener(_handleTabSelection);
   }
 
   @override
@@ -81,16 +98,17 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
               child: Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey),
+                    icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey,),
                     onPressed: () {
-                      // Navigating to MyProfilePage
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => MyProfilePage()),
                       );
                     },
                   ),
-                  Expanded(
+                  Container(
+                    width: 216,
                     child: TabBar(
                       controller: _tabController,
                       tabs: [
@@ -126,6 +144,7 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
       ),
     );
   }
+
 
   ListView buildListView() {
     // This code block remains unchanged from your original code.

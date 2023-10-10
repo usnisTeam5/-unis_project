@@ -136,8 +136,8 @@ class _CoinWithdrawalScreenState extends State<CoinWithdrawalScreen> {
                         ),
                         Padding(
                           padding: EdgeInsets.only(top: 3),
-                          child: SvgPicture.asset('image/point.svg', width: 32, height: 32),
-                        )
+                          child: SvgPicture.asset('image/point.svg', width: 20, height: 28, color: Colors.blue[400],),
+                        ),
                       ],
                     ),
                     //_coinInfoRow("총 인출 금액", coinWithdraw),

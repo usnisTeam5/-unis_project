@@ -95,7 +95,7 @@ class MyHomePage extends StatelessWidget {
                   case 0:
                     return const QuestionPage();  // question.dart 파일의 MyApp 클래스를 여기서 호출
                   case 1:
-                    return const MyQHistory();
+                    return const MyQHistory(selectedIndex: 0);
                   case 2:
                     return const Profile();
                   case 3:

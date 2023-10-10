@@ -91,92 +91,106 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                 radius: 50.0,
                 backgroundImage: AssetImage('assets/unis.png'),
               ),
-              SizedBox(width: 16.0),
+              SizedBox(width: 40.0),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "닉네임: 물만두",
+                    "닉네임 : 물만두",
                     style: TextStyle(
                       fontFamily: 'Bold',
+                      color: Colors.grey[600]
                     ),
                   ),
-                  SizedBox(height: 10.0),
+                  SizedBox(height: 13.0),
                   Text(
                     "학과(학부): 소프트웨어학부",
                     style: TextStyle(
-                      fontFamily: 'Bold',
+                        fontFamily: 'Bold',
+                        color: Colors.grey[600]
                     ),
+                  ),
+                  SizedBox(height: 16.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          _isFavoriteSelected ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                          color: _isFavoriteSelected ? Colors.red : Colors.grey,
+                        ),
+                        onPressed: () {
+                          if (!_isPersonOffSelected) { // 차단 상태가 아니라면
+                            setState(() {
+                              _isFavoriteSelected = !_isFavoriteSelected;
+                            });
+                          }
+                        },
+                      ),
+                      SizedBox(width: 15.0),
+                      IconButton(
+                        icon: Icon(Icons.chat_bubble_rounded, color: Colors.grey,),
+                        onPressed: _isPersonOffSelected // 차단 상태라면 null, 아니라면 함수 실행
+                            ? null
+                            : () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ChatScreen()
+                              )
+                          );
+                        },
+                      ),
+                      SizedBox(width: 15.0),
+                      IconButton(
+                        icon: Icon(
+                          Icons.person_add_rounded,
+                          color: _isPersonAddSelected ? Colors.blue : Colors.grey,
+                        ),
+                        onPressed: _isPersonOffSelected // 차단 상태라면 null, 아니라면 함수 실행
+                            ? null
+                            : () {
+                          setState(() {
+                            _isPersonAddSelected = !_isPersonAddSelected;
+                          });
+                        },
+                      ),
+                      SizedBox(width: 15.0),
+                      IconButton(
+                        icon: Icon(
+                          Icons.person_off_rounded,
+                          color: _isPersonOffSelected ? Colors.red : Colors.grey,
+                        ),
+                        onPressed: (_isFavoriteSelected || _isPersonAddSelected) // 찜하거나 친추 상태라면 null, 아니라면 함수 실행
+                            ? null
+                            : () {
+                          setState(() {
+                            _isPersonOffSelected = !_isPersonOffSelected;
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
             ],
           ),
           SizedBox(height: 16.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              IconButton(
-                icon: Icon(
-                  _isFavoriteSelected ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                  color: _isFavoriteSelected ? Colors.red : Colors.grey,
-                ),
-                onPressed: () {
-                  if (!_isPersonOffSelected) { // 차단 상태가 아니라면
-                    setState(() {
-                      _isFavoriteSelected = !_isFavoriteSelected;
-                    });
-                  }
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.message_rounded, color: Colors.grey,),
-                onPressed: _isPersonOffSelected // 차단 상태라면 null, 아니라면 함수 실행
-                    ? null
-                    : () {
-                  // 메시지 버튼 로직 (차단 상태가 아니라면 실행)
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.person_add_rounded,
-                  color: _isPersonAddSelected ? Colors.blue : Colors.grey,
-                ),
-                onPressed: _isPersonOffSelected // 차단 상태라면 null, 아니라면 함수 실행
-                    ? null
-                    : () {
-                  setState(() {
-                    _isPersonAddSelected = !_isPersonAddSelected;
-                  });
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.person_off_rounded,
-                  color: _isPersonOffSelected ? Colors.red : Colors.grey,
-                ),
-                onPressed: (_isFavoriteSelected || _isPersonAddSelected) // 찜하거나 친추 상태라면 null, 아니라면 함수 실행
-                    ? null
-                    : () {
-                  setState(() {
-                    _isPersonOffSelected = !_isPersonOffSelected;
-                  });
-                },
-              ),
-            ],
+          Text(
+            '안녕하세요!                                                                     ',
+            style: TextStyle(fontFamily: 'Bold', color: Colors.grey[600], fontSize: 15),
           ),
-          SizedBox(height: 16.0),
-          TextField(
-            maxLength: 15,
-            decoration: InputDecoration(
-              labelText: '자기소개',
-            ),
+          Container(
+            margin: EdgeInsets.only(top: 4),
+            height: 1.3,
+            color: Colors.grey,
           ),
         ],
       ),
     );
   }
 }
+
 
 
 
@@ -267,7 +281,7 @@ class SatisfactionAndReportSection extends StatelessWidget {
             child: Text("신고하기"),
             style: ElevatedButton.styleFrom(
               primary: Colors.white,
-              onPrimary: Colors.grey,
+              onPrimary: Colors.red,
               textStyle: TextStyle(fontFamily: 'Bold'),
             ),
           ),

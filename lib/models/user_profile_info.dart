@@ -1,7 +1,7 @@
 
 class UserProfileInfo {
   //final String nickName; // 얘는 당분간 제외
-  final List<String> major;
+  List<String> major;
   final String introduction;
   final List<String> currentCourses;
   final List<String> pastCourses;

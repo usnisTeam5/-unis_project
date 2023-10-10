@@ -75,6 +75,7 @@ class QuestionPage extends StatelessWidget {
                         color: Colors.white,
                         fontSize: width *0.04,
                       ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
@@ -91,7 +92,7 @@ class QuestionPage extends StatelessWidget {
           itemBuilder: (context, index) => Padding(
             padding: EdgeInsets.only(bottom: index == 14 ? 16.0 : 8.0,
             ),
-            child: QuestionItem(index, '컴퓨터 그래픽스'),
+            child: QuestionItem(index, '컴퓨터 그래픽스와 휴먼인터페이스와 수치해석'),
           ),
         ),
       ),
@@ -121,7 +122,7 @@ class QuestionItem extends StatelessWidget {
       },
       child: Container(
         margin: EdgeInsets.only( // 리스트 마진
-          top: index == 0 ? 20 : 10,
+          top: index == 0 ? 20 : 7,
           bottom: index == 14 ? 30 : 1,
           left: 30,
           right: 30,
@@ -145,12 +146,16 @@ class QuestionItem extends StatelessWidget {
                     fontSize: 17,
                   ),
                 ),
-                Text(
-                  subjectName,
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontFamily: 'Bold',
-                    fontSize: 17,
+                Container(
+                  width: width- 210,
+                  child: Text(
+                    subjectName,
+                    style: TextStyle(
+                      color: Colors.grey[700],
+                      fontFamily: 'Bold',
+                      fontSize: 15,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -167,8 +172,8 @@ class QuestionItem extends StatelessWidget {
                 SizedBox(width: 1), // 2000과 아이콘 사이의 간격
                 Padding(
                   padding: EdgeInsets.only(top: 3),
-                  child: SvgPicture.asset('image/point.svg', width: 32, height: 32),
-                )
+                  child: SvgPicture.asset('image/point.svg', width: 20, height: 28, color: Colors.blue[400],),
+                ),
               ],
             ),
           ],

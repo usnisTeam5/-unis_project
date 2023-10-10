@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:unis_project/css/css.dart';
 import 'dart:math';
+
+import '../search_department/search_department.dart';
+import '../search_subject/search_subject.dart';
+import '../login/login.dart';
+
 class ProfileSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -37,8 +42,27 @@ class ProfileSettings extends StatelessWidget {
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
-              Navigator.pop(context);
-              },
+              switch(itemsText[index]) {
+                case '학부 설정':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SearchDepartment()),
+                  );
+                  break;
+                case '과목 설정하기':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SearchSubject()),
+                  );
+                  break;
+                case '로그아웃':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                  break;
+              }
+            },
             child: Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -53,8 +77,8 @@ class ProfileSettings extends StatelessWidget {
                     itemsText[index],
                     style: TextStyle(
                       color: itemsText[index] == '회원 탈퇴' ? Colors.red : Colors.grey[600],
-                        fontSize: 20,
-                        fontFamily: 'Bold',
+                      fontSize: 20,
+                      fontFamily: 'Bold',
                     ),
                   ),
                   Icon(Icons.keyboard_arrow_right, size: 35, color: Colors.grey[400],),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+// 비밀번호 8! 20자 , 닉네임 10자 이하.
 // APPBAR 글씨 bold, 크기 width * 0.6
 //GradientText(width: width, text: '내 문답', tSize: 0.06, tStyle: 'Bold'), 참고하세요
 //  GradientText(width: width, tSize: 0.15, text:'유니스', tStyle: 'ExtraBold' ),
@@ -68,6 +68,7 @@ class GradientText extends StatelessWidget {
           fontFamily: tStyle,
           fontSize: width * tSize,
         ),
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }
@@ -101,6 +102,7 @@ class GradientText2 extends StatelessWidget {
           fontFamily: tStyle,
           fontSize: width * tSize,
         ),
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }
