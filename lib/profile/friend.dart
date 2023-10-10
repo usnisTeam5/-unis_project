@@ -108,8 +108,8 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
                     child: TabBar(
                       controller: _tabController,
                       tabs: [
-                        Tab(child: gradientTabText(width, '친구', 0)),
-                        Tab(child: gradientTabText(width, '찜', 1)),
+                        Tab(child: gradientTabText(width, '찜', 0)),
+                        Tab(child: gradientTabText(width, '친구', 1)),
                         Tab(child: gradientTabText(width, '차단', 2)),
                       ],
                       indicatorColor: Colors.white,

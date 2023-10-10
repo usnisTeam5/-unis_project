@@ -75,6 +75,7 @@ class ProfileSettings extends StatelessWidget {
                  break;
               } //
             },
+
             child: Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(

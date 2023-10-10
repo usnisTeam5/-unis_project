@@ -62,7 +62,7 @@ class MyProfilePage extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => FriendsList()),
+              MaterialPageRoute(builder: (context) => MyListScreen()),
             );
           },
           color: Colors.grey[400],

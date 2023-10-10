@@ -170,7 +170,7 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
         automaticallyImplyLeading: false,
         elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.keyboard_arrow_left, size: 35, color: Colors.grey,),
+            icon: Icon(Icons.keyboard_arrow_left, size: 30, color: Colors.grey,),
             onPressed: () {
               showDialog(
                 context: context,
@@ -200,6 +200,17 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
           ),
 
         actions: [
+
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyListScreen()),
+              );
+            },
+            icon: Icon(Icons.favorite, color: Colors.red), // 찜 목록
+          ),
+
           TextButton(
             onPressed: () {
               showDialog(
