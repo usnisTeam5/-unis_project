@@ -167,8 +167,8 @@ class QuestionItem extends StatelessWidget {
                 SizedBox(width: 1), // 2000과 아이콘 사이의 간격
                 Padding(
                   padding: EdgeInsets.only(top: 3),
-                  child: SvgPicture.asset('image/point.svg', width: 32, height: 32),
-                )
+                  child: SvgPicture.asset('image/point.svg', width: 20, height: 28, color: Colors.blue[400],),
+                ),
               ],
             ),
           ],

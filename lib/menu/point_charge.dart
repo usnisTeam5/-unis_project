@@ -39,8 +39,8 @@ class PointChargeScreen extends StatelessWidget {
               SizedBox(width: 20), // 추가적인 공간을 위해
               Padding(
                 padding: EdgeInsets.only(top: 3),
-                child: SvgPicture.asset('image/point.svg', width: 32, height: 32),
-              )
+                child: SvgPicture.asset('image/point.svg', width: 20, height: 28, color: Colors.blue[400],),
+              ),
             ],
           ),
         ],
@@ -139,8 +139,8 @@ class PointChargeScreen extends StatelessWidget {
               Text('${formatNumber(point)}', style: TextStyle(fontFamily: 'Bold',color: Colors.grey[500],fontSize: 16),),
               Padding(
                 padding: EdgeInsets.only(top: 3),
-                child: SvgPicture.asset('image/point.svg', width: 32, height: 32),
-              )
+                child: SvgPicture.asset('image/point.svg', width: 20, height: 28, color: Colors.blue[400],),
+              ),
             ],
           ),
           Text('${formatNumber(point)} 원' , style: TextStyle(fontFamily: 'Bold',color: Colors.grey[500],fontSize: 16),),

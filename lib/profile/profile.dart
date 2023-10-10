@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 //import 'package:circle_avatar/circle_avatar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import '../menu/point_charge.dart';
 import 'friend.dart';
 import 'package:unis_project/profile/profile_settings.dart';
 import 'package:unis_project/css/css.dart';
 import 'dart:math';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:unis_project/myQHistory/myQHistory.dart';
 
 void main() {
   runApp(const Profile());
@@ -17,6 +19,8 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = min(MediaQuery.of(context).size.width,500.0);
+    final height = min(MediaQuery.of(context).size.height,700.0);
     return MaterialApp(
 
       home: MyProfilePage(),
@@ -140,36 +144,37 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: 13.0),
                   Text(
-                    "닉네임 : 물만두",
-                    style: TextStyle(
-                      fontFamily: 'Bold',
-                      color: Colors.grey[700],
-                    ),
+                    "닉네임 : 물만두", style: TextStyle(fontFamily: 'Bold',color: Colors.grey[600],),
                   ),
-                  SizedBox(height: 10.0), // <-- Add vertical spacing
+                  SizedBox(height: 13.0),
                   Text(
-                    "학과(학부) : 소프트웨어학부",
-                    style: TextStyle(
-                      fontFamily: 'Bold',
-                      color: Colors.grey[700],
-                    ),
+                    "학과(학부) : 소프트웨어학부", style: TextStyle(fontFamily: 'Bold', color: Colors.grey[600],),
                   ),
-                  SizedBox(height: 10.0), // <-- Add vertical spacing
-                  Row(  // <-- Wrap with Row
+                  SizedBox(height: 5.0),
+                  Row(
                     children: [
-                      Text(
-                        "보유 포인트 : 2000",
-                        style: TextStyle(
-                          fontFamily: 'Bold',
-                          color: Colors.grey[700],
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => PointChargeScreen()),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              "보유 포인트 : 2000", style: TextStyle(fontFamily: 'Bold', color: Colors.grey[600],),
+                            ),
+                            SizedBox(width: 3),
+                            Padding(
+                              padding: EdgeInsets.only(top: 3),
+                              child: SvgPicture.asset('image/point.svg', width: 20, height: 28, color: Colors.blue[400],),
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(width: 3),
-                      Padding(
-                        padding: EdgeInsets.only(top: 3),
-                        child: SvgPicture.asset('image/point.svg', width: 32, height: 32),
-                      )
                     ],
                   ),
                 ],
@@ -179,9 +184,17 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
           SizedBox(height: 16.0),
           TextField(
             maxLength: 15,
+            cursorColor: Color(0xFF678DBE),
             decoration: InputDecoration(
-              labelText: '나를 소개하세요',
+              hintText: '나를 소개하세요',
+              hintStyle: TextStyle(
+                color: Colors.grey[400],
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xFF678DBE)),
+              ),
             ),
+            style: TextStyle(fontFamily: 'Bold', color: Colors.grey[600], fontSize: 15),
           ),
         ],
       ),
@@ -210,15 +223,30 @@ class StatsSection extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatColumn("질문", "0", width, context),
-          _buildStatColumn("답변", "0", width, context),
-          _buildStatColumn("스터디", "0", width, context),
+          _buildStatColumn("질문", "0", width, context, () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MyQHistory(selectedIndex: 0)
+                )
+            );
+          }),
+          _buildStatColumn("답변", "0", width, context, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MyQHistory(selectedIndex: 1)),
+            );
+          }),
+          _buildStatColumn("스터디", "0", width, context, () {
+            onTap: () {
+            };
+          }),
         ],
       ),
     );
   }
 
-  Column _buildStatColumn(String title, String number, double width, BuildContext context) {
+  Column _buildStatColumn(String title, String number, double width, BuildContext context, Null Function() param4) {
     return Column(
       children: [
         Text(
@@ -229,11 +257,9 @@ class StatsSection extends StatelessWidget {
             fontSize: width * 0.05,
           ),
         ),
-        SizedBox(height: 10.0),  // <-- Add vertical spacing
+        SizedBox(height: 10.0),
         GestureDetector(
-          onTap: () {
-            // Your onTap code here...
-          },
+          onTap: param4,
           child: Text(
             number,
             style: TextStyle(
@@ -253,46 +279,84 @@ class StatsSection extends StatelessWidget {
 
 
 
+
+
+
+
+
+
+
 class CoursesSection extends StatefulWidget {
   @override
   _CoursesSectionState createState() => _CoursesSectionState();
 }
 
 class _CoursesSectionState extends State<CoursesSection> {
-  final List<String> ongoingCourses = ['과목 1', '과목 2'];
-  final List<String> completedCourses = ['과목 A', '과목 B'];
+  List<String> ongoingCourses = ['인공지능', '컴퓨터 그래픽스', '알고리즘'];
+  List<String> completedCourses = [];
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(height: 20),
+        _buildCourseSection(
+          '수강 중인 과목',
+          ongoingCourses,
+              (course) {
+            setState(() {
+              completedCourses.add(course);
+              ongoingCourses.remove(course);
+            });
+          },
+          isOngoing: true,
+        ),
+        SizedBox(height: 20),
+        _buildCourseSection(
+          '수강한 과목',
+          completedCourses,
+              (course) {
+            setState(() {
+              ongoingCourses.add(course);
+              completedCourses.remove(course);
+            });
+          },
+          isOngoing: false,
+        ),
+        Padding(padding: EdgeInsets.only(bottom: 200.0)) // 맨 아래
+      ],
+    );
+  }
+
+  Widget _buildCourseSection(String title, List<String> courses, Function(String) onCourseChecked, {required bool isOngoing}) {
     return Container(
-      margin: const EdgeInsets.all(35),
+      margin: EdgeInsets.symmetric(horizontal: 20), // 너비
+      padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            offset: Offset(2, 2),
-            blurRadius: 5,
-            spreadRadius: 0,
-          ),
-        ],
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [],
       ),
-      child: ListView(
-        physics: BouncingScrollPhysics(),
-        shrinkWrap: true,  // Limits the height of ListView to its children's heights
+      child: Column(
         children: [
-          ExpansionTile(
-            title: Text('수강 중인 과목'),
-            children: ongoingCourses.map((course) => ListTile(title: Text(course))).toList(),
+          ListTile(
+            title: Text(title, style: TextStyle(fontFamily: 'Bold', fontSize: 20, color: Color(0xFF678DBE))),
           ),
-          ExpansionTile(
-            title: Text('수강한 과목'),
-            children: completedCourses.map((course) => ListTile(title: Text(course))).toList(),
+          ...courses.map(
+                (course) => ListTile(
+              title: Text(course, style: TextStyle(fontFamily:'Round', color: Colors.grey[800]),),
+              trailing: Checkbox(
+                checkColor: Colors.white,
+                fillColor: MaterialStateProperty.all(isOngoing ? Color(0xFF678DBE) : Colors.grey[100]),
+                side: BorderSide(color: Colors.grey),
+                shape: CircleBorder(),
+                value: isOngoing,
+                onChanged: (_) => onCourseChecked(course),
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 }
-

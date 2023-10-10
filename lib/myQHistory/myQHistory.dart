@@ -7,22 +7,27 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final width = min(MediaQuery.of(context).size.width,500.0);
+    final height = min(MediaQuery.of(context).size.height,700.0);
     return MaterialApp(
 
       theme: ThemeData(
         fontFamily: 'Round', // 글꼴 테마 설정
       ),
-      home: MyQHistory(),
+      home: MyQHistory(selectedIndex: 1,),
     );
   }
 }
 
 class MyQHistory extends StatefulWidget {
-  const MyQHistory({super.key});
+  final int selectedIndex;
+
+  const MyQHistory({Key? key, required this.selectedIndex}) : super(key: key);
 
   @override
   _QuestionAnswerScreenState createState() => _QuestionAnswerScreenState();
 }
+
 
 class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProviderStateMixin {
 
@@ -32,7 +37,7 @@ class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this, initialIndex: widget.selectedIndex);
     _tabController?.addListener(() {
       setState(() {
         _selectedIndex = _tabController?.index ?? 0;  // Update the selected index when the tab selection changes

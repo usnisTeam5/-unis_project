@@ -98,16 +98,17 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
               child: Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey),
+                    icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey,),
                     onPressed: () {
-                      // Navigating to MyProfilePage
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => MyProfilePage()),
                       );
                     },
                   ),
-                  Expanded(
+                  Container(
+                    width: 216,
                     child: TabBar(
                       controller: _tabController,
                       tabs: [
@@ -143,6 +144,7 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
       ),
     );
   }
+
 
   ListView buildListView() {
     // This code block remains unchanged from your original code.
