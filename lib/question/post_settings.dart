@@ -5,6 +5,32 @@ import 'package:unis_project/question/question.dart';
 import '../subject_selector/subject_selector.dart';
 import '../css/css.dart';
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class PostSettings extends StatefulWidget {
   final bool hasUserSentMessage;
   PostSettings({required this.hasUserSentMessage});
@@ -29,7 +55,11 @@ class _PostSettingsState extends State<PostSettings> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.keyboard_arrow_left, size: 35, color: Colors.grey),
+          icon: Icon(
+            Icons.keyboard_arrow_left,
+            size: 30,
+            color: Colors.grey,
+          ),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -68,8 +98,7 @@ class _PostSettingsState extends State<PostSettings> {
                           Text('$post '),
                           Padding(
                             padding: EdgeInsets.only(top: 3),
-                            child: SvgPicture.asset('image/point.svg',
-                                width: 32, height: 32),
+                            child: SvgPicture.asset('image/point.svg', width: 20, height: 28, color: Colors.blue[400],),
                           ),
                         ],
                       ),
@@ -96,6 +125,29 @@ class _PostSettingsState extends State<PostSettings> {
                     final result = await Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => SubjectSelector()),
+                    );
+                    if (result != null && result is String) {
+                      setState(() {
+                        selectedSubject = result;
+                      });
+                    }
+                  },
+                  icon: Icon(Icons.keyboard_arrow_right),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('찜 (선택)', style: TextStyle(fontSize: 18, fontFamily: 'Bold', color: Colors.grey[600])),
+                selectedSubject != null
+                    ? Text(selectedSubject!, style: TextStyle(fontSize: 16))
+                    : IconButton(
+                  onPressed: () async {
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => FriendsList()),
                     );
                     if (result != null && result is String) {
                       setState(() {
@@ -144,6 +196,21 @@ class _PostSettingsState extends State<PostSettings> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('익명으로 질문하기', style: TextStyle(fontSize: 18, fontFamily: 'Bold', color: Colors.grey[600])),
+                Checkbox(
+                  value: isAnonymousSelected,
+                  onChanged: (value) {
+                    setState(() {
+                      isAnonymousSelected = value ?? false;
+                    });
+                  },
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('족보 금지', style: TextStyle(fontSize: 18, fontFamily: 'Bold', color: Colors.grey[600])),
                 Checkbox(
                   value: isAnonymousSelected,
                   onChanged: (value) {
@@ -209,7 +276,7 @@ class _PostSettingsState extends State<PostSettings> {
                 child: Center(
                   child: Text(
                     '등록하기',
-                    style: TextStyle(color: Colors.white, fontSize: 20),
+                    style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'Bold'),
                   ),
                 ),
               ),
