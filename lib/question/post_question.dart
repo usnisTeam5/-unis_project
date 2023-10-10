@@ -205,7 +205,7 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
               Navigator.pushNamed(
                 context,
                 '/favoritesList',
-                arguments: MyListScreenArguments(1), // 1은 '찜' 탭의 인덱스
+                arguments: MyListScreenArguments(1),
               );
             },
             icon: Icon(Icons.favorite, color: Colors.red), // 찜 목록

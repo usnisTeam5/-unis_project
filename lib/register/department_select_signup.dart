@@ -3,6 +3,7 @@ import 'package:unis_project/search_department/search_department.dart';
 import 'package:unis_project/search_subject/search_subject.dart';
 import 'register.dart';
 import 'dart:math';
+import '../css/css.dart';
 void main() {
   runApp(Department_selection_screen());
 }
@@ -37,16 +38,33 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
     selectedCourses = selectedCourses.toSet().toList();
     return Scaffold(
       appBar: AppBar(
-        title: Text('학과 및 수강 과목 설정', style: TextStyle(fontFamily: 'Round')),
-        backgroundColor: Colors.blue[400],
-        actions: [
-          IconButton(
-            icon: Icon(Icons.close),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+        leading: IconButton(
+          icon: Icon(
+            Icons.keyboard_arrow_left,
+            size: 30,
           ),
-        ],
+          color: Colors.grey,
+          onPressed: () {
+            Navigator.pop(context); // 로그인 화면으로 되돌아가기
+          },
+        ),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        //centerTitle: true,
+        // Title을 중앙에 배치
+        title: GradientText(
+            width: width, text: '학과 및 수강과목 설정', tSize: 0.05, tStyle: 'Bold'),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.0),
+          // Set the height of the underline
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: MainGradient(),
+            ),
+            height: 2.0, // Set the thickness of the undedsrline
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -56,10 +74,12 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
             children: [
               // Department Selection
               Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,  // baseline으로 정렬
+                textBaseline: TextBaseline.alphabetic,
                 children: [
-                  Text('학과', style: TextStyle(fontFamily: 'Round')),
+                  GradientText(width: width, tSize: 0.05, text:'학과', tStyle: 'Round' ),
                   SizedBox(width: 10),  // 공간 추가
-                  Text('최대 2개 선택', style: TextStyle(fontFamily: 'Round', color: Colors.grey)),
+                  Text('최대 2개 선택', style: TextStyle(fontFamily: 'Round', color: Colors.grey,fontSize: width*0.03)),
                 ],
               ),
               TextField(
@@ -82,7 +102,7 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
                   shrinkWrap: true,
                   children: selectedDepartments.map((department) {
                     return ListTile(
-                      title: Text(department),
+                      title: Text(department, style: TextStyle(fontFamily: 'Bold'),),
                       trailing: IconButton(
                         icon: Icon(Icons.close),
                         onPressed: () {
@@ -100,10 +120,12 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
 
               // Course Selection
               Row(
-                  children:[
-                    Text('수강 과목', style: TextStyle(fontFamily: 'Round')),
+                  crossAxisAlignment: CrossAxisAlignment.baseline,  // baseline으로 정렬
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    GradientText(width: width, tSize: 0.05, text:'수강 과목', tStyle: 'Round' ),
                     SizedBox(width: 10),  // 공간 추가
-                    Text('최소 1개 선택', style: TextStyle(fontFamily: 'Round', color: Colors.grey)),
+                    Text('최소 1개 선택', style: TextStyle(fontFamily: 'Round', color: Colors.grey,fontSize: width*0.03)),
                   ]
               ),
               TextField(
@@ -126,7 +148,7 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
                   shrinkWrap: true,
                   children: selectedCourses.map((course) {
                     return ListTile(
-                      title: Text(course),
+                      title: Text(course, style: TextStyle(fontFamily: 'Bold'),),
                       trailing: IconButton(
                         icon: Icon(Icons.close),
                         onPressed: () {
@@ -144,40 +166,79 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(width * 0.2, height * 0.05),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                  Container(
+                    constraints: BoxConstraints(
+                      minWidth: width * 0.2, // Minimum width of the container
+                      minHeight: height * 0.05, // Minimum height of the container
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16.0),
+                      gradient: MainGradient(),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16.0),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
+                            child: Text(
+                              '이전',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Bold',
+                                fontSize: width * 0.04,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                    onPressed: () {
-                      // 이전 버튼 클릭 로직
-                      Navigator.pop(context);
-                    },
-                    child: Text('이전'),
                   ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(width * 0.2, height * 0.05),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                  Container(
+                    constraints: BoxConstraints(
+                      minWidth: width * 0.2, // Minimum width of the container
+                      minHeight: height * 0.05, // Minimum height of the container
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16.0),
+                      gradient: MainGradient(),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16.0),
+                        onTap: () {
+                          if (selectedDepartments.isEmpty || selectedCourses.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('학과와 수강 과목을 최소 하나 이상 선택해주세요.')),
+                            );
+                          } else {
+                            // Navigate to the next screen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => RegistrationScreen()),
+                            );
+                          }
+                        },
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
+                            child: Text(
+                              '다음',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Bold',
+                                fontSize: width * 0.04,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                    onPressed: () {
-                      if (selectedDepartments.isEmpty || selectedCourses.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('학과와 수강 과목을 최소 하나 이상 선택해주세요.')),
-                        );
-                      } else {
-                        // Navigate to the next screen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => RegistrationScreen()),
-                        );
-                      }
-                    },
-                    child: Text('다음'),
                   ),
                 ],
                 ),

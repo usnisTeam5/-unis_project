@@ -56,13 +56,14 @@ class ProfileSettings extends StatelessWidget {
                   );
                   break;
                 case '로그아웃':
-                  Navigator.push(
+                  Navigator.pop(
                     context,
                     MaterialPageRoute(builder: (context) => LoginScreen()),
                   );
                   break;
               }
             },
+
             child: Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
