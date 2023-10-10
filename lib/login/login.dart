@@ -101,7 +101,14 @@ class _LoginScreenState extends State<LoginScreen> { // textfield 땜에 일단 
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    labelText: '  포탈 아이디 입력',
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide(color: Color(0xFF3D6094), width: 2.0),  // 빨간색으로 지정
+                    ),
+                    hintText: '  포탈 아이디 입력',
+                    hintStyle: TextStyle(
+                      fontFamily: 'Round',
+                    ),
                     counterText: "",  // 이 속성을 추가하여 글자 수 레이블을 숨깁니다.
                   ),
                   maxLength: 20,
@@ -113,7 +120,10 @@ class _LoginScreenState extends State<LoginScreen> { // textfield 땜에 일단 
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    labelText: '  비밀번호 입력',
+                    hintText: '  비밀번호 입력',
+                    hintStyle: TextStyle(
+                      fontFamily: 'Round',
+                    ),
                     counterText: "",
                   ),
                   maxLength: 12,

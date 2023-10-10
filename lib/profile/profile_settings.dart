@@ -36,7 +36,9 @@ class ProfileSettings extends StatelessWidget {
         itemCount: itemsText.length,
         itemBuilder: (context, index) {
           return GestureDetector(
-            onTap: () {/*리스트 탭*/},
+            onTap: () {
+              Navigator.pop(context);
+              },
             child: Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
