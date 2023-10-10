@@ -4,7 +4,14 @@ import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class PointChargeScreen extends StatelessWidget {
+
+class PointChargeScreen extends StatefulWidget {
+  @override
+  _PointChargeScreenState createState() => _PointChargeScreenState();
+}
+
+class _PointChargeScreenState extends State<PointChargeScreen> {
+  int? _selectedPoint;
   @override
   Widget build(BuildContext context) {
 
@@ -74,31 +81,49 @@ class PointChargeScreen extends StatelessWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(16.0),
                   onTap: () {
-                    String studyTitle = "포인트 충전";
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          //title: Text('스터디 탈퇴',style: TextStyle(fontFamily: 'Round'),),
-                          content: Text( "'$studyTitle' 을 정말 하시겠습니까?"),
-                          actions: <Widget>[
-                            TextButton(
-                              child: Text('취소'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            TextButton(
-                              child: Text('확인'),
-                              onPressed: () {
-                                // 탈퇴
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                    if (_selectedPoint != null) {
+                      String formattedPoint = formatNumber(_selectedPoint!);
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: Text("'$formattedPoint' 포인트를 충전하시겠습니까?"),  // 수정된 부분
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('취소'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: Text('확인'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  // 실제 포인트 충전 로직을 여기에 추가할 수 있습니다.
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: Text("충전할 포인트를 선택해주세요."),  // 선택되지 않았을 때의 안내 문구
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('확인'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
                   },
                   child: Center(
                     child: Padding(
@@ -123,28 +148,35 @@ class PointChargeScreen extends StatelessWidget {
   }
 
   Widget _pointOption(int point) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5.0,horizontal: 20.0),
-      padding: const EdgeInsets.symmetric(vertical: 15.0,horizontal: 15.0),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              SizedBox(width: 10),
-              Text('${formatNumber(point)}', style: TextStyle(fontFamily: 'Bold',color: Colors.grey[500],fontSize: 16),),
-              Padding(
-                padding: EdgeInsets.only(top: 3),
-                child: SvgPicture.asset('image/point.svg', width: 20, height: 28, color: Colors.blue[400],),
-              ),
-            ],
-          ),
-          Text('${formatNumber(point)} 원' , style: TextStyle(fontFamily: 'Bold',color: Colors.grey[500],fontSize: 16),),
-        ],
+    return GestureDetector( // InkWell도 사용 가능
+      onTap: () {
+        setState(() {
+          _selectedPoint = point;
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 5.0,horizontal: 20.0),
+        padding: const EdgeInsets.symmetric(vertical: 15.0,horizontal: 15.0),
+        decoration: BoxDecoration(
+          color: _selectedPoint == point ? Colors.blue[100] : Colors.grey[200], // 선택된 포인트에 따라 색상 변경
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                SizedBox(width: 10),
+                Text('${formatNumber(point)}', style: TextStyle(fontFamily: 'Bold',color: Colors.grey[500],fontSize: 16),),
+                Padding(
+                  padding: EdgeInsets.only(top: 3),
+                  child: SvgPicture.asset('image/point.svg', width: 20, height: 28, color: Colors.blue[400],),
+                ),
+              ],
+            ),
+            Text('${formatNumber(point)} 원' , style: TextStyle(fontFamily: 'Bold',color: Colors.grey[500],fontSize: 16),),
+          ],
+        ),
       ),
     );
   }

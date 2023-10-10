@@ -126,19 +126,20 @@ class _SearchSubjectState extends State<SearchSubject> {
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       margin: const EdgeInsets.symmetric(vertical: 3.0),
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 20 ),
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 10 ),
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(color: Colors.grey[300]!, width: 1.0),  // 회색 테두리 추가
                         ),
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,  // 체크박스를 오른쪽으로 이동시킵니다.
+                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,  // 체크박스를 오른쪽으로 이동시킵니다.
                         children: [
                           Text(
                             subjects[index].length > 22 ? "      "+subjects[index].substring(0, 18) + '...' : "      ${subjects[index]}",
                             style: TextStyle(color: Colors.grey[700], fontFamily: 'Round', fontSize: 15),
                           ),
+                          Spacer(),
                           Transform.scale(
                             scale: 1.5,
                             child: Checkbox(

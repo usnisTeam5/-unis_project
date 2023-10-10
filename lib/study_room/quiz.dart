@@ -122,16 +122,60 @@ class _QuizScreenState extends State<QuizFolderScreen> {
     );
   }
 }
-
-class FoldersScreen extends StatelessWidget {
-  const FoldersScreen({
-    super.key,
+class FoldersScreen extends StatefulWidget {
+  FoldersScreen({
+    Key? key,
     required this.folders,
     required this.fileSelector,
-  });
+  }) : super(key: key);
 
   final List<String> folders;
   final FileSelector fileSelector;
+
+  @override
+  _FoldersScreenState createState() => _FoldersScreenState();
+}
+
+class _FoldersScreenState extends State<FoldersScreen> {
+
+  final Map<String, List<String>> folderDocuments = {
+    '1강': ['문서1', '문서2'],
+    '2강': ['문서3'],
+    '3강': [],
+    '4강': ['문서4', '문서5', '문서6'],
+  };
+  void _showDocumentList(BuildContext context, String folder) {
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('$folder 문서 목록'),
+          content: Container(
+            width: double.maxFinite,
+            height: 300,
+            child: ListView.builder(
+              itemCount: folderDocuments[folder]?.length ?? 0,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  title: Text(folderDocuments[folder]![index]),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      setState(() {
+                        folderDocuments[folder]!.removeAt(index);
+                      });
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +183,7 @@ class FoldersScreen extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(height: 20,),
-          ...folders.map((folder) {
+          ...widget.folders.map((folder) {
             return Container(
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 33),
               padding: EdgeInsets.only(left: 30,bottom: 15),
@@ -175,7 +219,7 @@ class FoldersScreen extends StatelessWidget {
                       children: [
                         OutlinedButton(
                           onPressed: () {
-                            fileSelector.pickDocument(context);
+                            widget.fileSelector.pickDocument(context);
                           },
                           style: OutlinedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 30),
@@ -239,8 +283,7 @@ class FoldersScreen extends StatelessWidget {
                         size: 30,
                       ),
                       onPressed: () {
-                        // onPressed 로직
-                        // 예를 들어, 다음 화면으로 이동하거나 다이얼로그를 표시
+                        _showDocumentList(context, folder);
                       },
                     ),
                   ),

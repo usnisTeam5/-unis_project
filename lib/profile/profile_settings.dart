@@ -73,9 +73,12 @@ class ProfileSettings extends StatelessWidget {
                  Navigator.pop(context);
                  Navigator.pop(context);
                  break;
+                case '회원 탈퇴':
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  break;
               } //
             },
-
             child: Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(

@@ -103,7 +103,7 @@ class _CustomDrawerState extends State<Notifier> {
 
   List<Widget> _screens = [
     ListView.builder(
-      itemCount: 5,
+      itemCount: 10,
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
@@ -114,7 +114,7 @@ class _CustomDrawerState extends State<Notifier> {
             ).show(context);
           },
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+            padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
@@ -139,7 +139,7 @@ class _CustomDrawerState extends State<Notifier> {
                     Text(
                       '07/12 15:38  ',
                       style: TextStyle(
-                        fontSize: 10,
+                        fontSize: 12,
                         color: Colors.grey[700],
                         fontFamily: 'Round'
                       ),
@@ -148,12 +148,13 @@ class _CustomDrawerState extends State<Notifier> {
                 ),
                 SizedBox(height: 10,),
                 Text(
-                  '새로운 스터디원이 들어왔어요',
+                  '새로운 스터디원이 들어왔어요sdafsfkasdljdhfhlfaHFLOASDHFOADHFAODSFHASDOFH',
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 14,
                     color: Colors.grey[700],
                       fontFamily: 'Round',
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -162,7 +163,7 @@ class _CustomDrawerState extends State<Notifier> {
       },
     ),
     ListView.builder(
-      itemCount: 5,
+      itemCount: 10,
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
@@ -172,7 +173,7 @@ class _CustomDrawerState extends State<Notifier> {
             );
           },
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+            padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
@@ -197,7 +198,7 @@ class _CustomDrawerState extends State<Notifier> {
                     Text(
                       '07/12 15:38  ',
                       style: TextStyle(
-                          fontSize: 10,
+                          fontSize: 12,
                           color: Colors.grey[700],
                           fontFamily: 'Round'
                       ),
@@ -208,10 +209,11 @@ class _CustomDrawerState extends State<Notifier> {
                 Text(
                   '안녕하세요',
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 14,
                     color: Colors.grey[700],
                     fontFamily: 'Round',
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -275,7 +277,7 @@ class AlarmDetailPopup {
             children: [
               Expanded(child: Text(this.title, style: TextStyle(fontFamily: 'Bold', fontSize: 18))),
               SizedBox(width: 8.0),  // 간격을 조정할 수 있습니다.
-              Text(date, style: TextStyle(color: Colors.grey[600], fontSize: 10, fontFamily: 'Bold')),
+              Text(date, style: TextStyle(color: Colors.grey[600], fontSize: 12, fontFamily: 'Bold')),
             ],
           ),
           content: Column(
@@ -283,7 +285,7 @@ class AlarmDetailPopup {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 16.0),
-              Text(content, style: TextStyle(fontSize: 10, fontFamily: 'Bold')),
+              Text(content, style: TextStyle(fontSize: 15, fontFamily: 'Bold',)),
             ],
           ),
           actions: [

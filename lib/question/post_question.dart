@@ -200,17 +200,6 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
           ),
 
         actions: [
-
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MyListScreen()),
-              );
-            },
-            icon: Icon(Icons.favorite, color: Colors.red), // 찜 목록
-          ),
-
           TextButton(
             onPressed: () {
               showDialog(

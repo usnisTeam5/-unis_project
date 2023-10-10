@@ -190,11 +190,60 @@ class _CoinWithdrawalScreenState extends State<CoinWithdrawalScreen> {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(16.0),
                     onTap: () {
+                      if (coinWithdraw == 0) {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(content: Text("인출 금액을 설정해주세요."));
+                            }
+                        );
+                        return; // early return
+                      }
+
+                      if (nameController.text.isEmpty) {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(content: Text("이름을 입력해주세요."));
+                            }
+                        );
+                        return; // early return
+                      }
+
+                      if (bankController.text.isEmpty) {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(content: Text("은행명을 입력해주세요."));
+                            }
+                        );
+                        return; // early return
+                      }
+
+                      if (accountController.text.isEmpty) {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(content: Text("계좌번호를 입력해주세요."));
+                            }
+                        );
+                        return; // early return
+                      }
+
+                      if (!agreeToProvideInfo) {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(content: Text("개인정보제공 동의를 해주세요."));
+                            }
+                        );
+                        return; // early return
+                      }
                       print(nameController);
                       print(bankController);
                       print(accountController);
                       String studyTitle = "현금 인출";
-                      if(currentCoin - coinWithdraw < 1){
+                      if(currentCoin - coinWithdraw < 0){
                         showDialog(context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
