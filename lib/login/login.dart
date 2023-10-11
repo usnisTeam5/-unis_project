@@ -64,16 +64,23 @@ class _LoginScreenState extends State<LoginScreen> { // textfield 땜에 일단 
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login() {
+  void _login() async {
     final id = _idController.text;
     final password = _passwordController.text;
     final loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
-    loginViewModel.login(id, password);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MyHomePage()),
-    );
+    bool success = await loginViewModel.login(id, password);
+
+    if (success) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MyHomePage()),
+      );
+    } else {
+      // 로그인 실패시 에러 메시지 표시 (예: 스낵바를 사용)
+      final snackBar = SnackBar(content: Text('로그인 실패: ${loginViewModel.errorMessage}'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   @override
@@ -83,15 +90,27 @@ class _LoginScreenState extends State<LoginScreen> { // textfield 땜에 일단 
 
     return Scaffold(
       body: Center(
-        child: SingleChildScrollView(
+        child: Consumer<LoginViewModel>(
+        builder: (context, viewModel, child)
+    {
+      if (viewModel.isLoading) {
+        return CircularProgressIndicator();
+      } else {
+        return SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(32.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GradientText(width: width, tSize: 0.15, text:'유니스', tStyle: 'ExtraBold' ),
+                GradientText(width: width,
+                    tSize: 0.15,
+                    text: '유니스',
+                    tStyle: 'ExtraBold'),
                 const SizedBox(height: 20),
-                GradientText2(width: width, tSize: 0.05, text:'스터디 🔗 문제풀이', tStyle: 'Bold' ),
+                GradientText2(width: width,
+                    tSize: 0.05,
+                    text: '스터디 🔗 문제풀이',
+                    tStyle: 'Bold'),
                 SizedBox(height: 60),
                 TextField(
                   controller: _idController,
@@ -101,13 +120,14 @@ class _LoginScreenState extends State<LoginScreen> { // textfield 땜에 일단 
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide(color: Color(0xFF3D6094), width: 2.0),  // 빨간색으로 지정
+                      borderSide: BorderSide(
+                          color: Color(0xFF3D6094), width: 2.0), // 빨간색으로 지정
                     ),
                     hintText: '  포탈 아이디 입력',
                     hintStyle: TextStyle(
                       fontFamily: 'Round',
                     ),
-                    counterText: "",  // 이 속성을 추가하여 글자 수 레이블을 숨깁니다.
+                    counterText: "", // 이 속성을 추가하여 글자 수 레이블을 숨깁니다.
                   ),
                   maxLength: 20,
                 ),
@@ -163,7 +183,8 @@ class _LoginScreenState extends State<LoginScreen> { // textfield 땜에 일단 
                         // 비밀번호 찾기 창으로 이동
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => PasswordResetPage()),
+                          MaterialPageRoute(
+                              builder: (context) => PasswordResetPage()),
                         );
                       },
                       child: Text(
@@ -186,7 +207,8 @@ class _LoginScreenState extends State<LoginScreen> { // textfield 땜에 일단 
                         // 회원가입 창으로 이동
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => UserAgreementScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => UserAgreementScreen()),
                         );
                       },
                       child: Text(
@@ -202,8 +224,11 @@ class _LoginScreenState extends State<LoginScreen> { // textfield 땜에 일단 
               ],
             ),
           ),
-        ),
+        );
+      }
+    },
       ),
+    ),
     );
   }
 }

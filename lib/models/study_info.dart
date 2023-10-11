@@ -1,3 +1,6 @@
+///  이것은 내 스터디에서 필요한 정보입니다!
+///
+
 class StudyInfo {
   final int roomNum; // 스터디방 고유키
   final String roomName; // 스터디 제목

@@ -1,81 +1,45 @@
 import 'package:flutter/foundation.dart';
 import '../models/login_result.dart';
 
-class LoginViewModel with ChangeNotifier {
-  LoginResult? _loginResult;
+class LoginViewModel extends ChangeNotifier {
   bool _isLoading = false;
-  String? _error;
+  String? _errorMessage;
+  LoginResult? _loginResult;
 
-  // Getter methods
-  String? get msg => _loginResult?.msg;
-  int? get userKey => _loginResult?.userKey;
-  String? get userNickName => _loginResult?.userNickName;
   bool get isLoading => _isLoading;
-  String? get error => _error;
+  String? get errorMessage => _errorMessage;
+  LoginResult? get loginResult => _loginResult;
+  String? get msg => _loginResult?.msg;
+  String? get userNickName => _loginResult?.userNickName;
+  int? get userKey => _loginResult?.userKey;
 
-  // Setter methods
-  set msg(String? newMsg) {
-    if (_loginResult?.msg != newMsg) {
-      _loginResult = LoginResult(
-        msg: newMsg ?? "",
-        userKey: _loginResult?.userKey ?? 0,
-        userNickName: _loginResult?.userNickName ?? "",
-      );
-      notifyListeners();
+  Future<bool> login(String email, String password) async {
+    _setLoading(true);
+    try {
+      _loginResult = await LoginResult.login(email, password);
+      _setLoading(false);
+
+      if (_loginResult != null) {
+        _setErrorMessage(null);
+        return true;
+      } else {
+        _setErrorMessage('로그인 실패');
+        return false;
+      }
+    } catch (e) {
+      _setLoading(false);
+      _setErrorMessage('로그인 중 오류 발생: $e');
+      return false;
     }
   }
 
-  set userKey(int? newUserKey) {
-    if (_loginResult?.userKey != newUserKey) {
-      _loginResult = LoginResult(
-        msg: _loginResult?.msg ?? "",
-        userKey: newUserKey ?? 0,
-        userNickName: _loginResult?.userNickName ?? "",
-      );
-      notifyListeners();
-    }
-  }
-
-  set userNickName(String? newUserNickName) {
-    if (_loginResult?.userNickName != newUserNickName) {
-      _loginResult = LoginResult(
-        msg: _loginResult?.msg ?? "",
-        userKey: _loginResult?.userKey ?? 0,
-        userNickName: newUserNickName ?? "",
-      );
-      notifyListeners();
-    }
-  }
-
-  set isLoading(bool isLoading) {
-    if (_isLoading != isLoading) {
-      _isLoading = isLoading;
-      notifyListeners();
-    }
-  }
-
-  set error(String? newError) {
-    if (_error != newError) {
-      _error = newError;
-      notifyListeners();
-    }
-  }
-
-  // 로그인 메서드 (이전 내용과 동일)
-  Future<void> login(String id, String password) async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
-
-    _loginResult = LoginResult(
-      msg: "로그인 성공",
-      userKey: int.tryParse(id) ?? 0,
-      userNickName: password,
-    );
-
-    _isLoading = false;
+  void _setLoading(bool value) {
+    _isLoading = value;
     notifyListeners();
   }
 
-// 추가로 필요한 로직 (로그아웃, 로그인 상태 초기화 등)은 여기에 추가하면 됩니다.
+  void _setErrorMessage(String? message) {
+    _errorMessage = message;
+    notifyListeners();
+  }
 }
