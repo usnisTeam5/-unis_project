@@ -191,7 +191,11 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
         },
       );
     }
+    hasUserSentMessage = true;
   }
+
+
+
 
   void _scrollToBottom() {
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -249,12 +253,30 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
         actions: [
           TextButton(
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return PostSettings(hasUserSentMessage: hasUserSentMessage);
-                },
-              );
+              if (!hasUserSentMessage) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('알림'),
+                      content: Text('질문을 입력해주세요'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('확인'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return PostSettings(hasUserSentMessage: hasUserSentMessage);
+                  },
+                );
+              }
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 6.0),
@@ -272,6 +294,7 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
               ),
             ),
           )
+
         ],
       ),
 

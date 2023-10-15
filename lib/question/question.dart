@@ -93,11 +93,13 @@ class QuestionPage extends StatelessWidget {
             padding: EdgeInsets.only(bottom: index == 14 ? 16.0 : 8.0,
             ),
             child: QuestionItem(index, '컴퓨터 그래픽스와 휴먼인터페이스와 수치해석'),
+
           ),
         ),
       ),
     );
   }
+
 }
 
 
@@ -203,3 +205,5 @@ class DetailPage extends StatelessWidget {
     );
   }
 }
+
+
