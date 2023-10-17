@@ -88,6 +88,18 @@ class MyProfilePage extends StatelessWidget {
             ProfileInfoSection(),
             StatsSection(controller: controller),
             CoursesSection(),
+            // TextButton(
+            //   onPressed: () {
+            //     Navigator.pop(context);
+            //   },
+            //   child: Text(
+            //     "뒤로 가기",
+            //     style: TextStyle(
+            //       color: Colors.blue,  // 글자 색상을 파란색으로 설정
+            //       fontSize: 16,       // 글자 크기를 16으로 설정
+            //     ),
+            //   ),
+            // )
           ],
         ),
       ),
@@ -108,6 +120,16 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
   XFile? _image; //이미지를 담을 변수 선언
   final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
   //이미지를 가져오는 함수
+  TextEditingController _introductionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    final viewModel = Provider.of<UserProfileViewModel>(context, listen: false);
+    _introductionController = TextEditingController(text: viewModel.introduction);
+  }
+
   Future getImage(ImageSource imageSource) async {
     //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
@@ -122,13 +144,6 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<UserProfileViewModel>(context);
-    TextEditingController _introductionController = TextEditingController();
-
-    @override
-    void initState() {
-      super.initState();
-      _introductionController.text = "Your introduction goes here."; // This can come from a user profile or a view model.
-    }
 
     return Container(
       padding: EdgeInsets.all(30.0),
@@ -200,7 +215,10 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
           SizedBox(height: 16.0),
           TextField(
             controller: _introductionController,
-            maxLength: 15,
+            onChanged: (value) {
+              viewModel.updateIntroduction(value);
+            },
+            maxLength: 35,
             cursorColor: Color(0xFF678DBE),
             decoration: InputDecoration(
               hintText: '나를 소개하세요',

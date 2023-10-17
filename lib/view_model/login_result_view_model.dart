@@ -15,24 +15,20 @@ class LoginViewModel extends ChangeNotifier {
   String? get errorMessage => _errorMessage;  // getter for error message
 
   Future<void> storeLoginInfo(String id, String password) async {
-    // ID와 비밀번호 저장 메서드 추가
-    await storage.write(
-      key: "login",
-      value: "id $id password $password",
-    );
+    // ID와 비밀번호를 각각 다른 키로 저장
+    await storage.write(key: "login_id", value: id);
+    await storage.write(key: "login_password", value: password);
   }
 
-  Future<void> autoLogin() async {
-    String? storedInfo = await storage.read(key: 'login');
-    if (storedInfo != null) {
-      List<String> credentials = storedInfo.split(' ');
-      if (credentials.length == 4) {
-        String email = credentials[1];
-        String password = credentials[3];
-        await login(email, password);
-      }
+  Future<bool> autoLogin() async {
+    String? storedId = await storage.read(key: 'login_id');
+    String? storedPassword = await storage.read(key: 'login_password');
+    if (storedId != null && storedPassword != null) {
+      return await login(storedId, storedPassword);
     }
+    return false;
   }
+
 
   Future<bool> login(String email, String password) async {
     _setLoading(true);
@@ -52,6 +48,13 @@ class LoginViewModel extends ChangeNotifier {
       _setErrorMessage('로그인 중 오류 발생: $e');
       return false;
     }
+  }
+
+  Future<void> logout() async {
+    _loginResult = null;
+    await storage.delete(key: 'login_id');
+    await storage.delete(key: 'login_password');
+    notifyListeners();
   }
 
   void _setLoading(bool value) { // 로딩을 변환
