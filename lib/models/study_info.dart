@@ -62,4 +62,5 @@ class StudyInfo {
       'studyIntroduction': studyIntroduction,
     };
   }
+
 }

@@ -7,6 +7,7 @@ import '../css/css.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';
 import '../view_model/login_result_view_model.dart';
+import '../view_model/user_profile_info_view_model.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
@@ -22,6 +23,9 @@ void main() async{
         providers: [
           ChangeNotifierProvider<LoginViewModel>(
             create: (context) => LoginViewModel(),
+          ),
+          ChangeNotifierProvider<UserProfileViewModel>(
+            create: (context) => UserProfileViewModel(),
           ),
         ],
         child: UnisApp(navigatorKey: navigatorKey)
@@ -61,21 +65,49 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> { // textfield 땜에 일단 둠.
+
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // 앱이 렌더링된 후 flutter secure storage에서 로그인 정보를 자동으로 로드
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // 비동기 메서드 호출
+      _loadStoredLoginInfo();
+    });
+  }
+
+  // 저장된 로그인 정보를 불러오는 비동기 메서드
+  void _loadStoredLoginInfo() async {
+    final loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
+    await loginViewModel.autoLogin();
+  }
 
   void _login() async {
     final id = _idController.text;
     final password = _passwordController.text;
     final loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
-
+    final userProfileViewModel = Provider.of<UserProfileViewModel>(context, listen: false);
     bool success = await loginViewModel.login(id, password);
 
     if (success) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MyHomePage()),
-      );
+      if(loginViewModel.msg == 'ok') {
+        // 여기서 UserProfileViewModel의 UserProfileDefault 생성자를 사용하여 초기화합니다.
+        userProfileViewModel;
+
+        await loginViewModel.storeLoginInfo(id, password);  // 로그인 정보 저장
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MyHomePage()),
+        );
+
+      }
+      else if (loginViewModel.msg == 'error') {
+        final snackBar = SnackBar(content: Text('로그인 실패: 올바른 정보를 입력해주세요'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     } else {
       // 로그인 실패시 에러 메시지 표시 (예: 스낵바를 사용)
       final snackBar = SnackBar(content: Text('로그인 실패: ${loginViewModel.errorMessage}'));
