@@ -78,19 +78,6 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   int messageSendCount = 0;
 
   bool hasUserSentMessage = false;
