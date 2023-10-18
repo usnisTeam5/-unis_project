@@ -9,29 +9,6 @@ import '../profile/friend.dart';
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class PostSettings extends StatefulWidget {
   final bool hasUserSentMessage;
   PostSettings({required this.hasUserSentMessage});
@@ -276,9 +253,27 @@ class _PostSettingsState extends State<PostSettings> {
                   );
                   return;
                 }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => QuestionPage()),
+
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('알림'),
+                      content: Text('질문이 등록되었습니다!'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();  // Close the pop-up.
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => QuestionPage()),
+                            );
+                          },
+                          child: Text('OK'),
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
               child: Container(
@@ -304,6 +299,7 @@ class _PostSettingsState extends State<PostSettings> {
                 padding: EdgeInsets.zero,
               ),
             ),
+
           ],
         ),
       ),

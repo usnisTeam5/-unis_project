@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:unis_project/chat/chat.dart';
 import 'package:unis_project/css/css.dart';
 import 'dart:math';
+import 'package:unis_project/chat/myQHistoryChat.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -138,7 +139,7 @@ class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProv
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ChatScreen()),
+              MaterialPageRoute(builder: (context) => MyQHistoryChatPage()),
             );
           },
           child: Container(

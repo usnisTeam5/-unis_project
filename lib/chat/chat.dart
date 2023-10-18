@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:unis_project/css/css.dart';
 import 'package:unis_project/chat/report.dart';
 import 'package:unis_project/chat/countdown.dart';
+import '../question/post_question.dart';
 import 'image_picker_popup.dart';
 
 import 'package:flutter/scheduler.dart';
@@ -35,9 +36,11 @@ class MyApp extends StatelessWidget {
 }
 
 class ChatScreen extends StatefulWidget {
+
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
+
 
 class _ChatScreenState extends State<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
@@ -46,18 +49,18 @@ class _ChatScreenState extends State<ChatScreen> {
   bool _isMine = false;
   DateTime _time = DateTime.now().add(Duration(minutes: 20));
 
-  // Future<void> _sendMessage(String message) async {
-  //   // final response = await http.post(
-  //   //   Uri.parse('https://your-backend-url.com/send-message'),
-  //   //   body: {'message': message},
-  //   // );
-  //
-  //   if (response.statusCode == 200) {
-  //     final data = jsonDecode(response.body);
-  //   }
-  // }
+// Future<void> _sendMessage(String message) async {
+//   // final response = await http.post(
+//   //   Uri.parse('https://your-backend-url.com/send-message'),
+//   //   body: {'message': message},
+//   // );
+//
+//   if (response.statusCode == 200) {
+//     final data = jsonDecode(response.body);
+//   }
+// }
 
-  /* Future<void> _sendMessage(String message) async {
+/* Future<void> _sendMessage(String message) async {
     if (message.isNotEmpty) {
       setState(() {
         _messages.add(Message(text: message, sender: 'yourUserName', isMine: true));
@@ -66,7 +69,6 @@ class _ChatScreenState extends State<ChatScreen> {
     }
     // 서버로 보낼 메시지 전송 로직 추가
   } */
-
 
 
   void _onImagePicked(String imagePath) {
@@ -79,7 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
         senderName: 'YourName',
         sentAt: DateTime.now(),
       ));
-      // _scrollToBottom(); // If you have a scroll-to-bottom function
+      // _scrollToBottom();
     });
   }
 
@@ -91,6 +93,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
 
+  int myQHistoryChat = 0;
   int messageSendCount = 0;
 
   void _sendMessage(String text, String sender, bool isMine) {
@@ -126,7 +129,6 @@ class _ChatScreenState extends State<ChatScreen> {
       _messageController.clear();
     });
 
-    // 스크롤을 바닥으로 이동
     _scrollToBottom();
 
     Future.delayed(Duration(seconds: 1), () {
@@ -140,11 +142,9 @@ class _ChatScreenState extends State<ChatScreen> {
           sentAt: DateTime.now(),
         ));
       });
-      // 스크롤을 바닥으로 이동
       _scrollToBottom();
     });
 
-    // 메시지가 최초로 보내졌을 때 팝업 표시
     if (messageSendCount == 1) {
       showDialog(
         context: context,
@@ -177,48 +177,56 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
 
-
-
-
-
   Future<void> _fetchMessages() async {
-  //   // final response = await http.get(
-  //   //   Uri.parse('https://your-backend-url.com/fetch-messages'),
-  //   // );
-  //
-  //   if (response.statusCode == 200) {
-  //     final data = jsonDecode(response.body);
-  //     setState(() {
-  //       _messages = List<String>.from(data['messages']);
-  //     });
-  //   }
-   }
+    //   // final response = await http.get(
+    //   //   Uri.parse('https://your-backend-url.com/fetch-messages'),
+    //   // );
+    //
+    //   if (response.statusCode == 200) {
+    //     final data = jsonDecode(response.body);
+    //     setState(() {
+    //       _messages = List<String>.from(data['messages']);
+    //     });
+    //   }
+  }
 
   @override
-  // void initState() {
-  //   super.initState();
-  //
-  //   Future.doWhile(() async {
-  //     await Future.delayed(Duration(seconds: 5));
-  //     await _fetchMessages();
-  //     return true;
-  //   });
-  // }
+// void initState() {
+//   super.initState();
+//
+//   Future.doWhile(() async {
+//     await Future.delayed(Duration(seconds: 5));
+//     await _fetchMessages();
+//     return true;
+//   });
+// }
 
+
+
+  int showProfile = 1; // 0: 익명, 1: 익명x
 
 
   @override
   Widget build(BuildContext context) {
-    final width = min(MediaQuery.of(context).size.width,500.0);
-    final height = min(MediaQuery.of(context).size.height,700.0);
+    final width = min(MediaQuery.of(context).size.width, 500.0);
+    final height = min(MediaQuery.of(context).size.height, 700.0);
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
         toolbarHeight: 55,
         leadingWidth: 105,
-        leading: Container(
+        leading: messageSendCount != 0
+            ? Padding(
+          padding: EdgeInsets.only(right: 50.0),
+          child: IconButton(
+            icon: Icon(Icons.keyboard_arrow_left, size: 30, color: Colors.grey),
+            onPressed: () => Navigator.pop(context),
+          ),
+        )
+            : Container(
           margin: EdgeInsets.all(10),
           child: TextButton(
             onPressed: () => Navigator.pop(context),
@@ -239,16 +247,15 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
         ),
-          title: Center(
-            child: Text(
-              '과목명',
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontFamily: 'Bold'
-              ),
-            ),
+        title: Text(
+          '과목명',
+          style: TextStyle(
+            color: Colors.grey[600],
+            fontFamily: 'Bold',
           ),
-          actions: [
+        ),
+        actions: [
+          if (messageSendCount == 0)
             Container(
               margin: EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -259,7 +266,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 onPressed: () {
                   setState(() {
                     _isMine = !_isMine;
-                    _sendMessage(_messageController.text, "", true); // myname
+                    _sendMessage(_messageController.text, "", true);
                     _messageController.clear();
                   });
                 },
@@ -278,159 +285,252 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ),
             ),
-          ],
-        ),
-
-
-        body: Container(
-          color: Colors.grey[200],
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.all(8),
-                color: Colors.transparent,
-                child: Center(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Countdown(
-                      endTime: _time,
-                    ),
+          if (messageSendCount != 0) SizedBox(width: 50)
+        ],
+      ),
+      body: Container(
+        color: Colors.grey[200],
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(8),
+              color: Colors.transparent,
+              child: Center(
+                child: messageSendCount != 0
+                    ? SizedBox()
+                    : Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Countdown(
+                    endTime: _time,
                   ),
                 ),
               ),
+            ),
 
-              Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: _messages.length,
-                  itemBuilder: (context, index) {
-                    final message = _messages[index];
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: message.isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
-                        children: [
-                          if (message.isMine) // 내 메시지
-                            Padding(
-                                padding: const EdgeInsets.only(top: 16.0, right: 3.0),
-                                child: Text(
-                                  "${message.sentAt.hour}:${message.sentAt.minute.toString().padLeft(2, '0')}",
-                                  style: TextStyle(
-                                fontSize: 10,
-                                fontFamily: 'Round',
-                                color: Colors.black.withOpacity(0.5),
+
+            Expanded(
+              child: ListView.builder(
+                controller: _scrollController,
+                itemCount: _messages.length,
+                itemBuilder: (context, index) {
+                  final message = _messages[index];
+                  final bool shouldDisplayHeader = showProfile == 1 &&
+                      (index == 0 ||
+                          _messages[index - 1].sender != message.sender);
+                  final bool shouldDisplayTime = (index ==
+                      _messages.length - 1 ||
+                      _messages[index + 1].sender != message.sender) &&
+                      messageSendCount != 0;
+
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: message.isMine
+                          ? MainAxisAlignment.end
+                          : MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (!message.isMine && shouldDisplayHeader)
+                          Column(
+                            children: [
+                              CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    message.senderImageURL),
+                                radius: 15,
+                              ),
+                              SizedBox(height: 2),
+                            ],
+                          ),
+                        SizedBox(width: 5),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: message.isMine
+                                ? CrossAxisAlignment.end
+                                : CrossAxisAlignment.start,
+                            children: [
+                              if (!message.isMine && shouldDisplayHeader)
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 12, bottom: 7), // 상대방 닉네임 위치
+                                  child: Text(
+                                    message.senderName,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
-                            ),
-                          Container(
+                              Row(
+                                mainAxisAlignment: message.isMine
+                                    ? MainAxisAlignment.end
+                                    : MainAxisAlignment.start,
+                                children: [
+                                  if (message.isMine)
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: 8.0, top: 20.0),
+                                      child: shouldDisplayTime
+                                          ? Text(
+                                        "${message.sentAt.hour}:${message.sentAt
+                                            .minute.toString().padLeft(
+                                            2, '0')}",
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontFamily: 'Round',
+                                          color: Colors.black.withOpacity(0.5),
+                                        ),
+                                      )
+                                          : Container(),
+                                    ),
+                                  Container(
+                                    constraints: BoxConstraints(
+                                        maxWidth: MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width * 0.6),
+                                    margin: EdgeInsets.only(
+                                        left: message.isMine
+                                            ? 0
+                                            : (shouldDisplayHeader
+                                            ? (showProfile == 1 ? 8.0 : 4.0)
+                                            : (showProfile == 0 ? 0 : 39.0)),
+                                        //////
+                                        top: message.isMine ? 0 : 0
+                                    ),
+                                    padding: const EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                      color: message.isMine
+                                          ? Colors.lightBlue
+                                          : Colors.white,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: message.text != null
+                                        ? Text(
+                                      message.text!,
+                                      style: TextStyle(
+                                        color: message.isMine
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontFamily: 'Round',
+                                      ),
+                                    )
+                                        : message.imagePath != null
+                                        ? Image.file(
+                                      File(message.imagePath!),
+                                      width: 150,
+                                      fit: BoxFit.cover,
+                                    )
+                                        : SizedBox(),
+                                  ),
+
+                                  if (!message.isMine)
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 8.0, top: 20.0),
+                                      child: shouldDisplayTime
+                                          ? Text(
+                                        "${message.sentAt.hour}:${message.sentAt
+                                            .minute.toString().padLeft(
+                                            2, '0')}",
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontFamily: 'Round',
+                                          color: Colors.black.withOpacity(0.5),
+                                        ),
+                                      )
+                                          : Container(),
+                                    ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+
+
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.warning_amber_rounded),
+                    color: Colors.grey,
+                    iconSize: 30,
+                    onPressed: _showReportDialog,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.add_circle_outline_rounded),
+                    color: Colors.grey,
+                    iconSize: 30,
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return ImagePickerPopup(
+                              onImagePicked: _onImagePicked);
+                        },
+                      );
+                    },
+                  ),
+
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
                             constraints: BoxConstraints(
-                                maxWidth: MediaQuery.of(context).size.width * 0.7),
-                            decoration: BoxDecoration(
-                              color: message.isMine ? Colors.lightBlue : Colors.white,
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            padding: const EdgeInsets.all(8.0),
-                            child: message.text != null
-                                ? Text(
-                              message.text!,
-                              textAlign: TextAlign.start,
-                              style: TextStyle(color: message.isMine ? Colors.white : Colors.grey[700], fontFamily: 'Round'),
-                            )
-                                : message.imagePath != null
-                                ? Image.file(
-                              File(message.imagePath!),
-                              width: 150,
-                              fit: BoxFit.cover,
-                            )
-                                : SizedBox(),
-                          ),
-                          if (!message.isMine) // 상대방 메시지
-                            Padding(
-                              padding: const EdgeInsets.only(top: 16.0, left: 3.0),
-                              child: Text(
-                                "${message.sentAt.hour}:${message.sentAt.minute.toString().padLeft(2, '0')}",
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  fontFamily: 'Round',
-                                  color: Colors.black.withOpacity(0.5),
+                                maxWidth: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * 0.7,
+                                maxHeight: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height * 0.7),
+                            height: 40,
+                            child: TextField(
+                              controller: _messageController,
+                              decoration: InputDecoration(
+                                hintText: '메시지를 입력하세요',
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10.0, horizontal: 20.0),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30),
                                 ),
                               ),
                             ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Container(
-                color: Colors.white,
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.warning_amber_rounded),
-                      color: Colors.grey,
-                      iconSize: 30,
-                      onPressed: _showReportDialog,
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.add_circle_outline_rounded),
-                      color: Colors.grey,
-                      iconSize: 30,
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return ImagePickerPopup(onImagePicked: _onImagePicked);
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.send),
+                          onPressed: () {
+                            setState(() {
+                              _isMine = !_isMine;
+                              _sendMessage(_messageController.text, "",
+                                  true); // "MyName" 비워둠
+                              _messageController.clear();
+                            });
                           },
-                        );
-                      },
+                        ),
+                      ],
                     ),
-
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              constraints: BoxConstraints(
-                                  maxWidth: MediaQuery.of(context).size.width * 0.7,
-                                  maxHeight: MediaQuery.of(context).size.height * 0.7),
-                              height: 40,
-                              child: TextField(
-                                controller: _messageController,
-                                decoration: InputDecoration(
-                                  hintText: '메시지를 입력하세요',
-                                  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.send),
-                            onPressed: () {
-                              setState(() {
-                                _isMine = !_isMine;
-                                _sendMessage(_messageController.text, "", true); // "MyName" 비워둠
-                                _messageController.clear();
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
     );
   }
 }
