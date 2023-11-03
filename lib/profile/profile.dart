@@ -20,8 +20,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = min(MediaQuery.of(context).size.width,500.0);
-    final height = min(MediaQuery.of(context).size.height,700.0);
     return MaterialApp(
       home: MyProfilePage(controller: controller),
       theme: ThemeData(

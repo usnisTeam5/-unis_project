@@ -2,13 +2,18 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class LoginResult {
-  String msg;
-  String userNickName;
+  String _msg; // 오류 메시지 잘받으면 ok, 아니면 error
+  String _userNickName; // 유저 닉네임을 반환한다.
 
-  LoginResult({
-    required this.msg,
-    required this.userNickName,
-  });
+  // 생성자에서 public 네임드 파라미터를 사용하고 private 변수에 할당
+  LoginResult({ // 로그인 결과
+    required String msg,
+    required String userNickName,
+  })  : _msg = msg,
+        _userNickName = userNickName;
+
+  String get msg => _msg;
+  String get userNickName => _userNickName;
 
   factory LoginResult.fromJson(Map<String, dynamic> json) {
     return LoginResult(
@@ -25,7 +30,7 @@ class LoginResult {
   }
 }
 
-class LoginService {
+class LoginService { // 로그인 백 프론트 연동
   static const BASE_URL = 'http://3.35.21.123:8080'; // 상수로 URL 관리
 
   static Future<LoginResult?> login(String email, String password) async {

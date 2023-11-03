@@ -5,9 +5,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class LoginViewModel extends ChangeNotifier {
   bool _isLoading = false; // 로딩중
   LoginResult? _loginResult; // 로그인 모델( msg와 nickname 포함)
-  final storage = new FlutterSecureStorage();
-  String? _errorMessage; // 에러 메시지 변수 추가
+  final storage = FlutterSecureStorage(); // ??
 
+  String? _errorMessage; // 에러 메시지 변수 추가
   bool get isLoading => _isLoading;
   LoginResult? get loginResult => _loginResult;
   String? get msg => _loginResult?.msg;
@@ -20,7 +20,7 @@ class LoginViewModel extends ChangeNotifier {
     await storage.write(key: "login_password", value: password);
   }
 
-  Future<bool> autoLogin() async {
+  Future<bool> autoLogin() async { // 자동로그인 구현
     String? storedId = await storage.read(key: 'login_id');
     String? storedPassword = await storage.read(key: 'login_password');
     if (storedId != null && storedPassword != null) {
@@ -30,8 +30,8 @@ class LoginViewModel extends ChangeNotifier {
   }
 
 
-  Future<bool> login(String email, String password) async {
-    _setLoading(true);
+  Future<bool> login(String email, String password) async { // 로그인
+    _setLoading(true); // 로딩
     try {
       _loginResult = await LoginService.login(email, password); // 모델에서 로그인 불러옴
       _setLoading(false);
@@ -50,9 +50,9 @@ class LoginViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> logout() async { // 로그아웃 구현
     _loginResult = null;
-    await storage.delete(key: 'login_id');
+    await storage.delete(key: 'login_id'); // 저장소 내용 삭제
     await storage.delete(key: 'login_password');
     notifyListeners();
   }

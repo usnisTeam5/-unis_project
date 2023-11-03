@@ -70,16 +70,21 @@ class UserProfileInfo {
     };
   }
 
-  static Future<UserProfileInfo> fetchUserProfile(String nickName) async { // 유저 프로필 정보 가져옴
+  static Future<UserProfileInfo?> fetchUserProfile(String nickName) async { // 유저 프로필 정보 가져옴
     final response = await http.get(Uri.parse('http://3.35.21.123:8080/user/profile'));
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      data['nickName'] = nickName; // 서버 응답에 없는 닉네임을 추가
-      return UserProfileInfo.fromJson(data);
-    } else {
-      throw Exception('Failed to load user profile');
+    try {
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        data['nickName'] = nickName; // 서버 응답에 없는 닉네임을 추가
+        return UserProfileInfo.fromJson(data);
+      } else {
+        throw Exception('Failed to load user profile');
+      }
     }
+    catch (error) {
+    // 네트워크 호출 중 발생한 예외 처리
+    }
+    return null;
   }
 
   Future<void> setImage(String nickname, String imagePath) async {

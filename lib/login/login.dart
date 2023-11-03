@@ -79,9 +79,11 @@ class _LoginScreenState extends State<LoginScreen> { // textfield 땜에 일단 
   // 저장된 로그인 정보를 불러오는 비동기 메서드
   void _loadStoredLoginInfo() async {
     final loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
-    print("Hello");
+    final userProfileViewModel = Provider.of<UserProfileViewModel>(context, listen: false); // 유저 정보
+    //print("Hello");
     bool success  = await loginViewModel.autoLogin();
     if(success) {
+      await userProfileViewModel.fetchUserProfile(loginViewModel.userNickName!); // 닉네임으로 유저정보 호출. 추가*
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => MyHomePage()),
@@ -93,14 +95,14 @@ class _LoginScreenState extends State<LoginScreen> { // textfield 땜에 일단 
     final id = _idController.text;
     final password = _passwordController.text;
     final loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
-    final userProfileViewModel = Provider.of<UserProfileViewModel>(context, listen: false);
+    final userProfileViewModel = Provider.of<UserProfileViewModel>(context, listen: false); // 유저 정보
 
     bool success = await loginViewModel.login(id, password);
 
     if (success) {
       if(loginViewModel.msg == 'ok') {
-
         await loginViewModel.storeLoginInfo(id, password);  // 로그인 정보 저장
+        await userProfileViewModel.fetchUserProfile(loginViewModel.userNickName!); // 닉네임으로 유저정보 호출. 추가*
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => MyHomePage()),
@@ -154,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> { // textfield 땜에 일단 
           child: Consumer<LoginViewModel>(
           builder: (context, viewModel, child)
       {
-        if (viewModel.isLoading) {
+        if (viewModel.isLoading) { // 로딩일 경우 로딩 화면 보여줌.
           return CircularProgressIndicator();
         } else {
           return SingleChildScrollView(
