@@ -14,13 +14,39 @@ class SubjectSearch {
         return List<String>.from(json.decode(response.body));
       } else { // 서버에서 정상적인 상태 코드가 아닌 것을 반환한 경우, 예외를 발생시킵니다.
         print("Server returned status code: ${response.statusCode}");
-        return [];
+        return [
+          '컴퓨터와 휴먼1',
+          '인공지능과 윤리2',
+          '빅데이터 분석3',
+          '휴먼인터페이스미디어와 마법의 돌과 죄수4',
+          '컴퓨터와 휴먼5',
+          '인공지능과 윤리6',
+          '빅데이터 분석7',
+          '휴먼인터페이스미디어와 마법의 돌과 죄수8',
+          '컴퓨터와 휴먼9',
+          '인공지능과 윤리10',
+          '빅데이터 분석11',
+          '휴먼인터페이스미디어12',
+        ];
         //throw Exception("Failed to load department data with status code: ${response.statusCode}");
       }
     } catch (e) { // 요청 중 에러가 발생하면 이곳에서 예외를 처리합니다.
       //print(e.toString()); // 콘솔에 에러 메시지를 출력합니다. 실제 앱에서는 이 부분을 적절히 처리해야 합니다.
       print("Error occurred: ${e.toString()}");
-      return [];
+      return [
+        '컴퓨터와 휴먼1',
+        '인공지능과 윤리2',
+        '빅데이터 분석3',
+        '휴먼인터페이스미디어와 마법의 돌과 죄수4',
+        '컴퓨터와 휴먼5',
+        '인공지능과 윤리6',
+        '빅데이터 분석7',
+        '휴먼인터페이스미디어와 마법의 돌과 죄수8',
+        '컴퓨터와 휴먼9',
+        '인공지능과 윤리10',
+        '빅데이터 분석11',
+        '휴먼인터페이스미디어12',
+      ];
       //throw Exception("Failed to load department data");
     }
   }

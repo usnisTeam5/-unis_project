@@ -98,7 +98,10 @@ class _LoginScreenState extends State<LoginScreen> { // textfield 땜에 일단 
     final userProfileViewModel = Provider.of<UserProfileViewModel>(context, listen: false); // 유저 정보
 
     bool success = await loginViewModel.login(id, password);
-
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => MyHomePage()),
+    );
     if (success) {
       if(loginViewModel.msg == 'ok') {
         await loginViewModel.storeLoginInfo(id, password);  // 로그인 정보 저장

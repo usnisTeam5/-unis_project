@@ -89,7 +89,6 @@ class _MyQHistoryChatScreenState extends State<MyQHistoryChatScreen> {
             icon: Icon(Icons.keyboard_arrow_left, size: 30, color: Colors.grey),
             onPressed: () {
               Navigator.pop(context);
-              Navigator.pop(context);
             },
           ),
         ),
