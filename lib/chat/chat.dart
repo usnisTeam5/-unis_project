@@ -6,25 +6,26 @@ import 'package:flutter/material.dart';
 import 'package:unis_project/css/css.dart';
 import 'package:unis_project/chat/report.dart';
 import 'package:unis_project/chat/countdown.dart';
-import '../question/post_question.dart';
+import 'package:unis_project/chat/popupReview.dart';
+import 'package:unis_project/chat/chatShare.dart';
 import 'image_picker_popup.dart';
 
 import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'myQHistoryChat.dart';
+
 void main() {
   runApp(MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final width = min(MediaQuery.of(context).size.width,500.0);
-    final height = min(MediaQuery.of(context).size.height,700.0);
+    final width = min(MediaQuery.of(context).size.width, 500.0);
+    final height = min(MediaQuery.of(context).size.height, 700.0);
 
     return MaterialApp(
-
       home: ChatScreen(),
       theme: ThemeData(
         textTheme: TextTheme(
@@ -36,40 +37,34 @@ class MyApp extends StatelessWidget {
 }
 
 class ChatScreen extends StatefulWidget {
-
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
-
 
 class _ChatScreenState extends State<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _messageController = TextEditingController();
   List<Message> _messages = [];
-  bool _isMine = false;
+
   DateTime _time = DateTime.now().add(Duration(minutes: 20));
 
-// Future<void> _sendMessage(String message) async {
-//   // final response = await http.post(
-//   //   Uri.parse('https://your-backend-url.com/send-message'),
-//   //   body: {'message': message},
-//   // );
-//
-//   if (response.statusCode == 200) {
-//     final data = jsonDecode(response.body);
-//   }
-// }
-
-/* Future<void> _sendMessage(String message) async {
-    if (message.isNotEmpty) {
-      setState(() {
-        _messages.add(Message(text: message, sender: 'yourUserName', isMine: true));
-        _messageController.clear();
-      });
-    }
-    // 서버로 보낼 메시지 전송 로직 추가
-  } */
-
+  void _showAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('알림'),
+          content: Text('답변이 제출되었습니다'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('확인'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _onImagePicked(String imagePath) {
     setState(() {
@@ -92,12 +87,17 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  void _showReviewDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => PopupReview(),
+    );
+  }
 
-  int myQHistoryChat = 0;
-  int messageSendCount = 0;
 
   void _sendMessage(String text, String sender, bool isMine) {
-    if (text.isEmpty) { // 메시지 입력 안 하면 팝업
+    // 만약 메시지가 비어 있고, 메시지를 한 번도 보내지 않았다면 팝업 표시
+    if (text.isEmpty && messageSendCount == 0) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -113,11 +113,13 @@ class _ChatScreenState extends State<ChatScreen> {
           );
         },
       );
+      isClickedEnter = 0;
       return;
     }
 
+    messageSendCount += 1;
+
     setState(() {
-      messageSendCount++;
       _messages.add(Message(
         text: text,
         sender: sender,
@@ -144,24 +146,6 @@ class _ChatScreenState extends State<ChatScreen> {
       });
       _scrollToBottom();
     });
-
-    if (messageSendCount == 1) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('알림'),
-            content: Text('답변이 제출되었습니다'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('확인'),
-              ),
-            ],
-          );
-        },
-      );
-    }
   }
 
   void _scrollToBottom() {
@@ -177,39 +161,37 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
 
-  Future<void> _fetchMessages() async {
-    //   // final response = await http.get(
-    //   //   Uri.parse('https://your-backend-url.com/fetch-messages'),
-    //   // );
-    //
-    //   if (response.statusCode == 200) {
-    //     final data = jsonDecode(response.body);
-    //     setState(() {
-    //       _messages = List<String>.from(data['messages']);
-    //     });
-    //   }
+  void complete() {
+    setState(() {
+      _isChatInputVisible = false;
+      isCompleteButton = false;
+    });
   }
 
-  @override
-// void initState() {
-//   super.initState();
-//
-//   Future.doWhile(() async {
-//     await Future.delayed(Duration(seconds: 5));
-//     await _fetchMessages();
-//     return true;
-//   });
-// }
 
-
-
+  bool _isMine = false;
   int showProfile = 1; // 0: 익명, 1: 익명x
+  int myQHistoryChat = 0;
+  int isClickedEnter = 0; // 답변하기 버튼 클릭 여부
+  int messageSendCount = 0; // 메시지 보냈는지
+  bool _isQuestioner = true; // true: 질문자, false: 답변자
+  bool _isChatInputVisible = true; // 채팅 입력창
+  bool isCompleteButton = true; // 완료 버튼
+
+
+  List<String> savedMessages = [];
 
 
   @override
   Widget build(BuildContext context) {
-    final width = min(MediaQuery.of(context).size.width, 500.0);
-    final height = min(MediaQuery.of(context).size.height, 700.0);
+    final width = min(MediaQuery
+        .of(context)
+        .size
+        .width, 500.0);
+    final height = min(MediaQuery
+        .of(context)
+        .size
+        .height, 700.0);
 
     return Scaffold(
       appBar: AppBar(
@@ -218,11 +200,12 @@ class _ChatScreenState extends State<ChatScreen> {
         backgroundColor: Colors.white,
         toolbarHeight: 55,
         leadingWidth: 105,
-        leading: messageSendCount != 0
+        leading: isClickedEnter != 0
             ? Padding(
           padding: EdgeInsets.only(right: 50.0),
           child: IconButton(
-            icon: Icon(Icons.keyboard_arrow_left, size: 30, color: Colors.grey),
+            icon: Icon(Icons.keyboard_arrow_left,
+                size: 30, color: Colors.grey),
             onPressed: () => Navigator.pop(context),
           ),
         )
@@ -255,7 +238,98 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
         ),
         actions: [
-          if (messageSendCount == 0)
+          if (_isQuestioner) ...[
+            if (isClickedEnter == 0) // '질문자'의 경우 '답변하기' 버튼
+              Container(
+                margin: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  gradient: MainGradient(),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: TextButton(
+                  onPressed: () {
+                    if (messageSendCount == 0) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('알림'),
+                            content: Text('답변을 입력해주세요'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text('확인'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      setState(() {
+                        _isMine = !_isMine;
+                        _sendMessage(_messageController.text, "", true);
+                        _messageController.clear();
+                        isClickedEnter = 1;
+                        _showAlertDialog(context);
+                      });
+                    }
+                  },
+                  child: Text(
+                    '답변하기',
+                    style: TextStyle(
+                      fontFamily: 'ExtraBold',
+                      color: Colors.white,
+                      fontSize: 15,
+                    ),
+                  ),
+                  style: TextButton.styleFrom(
+                    primary: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 15),
+                  ),
+                ),
+              ),
+            if (isClickedEnter == 1) // '질문자'의 경우 '완료' 버튼
+              Container(
+                margin: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  gradient: MainGradient(),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: TextButton(
+                  onPressed: () {
+                    if (isCompleteButton) {
+                      // '완료' 버튼을 눌렀을 때 실행할 작업을 여기에 추가
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return PopupReview();
+                        },
+                      );
+                    } else {
+                      // '공유' 버튼을 눌렀을 때 chatShare.dart 파일로 이동
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ChatShare()),
+                      );
+                    }
+                  },
+                  child: Text(
+                    isCompleteButton ? '완료' : '공유',
+                    style: TextStyle(
+                      fontFamily: 'ExtraBold',
+                      color: Colors.white,
+                      fontSize: 15,
+                    ),
+                  ),
+                  style: TextButton.styleFrom(
+                    primary: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 15),
+                  ),
+                )
+              ),
+          ] else if (isClickedEnter == 0) ...[ // '답변자'의 경우 '답변하기' 버튼
             Container(
               margin: EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -264,19 +338,35 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               child: TextButton(
                 onPressed: () {
-                  setState(() {
-                    _isMine = !_isMine;
-                    _sendMessage(_messageController.text, "", true);
-                    _messageController.clear();
-                  });
+                  if (messageSendCount == 0) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('알림'),
+                          content: Text('답변을 입력해주세요'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text('확인'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    setState(() {
+                      _isMine = !_isMine;
+                      _sendMessage(_messageController.text, "", true);
+                      _messageController.clear();
+                      isClickedEnter = 1;
+                      _showAlertDialog(context);
+                    });
+                  }
                 },
-                child: Text(
-                  '답변하기',
-                  style: TextStyle(
-                    fontFamily: 'ExtraBold',
-                    color: Colors.white,
-                    fontSize: 15,
-                  ),
+                child: Text('답변하기', style: TextStyle(fontFamily: 'ExtraBold',
+                  color: Colors.white,
+                  fontSize: 15,),
                 ),
                 style: TextButton.styleFrom(
                   primary: Colors.transparent,
@@ -285,10 +375,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ),
             ),
-          if (messageSendCount != 0) SizedBox(width: 50)
+          ],
         ],
       ),
-      body: Container(
+      body: _isChatInputVisible ? Container(
         color: Colors.grey[200],
         child: Column(
           children: [
@@ -296,22 +386,19 @@ class _ChatScreenState extends State<ChatScreen> {
               padding: EdgeInsets.all(8),
               color: Colors.transparent,
               child: Center(
-                child: messageSendCount != 0
+                child: isClickedEnter != 0
                     ? SizedBox()
                     : Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding:
+                  EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  child: Countdown(
-                    endTime: _time,
-                  ),
+                  child: Countdown(endTime: _time,),
                 ),
               ),
             ),
-
-
             Expanded(
               child: ListView.builder(
                 controller: _scrollController,
@@ -321,10 +408,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   final bool shouldDisplayHeader = showProfile == 1 &&
                       (index == 0 ||
                           _messages[index - 1].sender != message.sender);
-                  final bool shouldDisplayTime = (index ==
-                      _messages.length - 1 ||
-                      _messages[index + 1].sender != message.sender) &&
-                      messageSendCount != 0;
+                  final bool shouldDisplayTime =
+                  (index == _messages.length - 1 ||
+                      _messages[index + 1].sender != message.sender);
 
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -337,11 +423,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         if (!message.isMine && shouldDisplayHeader)
                           Column(
                             children: [
-                              CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    message.senderImageURL),
-                                radius: 15,
-                              ),
+                              CircleAvatar(backgroundImage: NetworkImage(
+                                  message.senderImageURL), radius: 15,),
                               SizedBox(height: 2),
                             ],
                           ),
@@ -356,11 +439,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 12, bottom: 7), // 상대방 닉네임 위치
-                                  child: Text(
-                                    message.senderName,
+                                  child: Text(message.senderName,
                                     style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black,
+                                      fontSize: 12, color: Colors.black,
                                     ),
                                   ),
                                 ),
@@ -378,8 +459,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         "${message.sentAt.hour}:${message.sentAt
                                             .minute.toString().padLeft(
                                             2, '0')}",
-                                        style: TextStyle(
-                                          fontSize: 10,
+                                        style: TextStyle(fontSize: 10,
                                           fontFamily: 'Round',
                                           color: Colors.black.withOpacity(0.5),
                                         ),
@@ -388,18 +468,19 @@ class _ChatScreenState extends State<ChatScreen> {
                                     ),
                                   Container(
                                     constraints: BoxConstraints(
-                                        maxWidth: MediaQuery
-                                            .of(context)
-                                            .size
-                                            .width * 0.6),
+                                      maxWidth:
+                                      MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 0.6,
+                                    ),
                                     margin: EdgeInsets.only(
-                                        left: message.isMine
-                                            ? 0
-                                            : (shouldDisplayHeader
-                                            ? (showProfile == 1 ? 8.0 : 4.0)
-                                            : (showProfile == 0 ? 0 : 39.0)),
-                                        //////
-                                        top: message.isMine ? 0 : 0
+                                      left: message.isMine
+                                          ? 0
+                                          : (shouldDisplayHeader
+                                          ? (showProfile == 1 ? 8.0 : 4.0)
+                                          : (showProfile == 0 ? 0 : 39.0)),
+                                      top: 0,
                                     ),
                                     padding: const EdgeInsets.all(8.0),
                                     decoration: BoxDecoration(
@@ -414,19 +495,16 @@ class _ChatScreenState extends State<ChatScreen> {
                                       style: TextStyle(
                                         color: message.isMine
                                             ? Colors.white
-                                            : Colors.black,
-                                        fontFamily: 'Round',
+                                            : Colors.black, fontFamily: 'Round',
                                       ),
                                     )
                                         : message.imagePath != null
                                         ? Image.file(
-                                      File(message.imagePath!),
-                                      width: 150,
-                                      fit: BoxFit.cover,
-                                    )
-                                        : SizedBox(),
+                                      File(message.imagePath!), width: 150,
+                                      fit: BoxFit.cover,)
+                                        : SizedBox
+                                        .shrink(),
                                   ),
-
                                   if (!message.isMine)
                                     Padding(
                                       padding: const EdgeInsets.only(
@@ -436,8 +514,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         "${message.sentAt.hour}:${message.sentAt
                                             .minute.toString().padLeft(
                                             2, '0')}",
-                                        style: TextStyle(
-                                          fontSize: 10,
+                                        style: TextStyle(fontSize: 10,
                                           fontFamily: 'Round',
                                           color: Colors.black.withOpacity(0.5),
                                         ),
@@ -455,8 +532,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 },
               ),
             ),
-
-
             Container(
               color: Colors.white,
               padding: EdgeInsets.all(8.0),
@@ -477,12 +552,16 @@ class _ChatScreenState extends State<ChatScreen> {
                         context: context,
                         builder: (context) {
                           return ImagePickerPopup(
-                              onImagePicked: _onImagePicked);
+                            onImagePicked: (imagePath) {
+                              // 이미지를 선택한 경우, savedMessages에 이미지 경로를 저장
+                              savedMessages.add(imagePath);
+                              _sendMessage(imagePath, "", true); // 메시지 전송 함수 호출
+                            },
+                          );
                         },
                       );
                     },
                   ),
-
                   Expanded(
                     child: Row(
                       children: [
@@ -512,14 +591,17 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.send),
+                          icon: Transform.rotate(
+                            angle: -30 * (3.141592653589793 / 180),
+                            child: Icon(
+                              Icons.send,
+                              color: Colors.grey,
+                            ),
+                          ),
                           onPressed: () {
-                            setState(() {
-                              _isMine = !_isMine;
-                              _sendMessage(_messageController.text, "",
-                                  true); // "MyName" 비워둠
-                              _messageController.clear();
-                            });
+                            String message = _messageController.text;
+                            savedMessages.add(message); // 메시지를 저장
+                            _sendMessage(message, "", true); // 메시지 전송 함수 호출
                           },
                         ),
                       ],
@@ -530,7 +612,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
-      ),
+      ) : null,
     );
   }
 }

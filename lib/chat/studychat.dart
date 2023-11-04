@@ -1,26 +1,29 @@
 import 'dart:convert';
-import 'dart:js';
 import 'dart:math';
 import 'dart:io';
 import 'package:flutter/material.dart';
 
-import 'package:flutter/scheduler.dart';
-import 'package:unis_project/chat/ChatShare.dart';
-import 'package:unis_project/login/login.dart';
+import 'package:unis_project/chat/report.dart';
+import 'package:unis_project/chat/study_Notification.dart';
+import 'image_picker_popup.dart';
 
+import 'package:flutter/scheduler.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() {
   runApp(MyApp());
 }
 
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final width = min(MediaQuery.of(context).size.width, 500.0);
-    final height = min(MediaQuery.of(context).size.height, 700.0);
+    final width = min(MediaQuery.of(context).size.width,500.0);
+    final height = min(MediaQuery.of(context).size.height,700.0);
 
     return MaterialApp(
-      home: MyQHistoryChatScreen(),
+
+      home: StudyChatScreen(),
       theme: ThemeData(
         textTheme: TextTheme(
           bodyText2: TextStyle(fontFamily: 'Round'),
@@ -30,12 +33,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyQHistoryChatScreen extends StatefulWidget {
+class StudyChatScreen extends StatefulWidget {
   @override
-  _MyQHistoryChatScreenState createState() => _MyQHistoryChatScreenState();
+  _StudyChatScreenState createState() => _StudyChatScreenState();
 }
 
-class _MyQHistoryChatScreenState extends State<MyQHistoryChatScreen> {
+class _StudyChatScreenState extends State<StudyChatScreen> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _messageController = TextEditingController();
 
@@ -45,6 +48,10 @@ class _MyQHistoryChatScreenState extends State<MyQHistoryChatScreen> {
 
   int messageSendCount = 0;
   int showProfile = 1;
+
+
+
+
 
   void _onImagePicked(String imagePath) {
     setState(() {
@@ -57,6 +64,45 @@ class _MyQHistoryChatScreenState extends State<MyQHistoryChatScreen> {
         sentAt: DateTime.now(),
       ));
       // _scrollToBottom();
+    });
+  }
+
+  void _showReportDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => ReportPopup(),
+    );
+  }
+
+  void _sendMessage(String text, String sender, bool isMine) {
+    // Validate and send message logic here...
+
+    setState(() {
+      _messages.add(Message(
+        text: text,
+        sender: sender,
+        isMine: isMine,
+        senderImageURL: "your_image_url",
+        senderName: sender,
+        sentAt: DateTime.now(),
+      ));
+      _messageController.clear();
+    });
+
+    _scrollToBottom();
+
+    Future.delayed(Duration(seconds: 1), () {
+      setState(() {
+        _messages.add(Message(
+          text: '자동 응답: $text',
+          sender: '봇',
+          isMine: false,
+          senderImageURL: "bot_image_url",
+          senderName: '봇',
+          sentAt: DateTime.now(),
+        ));
+      });
+      _scrollToBottom();
     });
   }
 
@@ -88,14 +134,11 @@ class _MyQHistoryChatScreenState extends State<MyQHistoryChatScreen> {
           padding: EdgeInsets.only(right: 50.0),
           child: IconButton(
             icon: Icon(Icons.keyboard_arrow_left, size: 30, color: Colors.grey),
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
+            onPressed: () => Navigator.pop(context),
           ),
         ),
         title: Text(
-          '과목명',
+          '스터디명',
           style: TextStyle(
             color: Colors.grey[600],
             fontFamily: 'Bold',
@@ -104,13 +147,17 @@ class _MyQHistoryChatScreenState extends State<MyQHistoryChatScreen> {
         actions: [
           IconButton(
             icon: Icon(
-              Icons.share,
+              Icons.notifications,
               color: Colors.grey,
-              size: 24,
+              size: 30,
             ),
             onPressed: () {
-              // ChatShare 화면 열기
-              _showShareDialog(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => StudyNotificationSettings(),
+                ),
+              );
             },
           ),
         ],
@@ -190,7 +237,7 @@ class _MyQHistoryChatScreenState extends State<MyQHistoryChatScreen> {
                                       )
                                           : Container(),
                                     ),
-                                  Container( // 메시지 여백
+                                  Container(
                                     constraints: BoxConstraints(
                                         maxWidth:
                                         MediaQuery.of(context).size.width *
@@ -254,22 +301,80 @@ class _MyQHistoryChatScreenState extends State<MyQHistoryChatScreen> {
                 },
               ),
             ),
+
+
+
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.warning_amber_rounded),
+                    color: Colors.grey,
+                    iconSize: 30,
+                    onPressed: _showReportDialog,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.add_circle_outline_rounded),
+                    color: Colors.grey,
+                    iconSize: 30,
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return ImagePickerPopup(
+                            onImagePicked: _onImagePicked,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  Expanded(
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.7,
+                        maxHeight: MediaQuery.of(context).size.height * 0.7,
+                      ),
+                      height: 40,
+                      child: TextField(
+                        controller: _messageController,
+                        decoration: InputDecoration(
+                          hintText: '메시지를 입력하세요',
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 10.0,
+                            horizontal: 20.0,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Transform.rotate(
+                      angle: -30 * (3.141592653589793 / 180),
+                      child: Icon(
+                        Icons.send,
+                        color: _messageController.text.isEmpty ? Colors.grey : Colors.black,
+                      ),
+                    ),
+                    onPressed: () {
+                      if (_messageController.text.isNotEmpty) {
+                        _sendMessage(_messageController.text, "", true);
+                      }
+                    },
+                  )
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
-
-void _showShareDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return ChatShare();
-    },
-  );
-}
-
 
 class Message {
   final String? text; // 텍스트 메시지 (이미지일 때 null)

@@ -263,13 +263,11 @@ class _PostSettingsState extends State<PostSettings> {
                       actions: [
                         TextButton(
                           onPressed: () {
-                            Navigator.of(context).pop();  // Close the pop-up.
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => QuestionPage()),
-                            );
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
                           },
-                          child: Text('OK'),
+                          child: Text('확인'),
                         ),
                       ],
                     );

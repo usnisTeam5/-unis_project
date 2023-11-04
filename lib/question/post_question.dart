@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'package:unis_project/css/css.dart';
 import 'package:unis_project/chat/report.dart';
-import 'package:unis_project/chat/countdown.dart';
 import 'package:unis_project/chat/image_picker_popup.dart';
 import 'package:unis_project/question/post_settings.dart';
 import 'package:unis_project/question/question.dart';
@@ -47,14 +46,10 @@ class PostQuestionPage extends StatefulWidget {
   _PostQuestionPageState createState() => _PostQuestionPageState();
 }
 
-
 class _PostQuestionPageState extends State<PostQuestionPage> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _messageController = TextEditingController();
   List<Message> _messages = [];
-  bool _isMine = false;
-  DateTime _time = DateTime.now().add(Duration(minutes: 20));
-
 
   void _onImagePicked(String imagePath) {
     setState(() {
@@ -76,14 +71,11 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
     );
   }
 
-
-
   int messageSendCount = 0;
-
   bool hasUserSentMessage = false;
 
   void _sendMessage(String text, String sender, bool isMine) {
-    if (text.isEmpty) { // 메시지 입력 안 하면 팝업
+    if (text.isEmpty) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -102,37 +94,6 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
       return;
     }
 
-
-
-    setState(() {
-      hasUserSentMessage = false;
-      ElevatedButton(
-        onPressed: () {
-          if (text.isEmpty) {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('알림'),
-                  content: Text('질문을 입력해주세요'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text('확인'),
-                    ),
-                  ],
-                );
-              },
-            );
-          }
-        },
-        child: Text('금액 설정'),
-      );
-    });
-
-
-
-
     setState(() {
       messageSendCount++;
       _messages.add(Message(
@@ -147,27 +108,13 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
     });
     _scrollToBottom();
 
-    Future.delayed(Duration(seconds: 1), () {
-      setState(() {
-        _messages.add(Message(
-          text: '자동 응답: $text',
-          sender: '봇',
-          isMine: false,
-          senderImageURL: "bot_image_url",
-          senderName: '봇',
-          sentAt: DateTime.now(),
-        ));
-      });
-      _scrollToBottom();
-    });
-
     if (messageSendCount == 1) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('알림'),
-            content: Text('질문이 제출되었습니다'),
+            content: Text('질문이 입력되었습니다'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -180,9 +127,6 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
     }
     hasUserSentMessage = true;
   }
-
-
-
 
   void _scrollToBottom() {
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -290,23 +234,6 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
         color: Colors.grey[200],
         child: Column(
           children: [
-            Container(
-              padding: EdgeInsets.all(8),
-              color: Colors.transparent,
-              child: Center(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Countdown(
-                    endTime: _time,
-                  ),
-                ),
-              ),
-            ),
-
             Expanded(
               child: ListView.builder(
                 controller: _scrollController,
@@ -417,13 +344,12 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.send),
+                          icon: Transform.rotate(
+                            angle: -30 * (3.141592653589793 / 180),
+                            child: Icon(Icons.send, color: Colors.grey,),
+                          ),
                           onPressed: () {
-                            setState(() {
-                              _isMine = !_isMine;
-                              _sendMessage(_messageController.text, "", true); // "MyName" 비워둠
-                              _messageController.clear();
-                            });
+                            _sendMessage(_messageController.text, "", true);
                           },
                         ),
                       ],
