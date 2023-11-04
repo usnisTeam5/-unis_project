@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:unis_project/css/css.dart';
 import 'package:unis_project/study_room/quiz.dart';
-import '../chat/chat.dart';
+import '../chat/studychat.dart';
 import '../menu/menu.dart';
 import '../notifier/notifier.dart';
 import 'home.dart';
@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 case 0:
                   return Home();  // question.dart 파일의 MyApp 클래스를 여기서 호출
                 case 1:
-                  return ChatScreen();
+                  return StudyChatScreen();
                 case 2:
                   return QuizFolderScreen();
                 default:

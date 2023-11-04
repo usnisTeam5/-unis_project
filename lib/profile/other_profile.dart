@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../chat/chat.dart';
-import 'friend.dart';
+import 'package:unis_project/chat/report.dart';
+import '../chat/OneToOneChat.dart';
 import '../css/css.dart';
 import 'dart:math';
 void main() {
@@ -161,7 +161,7 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => ChatScreen()
+                                        builder: (context) => OneToOneChatScreen()
                                     )
                                 );
                               },
@@ -317,23 +317,7 @@ class SatisfactionAndReportSection extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text("신고하기"),
-                    content: Text("신고할 목록을 선택하세요."),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text("취소"),
-                      ),
-                    ],
-                  );
-                },
-              );
+              _showReportPopup(context);
             },
             child: Text("신고하기"),
             style: ElevatedButton.styleFrom(
@@ -347,6 +331,16 @@ class SatisfactionAndReportSection extends StatelessWidget {
       ),
     );
   }
+}
+
+
+void _showReportPopup(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return ReportPopup();
+    },
+  );
 }
 
 

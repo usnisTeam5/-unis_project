@@ -104,7 +104,7 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
                     },
                   ),
                   Container(
-                    width: 216,
+                    width: 270,
                     child: TabBar(
                       controller: _tabController,
                       tabs: [
@@ -114,6 +114,7 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
                       ],
                       indicatorColor: Colors.white,
                       labelColor: Colors.white,
+                      indicatorSize: TabBarIndicatorSize.label,
                     ),
                   ),
                 ],

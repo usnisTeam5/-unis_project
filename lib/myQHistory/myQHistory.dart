@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:unis_project/chat/chat.dart';
+import 'package:unis_project/question/post_settings.dart';
 import 'package:unis_project/css/css.dart';
 import 'dart:math';
 import 'package:unis_project/chat/myQHistoryChat.dart';
@@ -34,6 +34,7 @@ class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProv
 
   TabController? _tabController;
   int _selectedIndex = 0;  // Add this line
+
 
   @override
   void initState() {
@@ -139,7 +140,7 @@ class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProv
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MyQHistoryChatPage()),
+              MaterialPageRoute(builder: (context) => MyQHistoryChatScreen()),
             );
           },
           child: Container(
