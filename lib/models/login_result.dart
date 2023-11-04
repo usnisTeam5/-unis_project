@@ -1,5 +1,9 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+ // 필요한 정보(뱐수)
+// 백엔드 통시 관련 메소드
+// fromJson
+// toJson()
 
 class LoginResult {
   String _msg; // 오류 메시지 잘받으면 ok, 아니면 error
@@ -29,6 +33,8 @@ class LoginResult {
     };
   }
 }
+
+//
 
 class LoginService { // 로그인 백 프론트 연동
   static const BASE_URL = 'http://3.35.21.123:8080'; // 상수로 URL 관리

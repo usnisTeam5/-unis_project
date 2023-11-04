@@ -127,7 +127,6 @@ class _SearchDepartmentState extends State<SearchDepartment> {
                 }
                 // 검색 결과에 따라 ListView를 업데이트합니다.
                 final departments = viewModel.departments; // 뷰모델의 학과 목록
-
                 // 검색 결과가 없으면 사용자에게 알립니다.
                 if (departments.isEmpty) {
                   return Center(child: Text('검색 결과가 없습니다.'));
