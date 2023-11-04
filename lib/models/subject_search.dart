@@ -1,25 +1,13 @@
-// @ResponseBody
-// @GetMapping("/find/department")
-// public List<String> findDepartment(@RequestParam String keyword) {
-//   List<String> list = new ArrayList<String>();
-//
-//   //DB의 department테이블에서 keyword를 토대로 관련있는 학과목록을 검색하고
-//   //가져온 목록들을 list에 넣어서 반환한다.
-//
-//   return list;
-// }
-
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-class DepartmentSearch {
-
+class SubjectSearch {
   final String _baseUrl = "http://3.35.21.123:8080"; // API의 기본 URL
 
   // 키워드를 사용하여 학과를 검색하는 메소드
-  Future<List<String>> findDepartment(String keyword) async {
+  Future<List<String>> findSubject(String keyword) async {
     try {
       final response = await http.get(
-        Uri.parse("$_baseUrl/find/department?keyword=$keyword"),
+        Uri.parse("$_baseUrl/find/course?keyword=$keyword"),
       );
 
       if (response.statusCode == 200) { // HTTP 상태 코드가 200(정상)일 경우, JSON 데이터를 Dart의 List<String>로 디코딩합니다.
