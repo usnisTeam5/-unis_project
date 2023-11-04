@@ -17,6 +17,7 @@ class _PopupReviewState extends State<PopupReview> {
     if (_selectedStars > 0) {
       // 별점을 선택한 경우에만 MyQHistoryChatScreen으로 이동
       Navigator.of(context).pop(); // 팝업 창 닫기
+      Navigator.of(context).pop();
       Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => MyQHistoryChatScreen()), // MyQHistoryChatScreen으로 이동
       );

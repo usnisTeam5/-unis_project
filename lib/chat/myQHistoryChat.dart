@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:js';
 import 'dart:math';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -89,7 +88,6 @@ class _MyQHistoryChatScreenState extends State<MyQHistoryChatScreen> {
           child: IconButton(
             icon: Icon(Icons.keyboard_arrow_left, size: 30, color: Colors.grey),
             onPressed: () {
-              Navigator.pop(context);
               Navigator.pop(context);
             },
           ),
