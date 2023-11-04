@@ -1,12 +1,15 @@
+///  이것은 내 스터디에서 필요한 정보입니다!
+///
+
 class StudyInfo {
   final int roomNum; // 스터디방 고유키
-  final String roomName; // 스터디 제목
+  String roomName; // 스터디 제목
   final String major; // 과목명
-  final int maximumNum; // 최대인원수
-  final int num; // 현재인원수
-  final String leaderNickName; // 그룹장
+  int maximumNum; // 최대인원수
+  int num; // 현재인원수
+  String leaderNickName; // 그룹장
   final String startDate; // 시작일
-  final bool isOpen; // 공개여부
+  bool isOpen; // 공개여부
   final String studyIntroduction; // 스터디 소개글
 
   StudyInfo({
@@ -59,4 +62,5 @@ class StudyInfo {
       'studyIntroduction': studyIntroduction,
     };
   }
+
 }

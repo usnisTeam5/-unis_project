@@ -40,6 +40,76 @@ import 'package:flutter/material.dart';
 //   final formatter = NumberFormat('#,###');
 //   return formatter.format(number);
 // }
+
+
+// consumer 등록 context 접근이 힘들 때
+// 접근이 되면( ex) 내부 위젯을 메소드로 떼어낼 때, 그냥 context넘겨 받음
+/*
+*  Consumer<MyDataModel>(
+                builder: (context, dataModel, child) {
+                  return Text(
+                    '카운트: ${dataModel.count}',
+                    style: TextStyle(fontSize: 24),
+                  );
+                },
+              ),
+              *
+    context.read<CounterModel>().increment(); -> 주의점. builder 내, 위젯 밖에서 사용 x 위젯 안에서 써야함.
+    * context.watch<CounterModel>().count
+    *
+    * import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class CounterModel with ChangeNotifier {
+  int _count = 0;
+
+  int get count => _count;
+
+  void increment() {
+    _count++;
+    notifyListeners();
+  }
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Counter App'),
+        ),
+        body: ChangeNotifierProvider( // *******************이런식으로 등록 가능********
+          create: (context) => CounterModel(), // 데이터 모델 등록
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  '카운트: ${context.watch<CounterModel>().count}',
+                  style: TextStyle(fontSize: 24),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<CounterModel>().increment();
+                  },
+                  child: Text('증가'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+이런식으로도 추가 가능
+* */
 class GradientText extends StatelessWidget {
   const GradientText({
     super.key,

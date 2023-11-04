@@ -65,9 +65,9 @@ class _MyHomePageState extends State<MyHomePage> {
     double fontSize = width * 0.03; // 텍스트 크기 설정
 
     final loginViewModel = context.watch<LoginViewModel>();
-    final key = loginViewModel.userKey;
+    //final key = loginViewModel.userKey;
     final nickname = loginViewModel.userNickName;
-    print(key);
+   // print(key);
     print(nickname);
 
 

@@ -6,6 +6,9 @@ import '../search_department/search_department.dart';
 import '../search_subject/search_subject.dart';
 import '../login/login.dart';
 import 'package:restart_app/restart_app.dart';
+import 'package:provider/provider.dart';
+import '../view_model/login_result_view_model.dart';
+import '../view_model/user_profile_info_view_model.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -25,6 +28,7 @@ class ProfileSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = min(MediaQuery.of(context).size.width,500.0);
     List<String> itemsText = ['학부 설정', '과목 설정하기', '로그아웃', '회원 탈퇴'];
+    final viewModel = Provider.of<LoginViewModel>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -55,7 +59,7 @@ class ProfileSettings extends StatelessWidget {
         itemCount: itemsText.length,
         itemBuilder: (context, index) {
           return GestureDetector(
-            onTap: () {
+            onTap: () async{
               switch(itemsText[index]) {
                 case '학부 설정':
                   Navigator.push(
@@ -70,12 +74,21 @@ class ProfileSettings extends StatelessWidget {
                   );
                   break;
                 case '로그아웃':
-                 Navigator.pop(context);
-                 Navigator.pop(context);
-                 break;
+                  await viewModel.logout();
+
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                        (Route<dynamic> route) => false,
+                  );
+                  break;
                 case '회원 탈퇴':
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  await viewModel.logout();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                        (Route<dynamic> route) => false,
+                  );
                   break;
               } //
             },
