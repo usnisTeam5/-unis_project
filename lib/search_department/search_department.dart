@@ -46,7 +46,13 @@ class _SearchDepartmentState extends State<SearchDepartment> {
     return ChangeNotifierProvider(
       create: (_) => DepartmentSearchViewModel(),
       builder: (context, child) {
-        if(_searchController.text == '' && selectedDepartmentIndex == -2)  Provider.of<DepartmentSearchViewModel>(context, listen: false).searchDepartment('');
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          // 여기에 빌드가 완료된 후에 실행하고 싶은 코드를 넣으세요.
+          if (_searchController.text == '' && selectedDepartmentIndex == -2) {
+            Provider.of<DepartmentSearchViewModel>(context, listen: false)
+                .searchDepartment('');
+          }
+        });
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(

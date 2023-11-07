@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:unis_project/models/register.dart';
 import 'dart:math';
@@ -55,6 +57,38 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String? validationMessage5 = ' '; // 닉네임 중복확인
   int checkPoint = 0;
 
+  bool isCodeTextFieldEnabled = false; // 인증번호 TextField의 활성화 상태를 제어하는 변수
+  Timer? _timer; // 타이머를 저장할 변수
+  int _start = 300; // 5분을 초로 환산
+
+// 타이머 시작 함수
+  void startTimer() {
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (_start == 0) {
+          setState(() {
+            timer.cancel(); // 타이머 종료
+            isCodeTextFieldEnabled = false; // 인증번호 TextField 비활성화
+          });
+        } else {
+          setState(() {
+            _start--; // 시간 감소
+          });
+        }
+      },
+    );
+  }
+
+  // 타이머 종료 및 초기화 함수
+  void cancelTimer() {
+    if (_timer != null) {
+      _timer!.cancel();
+      _start = 300; // 타이머 시간 초기화
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double width = min(MediaQuery.of(context).size.width, 500.0);
@@ -110,7 +144,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         SizedBox(height: height * 0.05),
                         TextField(
                           controller: _emailController,
+                          maxLength: 30,
                           decoration: InputDecoration(
+                            counterText: "",
                             labelText: '포탈 이메일',
                             labelStyle: TextStyle(
                               fontFamily: 'Round',
@@ -145,16 +181,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     bool emailIsValid = emailRegExp
                                         .hasMatch(_emailController.text.trim());
                                     // 이메일 형식이 유효하다면 인증 메일을 보냄
-                                    setState(() {
-                                      validationMessage = '메일을 보냈습니다.';
-                                    });
                                     if (!emailIsValid) {
                                       setState(() {
                                         validationMessage =
                                             '이메일은 @cau.ac.kr로 끝나고, 아이디에는 영어와 숫자만 사용 가능합니다.';
                                       });
                                     } else {
+                                      setState(() {
+                                        validationMessage = '메일을 보냈습니다.';
+                                      });
                                       // 여기서 뷰 모델의 이메일 인증 메소드를 호출합니다.
+                                      setState(() {
+                                        if (_timer != null) {
+                                          cancelTimer();
+                                        }
+                                        isCodeTextFieldEnabled =
+                                            true; // 인증번호 TextField 활성화
+                                        startTimer(); // 타이머 시작
+                                      });
                                       await Provider.of<UserViewModel>(context,
                                               listen: false)
                                           .authenticateEmail(
@@ -166,7 +210,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                               .authenticationStatusEmail;
                                       // 인증 상태에 따라 UI를 업데이트합니다.
                                       setState(() {
-                                        validationMessage = authStatus == 'ok'? '메일을 보냈습니다.': '인증 오류가 발생했습니다.';
+                                        if (authStatus == 'ok') {
+                                          //validationMessage = '메일을 보냈습니다.';
+                                        } else if (authStatus == "duplicate") {
+                                          validationMessage = '이미 가입된 이메일입니다.';
+                                          setState(() {
+                                            cancelTimer();
+                                          });
+                                        } else {
+                                          validationMessage = '인증 오류가 발생하였습니다.';
+                                          setState(() {
+                                            cancelTimer();
+                                          });
+                                        }
                                       });
                                     }
                                   },
@@ -205,6 +261,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         SizedBox(height: height * 0.05),
                         TextField(
                           controller: _codeController,
+                          enabled: isCodeTextFieldEnabled, // 여기에 변수를 사용합니다.
                           decoration: InputDecoration(
                             labelText: '인증번호',
                             labelStyle: TextStyle(
@@ -284,17 +341,33 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           ),
                         ),
                         SizedBox(height: 2),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            validationMessage4!,
-                            style: TextStyle(
-                              color: Colors.grey[500],
-                              fontFamily: 'Round',
-                              fontSize: 13,
+                        Row(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                validationMessage4!,
+                                style: TextStyle(
+                                  color: Colors.grey[500],
+                                  fontFamily: 'Round',
+                                  fontSize: 13,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
                             ),
-                            textAlign: TextAlign.left,
-                          ),
+                            Spacer(),
+                            //if (isCodeTextFieldEnabled) // 타이머가 활성화되어 있을 때만 타이머 표시
+                            Text(
+                              '${(_start / 60).floor().toString().padLeft(2, '0')}:${(_start % 60).toString().padLeft(2, '0')}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontFamily: 'Round',
+                                fontSize: 10,
+                              ),
+                            ),
+                            // else
+                            //   Container(), // 타이머가 비활성화되어 있을 때는 빈 컨테이너를 표시함
+                          ],
                         ),
                         SizedBox(height: height * 0.05),
                         TextField(
@@ -328,24 +401,32 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(16.0),
                                   onTap: () async {
-                                    final userViewModel = Provider.of<UserViewModel>(context, listen: false);
-                                    String nickname = _nicknameController.text.trim();
+                                    final userViewModel =
+                                        Provider.of<UserViewModel>(context,
+                                            listen: false);
+                                    String nickname =
+                                        _nicknameController.text.trim();
                                     // 영어, 숫자, 한글을 체크하는 정규 표현식
-                                    RegExp nicknameRegExp = RegExp(r'^[a-zA-Z0-9가-힣]+$');
+                                    RegExp nicknameRegExp =
+                                        RegExp(r'^[a-zA-Z0-9가-힣]+$');
 
                                     // 정규 표현식에 맞는지 확인
                                     if (nicknameRegExp.hasMatch(nickname)) {
                                       // 정규 표현식 조건에 맞으면 닉네임 중복 확인
-                                      await userViewModel.dupCheckNickname(nickname);
+                                      await userViewModel
+                                          .dupCheckNickname(nickname);
                                       setState(() {
-                                        validationMessage5 = userViewModel.authenticationStatusNickname == 'ok'
+                                        validationMessage5 = userViewModel
+                                                    .authenticationStatusNickname ==
+                                                'ok'
                                             ? '사용 가능한 닉네임입니다.'
                                             : '이미 사용 중인 닉네임입니다.';
                                       });
                                     } else {
                                       // 정규 표현식 조건에 맞지 않으면 경고 메시지 설정
                                       setState(() {
-                                        validationMessage5 = '닉네임은 영어, 숫자, 한글로만 이루어져야 합니다.';
+                                        validationMessage5 =
+                                            '닉네임은 영어, 숫자, 한글로만 이루어져야 합니다.';
                                       });
                                     }
                                   },
@@ -385,8 +466,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         ),
                         SizedBox(height: height * 0.05),
                         TextFormField(
+                          maxLength: 20,
                           controller: _passwordController,
                           decoration: InputDecoration(
+                            counterText: "",
                             labelText: '비밀번호',
                             labelStyle: TextStyle(
                               fontFamily: 'Round',
@@ -402,33 +485,31 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           ),
                           obscureText: true,
                           onChanged: (value) {
-                            // 비밀번호가 8자 이상인지 확인
-                            bool isLengthValid = value.length >= 8;
+                            bool isLengthValid = value.length >= 8; // 최소 길이 8자
+                            bool hasLowercase = value.contains(RegExp(r'[a-z]')); // 소문자 포함
+                            bool hasUppercase = value.contains(RegExp(r'[A-Z]')); // 대문자 포함 (필요한 경우 추가)
+                            bool hasDigits =
+                                value.contains(RegExp(r'[0-9]')); // 숫자 포함
+                            bool hasSpecialCharacters = value.contains(
+                                RegExp(r'[!@#$%^&*(),.?":{}|<>]')); // 특수 문자 포함
+                            //bool isSequentialOrRepeated = hasSequentialOrRepeatedCharacters(value); // 연속되거나 반복되는 문자 제한
 
-                            // 비밀번호가 영어 알파벳과 숫자로만 이루어져 있는지 확인
-                            bool isCharacterValid =
-                                RegExp(r'^[a-zA-Z0-9]+$').hasMatch(value);
-
-                            if (!isLengthValid && !isCharacterValid) {
-                              setState(() {
+                            setState(() {
+                              if (!isLengthValid) {
+                                validationMessage2 = '비밀번호는 최소 8자 이상이어야 합니다.';
+                              } else if (!hasLowercase && !hasUppercase) {
                                 validationMessage2 =
-                                    '비밀번호는 8자 이상이며, 영어와 숫자로만 이루어져야 합니다.';
-                              });
-                            } else if (!isLengthValid) {
-                              setState(() {
-                                validationMessage2 = '비밀번호는 8자 이상이어야 합니다.';
-                              });
-                            } else if (!isCharacterValid) {
-                              setState(() {
+                                    '비밀번호에는 적어도 하나의 영문자가 포함되어야 합니다.';
+                              } else if (!hasDigits) {
                                 validationMessage2 =
-                                    '비밀번호는 영어와 숫자로만 이루어져야 합니다.';
-                              });
-                            } else {
-                              setState(() {
+                                    '비밀번호에는 적어도 하나의 숫자가 포함되어야 합니다.';
+                              } else if (!hasSpecialCharacters) {
                                 validationMessage2 =
-                                    '올바른 비밀번호입니다.'; // 조건을 모두 만족하면 메시지를 null로 설정
-                              });
-                            }
+                                    '비밀번호에는 적어도 하나의 특수문자가 포함되어야 합니다.';
+                              } else {
+                                validationMessage2 = '올바른 비밀번호입니다.';
+                              }
+                            });
                           },
                         ),
                         SizedBox(height: 2),
@@ -446,8 +527,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         ),
                         SizedBox(height: height * 0.05),
                         TextFormField(
+                          maxLength: 20,
                           controller: _confirmPasswordController,
                           decoration: InputDecoration(
+                            counterText: "",
                             labelText: '비밀번호 재확인',
                             labelStyle: TextStyle(
                               fontFamily: 'Round',
@@ -531,7 +614,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             deptName1: widget.selectedDepartments[0],
                             courseNames: widget.selectedCourses);
                       }
-                      print('UserDto(email: ${userViewModel.userDto!.email}, password: ${userViewModel.userDto!.password}, '
+                      print(
+                          'UserDto(email: ${userViewModel.userDto!.email}, password: ${userViewModel.userDto!.password}, '
                           'nickname: ${userViewModel.userDto!.nickname}, deptName1: ${userViewModel.userDto!.deptName1}, '
                           'courseNames: ${userViewModel.userDto!.courseNames!.join(', ')})');
                       // final List<String> selectedDepartments;
@@ -551,7 +635,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             duration: Duration(seconds: 3), // 팝업이 보이는 시간
                             behavior: SnackBarBehavior.floating, // 팝업창 스타일
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24), // 팝업창 모서리 둥글게
+                              borderRadius:
+                                  BorderRadius.circular(24), // 팝업창 모서리 둥글게
                             ),
                           ),
                         );
@@ -564,7 +649,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           duration: Duration(seconds: 3), // 팝업이 보이는 시간
                           behavior: SnackBarBehavior.floating, // 팝업창 스타일
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24), // 팝업창 모서리 둥글게
+                            borderRadius:
+                                BorderRadius.circular(24), // 팝업창 모서리 둥글게
                           ),
                         ),
                       );
