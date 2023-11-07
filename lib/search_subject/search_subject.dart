@@ -30,30 +30,8 @@ class SearchSubject extends StatefulWidget {
 class _SearchSubjectState extends State<SearchSubject> {
   TextEditingController _searchController = TextEditingController();
   List<bool> selectedSubjectsChecklist = [];  // 체크박스의 상태를 관리하기 위한 리스트
-  int selectedSubjectIndex = 0;  // 기본적으로 첫 번째 주제가 선택됩니다.
 
-  final List<String> subjects = [
-    '컴퓨터와 휴먼1',
-    '인공지능과 윤리2',
-    '빅데이터 분석3',
-    '휴먼인터페이스미디어와 마법의 돌과 죄수4',
-    '컴퓨터와 휴먼5',
-    '인공지능과 윤리6',
-    '빅데이터 분석7',
-    '휴먼인터페이스미디어와 마법의 돌과 죄수8',
-    '컴퓨터와 휴먼9',
-    '인공지능과 윤리10',
-    '빅데이터 분석11',
-    '휴먼인터페이스미디어12',
-  ];
   List<String> selectedSubjects = [];
-
-  void initState() {
-    super.initState();
-    for (int i = 0; i < subjects.length; i++) {
-      selectedSubjectsChecklist.add(false);  // 모든 항목을 초기 상태 '선택되지 않음'으로 설정
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +40,11 @@ class _SearchSubjectState extends State<SearchSubject> {
     double height = MediaQuery.of(context).size.height;
 
     return ChangeNotifierProvider(
-      create: (context) => SubjectSearchViewModel(),
-      child: Scaffold(
+      create: (_) => SubjectSearchViewModel(),
+      // we use `builder` to obtain a new `BuildContext` that has access to the provider
+      builder: (context, child) {
+        // No longer throws
+        return Scaffold(
         appBar: AppBar(
           leading: IconButton(
             icon: Icon(Icons.keyboard_arrow_left, size: 30,),
@@ -109,9 +90,7 @@ class _SearchSubjectState extends State<SearchSubject> {
                 child: TextField(
                   controller: _searchController,
                   onChanged: (text) {
-                    Provider.of<SubjectSearchViewModel>(context,
-                        listen: false)
-                        .searchSubject(text);
+                    Provider.of<SubjectSearchViewModel>(context, listen: false).searchSubject(text);
                   },
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.only(top: width * 0.04), // 위쪽 패딩 추가
@@ -132,30 +111,23 @@ class _SearchSubjectState extends State<SearchSubject> {
                     return Center(child: CircularProgressIndicator());
                   }
                   // 검색 결과에 따라 ListView를 업데이트합니다.
-                  final subjects = [
-                    '컴퓨터와 휴먼1',
-                    '인공지능과 윤리2',
-                    '빅데이터 분석3',
-                    '휴먼인터페이스미디어와 마법의 돌과 죄수4',
-                    '컴퓨터와 휴먼5',
-                    '인공지능과 윤리6',
-                    '빅데이터 분석7',
-                    '휴먼인터페이스미디어와 마법의 돌과 죄수8',
-                    '컴퓨터와 휴먼9',
-                    '인공지능과 윤리10',
-                    '빅데이터 분석11',
-                    '휴먼인터페이스미디어12',
-                  ];//viewModel.subjects; // 뷰모델의 학과 목록
+                  final subjects = viewModel.subjects; // 뷰모델의 학과 목록
                   // 검색 결과가 없으면 사용자에게 알립니다.
+                  if (selectedSubjectsChecklist.length != subjects.length) {
+                    // subjects 리스트 길이만큼 selectedSubjectsChecklist를 초기화합니다.
+                    selectedSubjectsChecklist = List<bool>.filled(subjects.length, false);
+                  }
+
                   if (subjects.isEmpty) {
                     return Center(child: Text('검색 결과가 없습니다.'));
                   }
-
+                  //print("Hellooooo");
+                  //print('Subjects: $subjects');
                 return Expanded(
                   child: Container(
                     color: Colors.white,
                     child: ListView.builder(
-                        itemCount: viewModel.subjects.length,
+                        itemCount: subjects.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Container(
                             margin: const EdgeInsets.symmetric(vertical: 3.0),
@@ -207,7 +179,8 @@ class _SearchSubjectState extends State<SearchSubject> {
             ),
           ],
         ),
-      ),
+      );
+  },
     );
   }
 }

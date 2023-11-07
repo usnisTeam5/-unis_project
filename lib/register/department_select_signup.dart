@@ -220,7 +220,9 @@ class _DepartmentSelectionScreenState extends State<DepartmentSelectionScreen> {
                             // Navigate to the next screen
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => RegistrationScreen()),
+                              MaterialPageRoute(builder: (context) => RegistrationScreen(
+                                selectedDepartments: selectedDepartments,
+                                selectedCourses: selectedCourses,)),
                             );
                           }
                         },

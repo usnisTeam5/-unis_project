@@ -1,39 +1,29 @@
-// @ResponseBody
-// @GetMapping("/find/department")
-// public List<String> findDepartment(@RequestParam String keyword) {
-//   List<String> list = new ArrayList<String>();
-//
-//   //DB의 department테이블에서 keyword를 토대로 관련있는 학과목록을 검색하고
-//   //가져온 목록들을 list에 넣어서 반환한다.
-//
-//   return list;
-// }
-
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
 class DepartmentSearch {
+  final String _baseUrl = "http://3.35.21.123:8080";
 
-  final String _baseUrl = "http://3.35.21.123:8080"; // API의 기본 URL
-
-  // 키워드를 사용하여 학과를 검색하는 메소드
-  Future<List<String>> findDepartment(String keyword) async {
+  Future<List<String>> findDepartment(String deptName) async {
     try {
       final response = await http.get(
-        Uri.parse("$_baseUrl/find/department?keyword=$keyword"),
+        Uri.parse("$_baseUrl/find/department?dept_name=${Uri.encodeComponent(deptName)}"),
       );
 
-      if (response.statusCode == 200) { // HTTP 상태 코드가 200(정상)일 경우, JSON 데이터를 Dart의 List<String>로 디코딩합니다.
-        return List<String>.from(json.decode(response.body));
-      } else { // 서버에서 정상적인 상태 코드가 아닌 것을 반환한 경우, 예외를 발생시킵니다.
+      if (response.statusCode == 200) {
+        // 서버로부터 받은 응답의 바디를 UTF-8로 디코드합니다.
+        final decodedBody = utf8.decode(response.bodyBytes);
+        // 디코드된 문자열을 JSON 형태로 파싱하고 List<String>으로 변환합니다.
+        return List<String>.from(json.decode(decodedBody));
+      } else {
+        // 서버에서 200이 아닌 다른 HTTP 상태 코드를 반환한 경우
         print("Server returned status code: ${response.statusCode}");
-        return [];
-        //throw Exception("Failed to load department data with status code: ${response.statusCode}");
+        throw Exception("Failed to load department data with status code: ${response.statusCode}");
       }
-    } catch (e) { // 요청 중 에러가 발생하면 이곳에서 예외를 처리합니다.
-      //print(e.toString()); // 콘솔에 에러 메시지를 출력합니다. 실제 앱에서는 이 부분을 적절히 처리해야 합니다.
+    } catch (e) {
+      // 네트워크 요청 중에 오류가 발생한 경우
       print("Error occurred: ${e.toString()}");
-      return [];
-      //throw Exception("Failed to load department data");
+      throw Exception("Failed to load department data");
     }
   }
 }

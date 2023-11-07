@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// final responseData = jsonDecode(utf8.decode(response.bodyBytes)); 이렇게 해야 안깨짐 한글.
 // 비밀번호 8! 20자 , 닉네임 10자 이하.
 // APPBAR 글씨 bold, 크기 width * 0.6
 //GradientText(width: width, text: '내 문답', tSize: 0.06, tStyle: 'Bold'), 참고하세요
