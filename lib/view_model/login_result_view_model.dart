@@ -11,7 +11,7 @@ class LoginViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   LoginResult? get loginResult => _loginResult;
   String? get msg => _loginResult?.msg;
-  String? get userNickName => _loginResult?.userNickName;
+  String? get userNickName => _loginResult?.nickname;
   String? get errorMessage => _errorMessage;  // getter for error message
 
   Future<void> storeLoginInfo(String id, String password) async {
@@ -30,22 +30,22 @@ class LoginViewModel extends ChangeNotifier {
   }
 
 
-  Future<bool> login(String email, String password) async { // 로그인
+  Future<bool> login(String id, String password) async { // 로그인
     _setLoading(true); // 로딩
     try {
-      _loginResult = await LoginService.login(email, password); // 모델에서 로그인 불러옴
+      _loginResult = await LoginService.login(id, password); // 모델에서 로그인 불러옴
       _setLoading(false);
 
       if (_loginResult != null) {
         _setErrorMessage(null);
         return true;
-      } else {
-        _setErrorMessage('정보가 일치하지 않습니다.');
+      } else { //_loginResult == null
+        _setErrorMessage('viwe_model: 정보가 일치하지 않습니다.');
         return false;
       }
     } catch (e) {
       _setLoading(false);
-      _setErrorMessage('로그인 중 오류 발생: $e');
+      _setErrorMessage('view model: 로그인 중 오류 발생: $e');
       return false;
     }
   }
