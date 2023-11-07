@@ -7,7 +7,7 @@ class DepartmentSearch {
   Future<List<String>> findDepartment(String deptName) async {
     try {
       final response = await http.get(
-        Uri.parse("$_baseUrl/find/department?dept_name=${Uri.encodeComponent(deptName)}"),
+        Uri.parse("$_baseUrl/find/department?dept_name=${deptName}"),
       );
 
       if (response.statusCode == 200) {

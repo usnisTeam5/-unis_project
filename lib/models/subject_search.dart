@@ -9,7 +9,7 @@ class SubjectSearch {
     try {
       // 쿼리 파라미터를 올바르게 인코딩합니다.
       final response = await http.get(
-        Uri.parse("$_baseUrl/find/course?course=${Uri.encodeComponent(keyword)}"),
+        Uri.parse("$_baseUrl/find/course?course=${keyword}"),
         // 요청 헤더에 UTF-8 인코딩을 명시합니다.
       );
 
