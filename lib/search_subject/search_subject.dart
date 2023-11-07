@@ -155,7 +155,7 @@ class _SearchSubjectState extends State<SearchSubject> {
                   child: Container(
                     color: Colors.white,
                     child: ListView.builder(
-                        itemCount: viewModel.subjects.length,
+                        itemCount: subjects.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Container(
                             margin: const EdgeInsets.symmetric(vertical: 3.0),
