@@ -260,9 +260,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         ),
                         SizedBox(height: height * 0.05),
                         TextField(
+                          maxLength: 20,
                           controller: _codeController,
                           enabled: isCodeTextFieldEnabled, // 여기에 변수를 사용합니다.
                           decoration: InputDecoration(
+                            counterText: "", // 이 속성을 추가하여 글자 수 레이블을 숨깁니다.
                             labelText: '인증번호',
                             labelStyle: TextStyle(
                               fontFamily: 'Round',
@@ -624,6 +626,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       await userViewModel.enroll(userViewModel.userDto!);
                       if (userViewModel.registrationStatus == 'ok') {
                         // 회원 가입 성공 처리
+
                         Navigator.pop(context);
                         Navigator.pop(context);
                         Navigator.pop(context);
