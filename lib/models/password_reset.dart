@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'url.dart';
 
 // 이메일 인증을 위한 DTO
 class VerificationDto {
@@ -68,12 +68,12 @@ class LoginDataDto {
 
 class AuthenticationService {
   // 서버의 base URL
-  final String baseUrl = "http://3.35.21.123:8080";
+  //final String baseUrl = "http://3.35.21.123:8080";
 
   // 이메일 인증
   Future<VerificationDto?> authenticateEmail(String email) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/find/authenticate/pw?email=$email'),
+      Uri.parse('$BASE_URL/find/authenticate/pw?email=$email'),
     );
 
     if (response.statusCode == 200) {
@@ -88,7 +88,7 @@ class AuthenticationService {
   // 인증번호 확인
   Future<String?> checkVerificationCode(VerificationCheckDto info) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/user/authenticate/check'),
+      Uri.parse('$BASE_URL/user/authenticate/check'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(info.toJson()),
     );
@@ -105,7 +105,7 @@ class AuthenticationService {
   // 비밀번호 변경
   Future<String?> changePassword(LoginDataDto data) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/user/changePassword'),
+      Uri.parse('$BASE_URL/user/changePassword'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(data.toJson()),
     );

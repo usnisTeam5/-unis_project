@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
-
+import 'package:path/path.dart' as path;
+import 'url.dart';
 class UserProfileInfo {
   final String nickName;
   List<String?> departments;
@@ -15,7 +16,7 @@ class UserProfileInfo {
   int question;
   int answer;
   int studyCnt;
-  static const _baseUrl = "http://3.35.21.123:8080";
+  //static const BASE_URL = "http://3.35.21.123:8080";
 
   UserProfileInfo({
     required this.nickName,
@@ -71,7 +72,7 @@ class UserProfileInfo {
   static Future<UserProfileInfo?> fetchUserProfile(String nickname) async {
     // 유저 프로필 정보 가져와서 UserProfileInfo 반환, 실패시 null 반환
     final response = await http.get(
-      Uri.parse('$_baseUrl/user/profile?nickname=$nickname'),
+      Uri.parse('$BASE_URL/user/profile?nickname=$nickname'),
     );
     try {
       if (response.statusCode == 200) {
@@ -83,8 +84,9 @@ class UserProfileInfo {
         if (data['profileImage'] != null) {
           final bytes = base64Decode(data['profileImage']);
           final directory = await getApplicationDocumentsDirectory();
-          // 이미지 파일을 생성
-          final file = File('${directory.path}/profile_image.png');
+          //final imageExtension = path.extension(data['profileImage']).replaceAll('.', '');
+          // 이미지 파일을 생성하고 원본 확장자를 사용하여 파일명 설정
+          final file = File('${directory.path}/profile_image${path.extension(data['profileImage'])}');
           // 파일에 바이트 데이터를 씀
           file.writeAsBytesSync(bytes);
           // 파일 경로 반환
@@ -119,7 +121,7 @@ class UserProfileInfo {
 
     final directory = await getApplicationDocumentsDirectory();
     // 이미지 파일을 생성
-    final file = File('${directory.path}/profile_image.png');
+    final file = File('${directory.path}/profile_image${path.extension(imagePath)}');
     // 파일에 바이트 데이터를 씀
     file.writeAsBytesSync(bytes);
     // 경로에 저장.
@@ -129,15 +131,16 @@ class UserProfileInfo {
     final String base64Image = base64Encode(bytes);
 
     // 프로필 이미지 업로드 API 호출
-    final url = Uri.parse('$_baseUrl/user/profile/setImage/$nickname?image=$base64Image');
-    // // HTTP 헤더에 'Content-Type': 'application/json'을 추가
-    // final headers = {'Content-Type': 'application/json'};
-    // // 요청 본문에 Base64 인코딩된 이미지 데이터를 담은 JSON 생성
-    // final body = {'image': base64Image};
-    // // POST 요청을 전송
+    final url = Uri.parse('$BASE_URL/user/profile/setImage/$nickname');
+    // HTTP 헤더에 'Content-Type': 'application/json'을 추가
+    final headers = {'Content-Type': 'application/json'};
+    // 요청 본문에 Base64 인코딩된 이미지 데이터를 담은 JSON 생성
+    final body = {'img': base64Image};
+    // POST 요청을 전송
     final response = await http.post(
         url,
-        //body: body,
+        //headers: headers,
+        body: json.encode(body),
     );
     // 응답 처리
     if (response.statusCode == 200) {
@@ -153,7 +156,7 @@ class UserProfileInfo {
     // 자기소개 성공시 ok 반환 아닐시에 오류 던짐
     // 자기 소개 업데이트 API 호출
     final url = Uri.parse(
-        '$_baseUrl/user/profile/setIntroduction/$nickname?introduction=$introduction');
+        '$BASE_URL/user/profile/setIntroduction/$nickname?introduction=$introduction');
     final response = await http.post(url);
 
     if (response.statusCode == 200) {
@@ -168,7 +171,7 @@ class UserProfileInfo {
       String nickname, String courseName) async {
     // 현재 과목을 수강한 과목으로 변경하는 API 호출
     final url = Uri.parse(
-        '$_baseUrl/user/profile/nowToPastCourse/$nickname?courseName=$courseName');
+        '$BASE_URL/user/profile/nowToPastCourse/$nickname?courseName=$courseName');
     final response = await http.post(url);
 
     if (response.statusCode == 200) {
@@ -187,7 +190,7 @@ class UserProfileInfo {
       String nickname, String courseName) async {
     // 수강한 과목을 현재 과목으로 변경하는 API 호출
     final url = Uri.parse(
-        'http://3.35.21.123:8080/user/profile/PastToNowCourse/$nickname?courseName=$courseName');
+        '$BASE_URL/profile/PastToNowCourse/$nickname?courseName=$courseName');
     final response = await http.post(url);
 
     if (response.statusCode == 200) {

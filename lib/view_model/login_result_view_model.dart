@@ -40,7 +40,7 @@ class LoginViewModel extends ChangeNotifier {
         _setErrorMessage(null);
         return true;
       } else { //_loginResult == null
-        _setErrorMessage('viwe_model: 정보가 일치하지 않습니다.');
+        _setErrorMessage('아이디 또는 비밀번호가 일치하지 않습니다.');
         return false;
       }
     } catch (e) {

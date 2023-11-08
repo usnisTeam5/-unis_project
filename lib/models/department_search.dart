@@ -1,13 +1,13 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'url.dart';
 class DepartmentSearch {
-  final String _baseUrl = "http://3.35.21.123:8080";
+  //final String _baseUrl = "http://3.35.21.123:8080";
 
   Future<List<String>> findDepartment(String deptName) async {
     try {
       final response = await http.get(
-        Uri.parse("$_baseUrl/find/department?dept_name=${deptName}"),
+        Uri.parse("$BASE_URL/find/department?dept_name=${deptName}"),
       );
 
       if (response.statusCode == 200) {

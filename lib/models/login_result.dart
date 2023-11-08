@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'url.dart';
  // 필요한 정보(뱐수)
 // 백엔드 통시 관련 메소드
 // fromJson
@@ -37,7 +38,7 @@ class LoginResult {
 //
 
 class LoginService { // 로그인 백 프론트 연동
-  static const BASE_URL = 'http://3.35.21.123:8080'; // 상수로 URL 관리
+  //static const BASE_URL = 'http://3.35.21.123:8080'; // 상수로 URL 관리
 
   static Future<LoginResult?> login(String id, String password) async {
     final url = Uri.parse('$BASE_URL/user/login');
