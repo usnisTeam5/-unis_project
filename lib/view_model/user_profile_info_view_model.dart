@@ -2,31 +2,32 @@ import 'package:flutter/material.dart';
 import '../models/user_profile_info.dart';  // UserProfileInfo 클래스의 경로를 넣어주세요
 
 class UserProfileViewModel with ChangeNotifier {
-  UserProfileInfo? _profileInfo = UserProfileInfo.defaultValues(); // 수정 필요 디폴트값 넣어놓음. 안바꿔도 될것같긴 함.
+  UserProfileInfo? _profileInfo;
   bool _isLoading = false;
 
   UserProfileInfo get profileInfo => _profileInfo!;
   String get nickName => _profileInfo!.nickName;
-  List<String> get major => _profileInfo!.major;
+  List<String?> get departments => _profileInfo!.departments;
   String get introduction => _profileInfo!.introduction;
   List<String> get currentCourses => _profileInfo!.currentCourses;
   List<String> get pastCourses => _profileInfo!.pastCourses;
-  String get profileImageUrl => _profileInfo!.profileImageUrl;
+  String get profileImage => _profileInfo!.profileImage;
   int get point => _profileInfo!.point;
   int get question => _profileInfo!.question;
   int get answer => _profileInfo!.answer;
   int get studyCnt => _profileInfo!.studyCnt;
   bool get isLoading => _isLoading;
 
-  Future<void> fetchUserProfile(String nickName) async { // 유저 프로필 정보 가져옴.
+  Future<void> fetchUserProfile(String nickName) async { // 유저 프로필 정보 가져옴. 실패시에 모델에서 오류 던진 것 받아서 뷰로 던짐
     try {
       _isLoading = true;
       notifyListeners();
       _profileInfo = await UserProfileInfo.fetchUserProfile(nickName);
-      _profileInfo ??= UserProfileInfo.defaultValues();
+      //_profileInfo ??= UserProfileInfo.defaultValues();
       _isLoading = false;
       notifyListeners();
     } catch (e) {
+      print("fetchUserprofile viewmodel 에러");
       _isLoading = false;
       notifyListeners();
       throw e;
@@ -46,16 +47,14 @@ class UserProfileViewModel with ChangeNotifier {
   }
 // 통신 추가 필요.
   // 수강 중인 과목 변경 (체크 해제)
-  void removeCurrentCourse(String courseName) {
-    _profileInfo!.currentCourses.remove(courseName);
-    _profileInfo!.pastCourses.add(courseName);
+  Future<void> changeCourseNowToPast(String courseName) async {
+    await _profileInfo!.changeCourseNowToPast(_profileInfo!.nickName, courseName);
     notifyListeners();
   }
 
   // 수강한 과목 변경 (체크)
-  void addPastCourseToCurrent(String courseName) {
-    _profileInfo!.pastCourses.remove(courseName);
-    _profileInfo!.currentCourses.add(courseName);
+  Future<void> changeCoursePastToNow(String courseName) async{
+    await _profileInfo!.changeCoursePastToNow(_profileInfo!.nickName, courseName);
     notifyListeners();
   }
 

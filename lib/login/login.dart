@@ -84,6 +84,7 @@ class _LoginScreenState extends State<LoginScreen> { // textfield 땜에 일단 
     bool success  = await loginViewModel.autoLogin();
     if(success) {
       await userProfileViewModel.fetchUserProfile(loginViewModel.userNickName!); // 닉네임으로 유저정보 호출. 추가*
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => MyHomePage()),

@@ -86,27 +86,12 @@ class MyProfilePage extends StatelessWidget {
             ProfileInfoSection(),
             StatsSection(controller: controller),
             CoursesSection(),
-            // TextButton(
-            //   onPressed: () {
-            //     Navigator.pop(context);
-            //   },
-            //   child: Text(
-            //     "뒤로 가기",
-            //     style: TextStyle(
-            //       color: Colors.blue,  // 글자 색상을 파란색으로 설정
-            //       fontSize: 16,       // 글자 크기를 16으로 설정
-            //     ),
-            //   ),
-            // )
           ],
         ),
       ),
     );
   }
 }
-
-
-
 
 
 class ProfileInfoSection extends StatefulWidget {
@@ -118,24 +103,26 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
   XFile? _image; //이미지를 담을 변수 선언
   final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
   //이미지를 가져오는 함수
-  TextEditingController _introductionController = TextEditingController();
+  TextEditingController _introductionController = TextEditingController() ;
 
   @override
   void initState() {
     super.initState();
 
     final viewModel = Provider.of<UserProfileViewModel>(context, listen: false);
+    _image = XFile(viewModel.profileImage);
     _introductionController = TextEditingController(text: viewModel.introduction);
   }
 
   Future getImage(ImageSource imageSource) async {
-    //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
     if (pickedFile != null) {
-      _image = XFile(pickedFile.path); //가져온 이미지를 _image에 저장
+      setState(() {
+        _image = XFile(pickedFile.path); // 가져온 이미지를 _image에 저장
+      });
 
       final viewModel = Provider.of<UserProfileViewModel>(context, listen: false);
-      viewModel.updateProfileImage(_image!.path);
+      viewModel.updateProfileImage(_image!.path); // 내부적으로 저 경로를 따라서 이미지를 다른곳에 저장 후 그 저장된 경로를 profileImage 에 저장함.
     }
   }
 
@@ -161,9 +148,7 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
                 },
                 child: CircleAvatar(
                   radius: 50.0,
-                  backgroundImage: _image != null
-                      ? FileImage(File(_image!.path)) as ImageProvider
-                      : AssetImage(viewModel.profileImageUrl),
+                  backgroundImage: FileImage(File(_image!.path))
                 ),
               ),
               SizedBox(width: 20.0),
@@ -176,9 +161,9 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
                   ),
                   SizedBox(height: 13.0),
                   Text(
-                    viewModel.major.length == 1
-                        ? "학과(학부) : ${viewModel.major[0]}"
-                        : "학과(학부) : ${viewModel.major[0]} \n                    ${viewModel.major[1]}",
+                    viewModel.departments.length == 1
+                        ? "학과(학부) : ${viewModel.departments[0]}"
+                        : "학과(학부) : ${viewModel.departments[0]} \n                    ${viewModel.departments[1]}",
                     style: TextStyle(fontFamily: 'Bold', color: Colors.grey[600],),
                   ),
                   SizedBox(height: 5.0),
@@ -323,7 +308,7 @@ class _CoursesSectionState extends State<CoursesSection> {
           '수강 중인 과목',
           viewModel.currentCourses,
               (course) {
-            viewModel.removeCurrentCourse(course);
+            viewModel.changeCourseNowToPast(course);
           },
           isOngoing: true,
         ),
@@ -332,7 +317,7 @@ class _CoursesSectionState extends State<CoursesSection> {
           '수강한 과목',
           viewModel.pastCourses,
               (course) {
-            viewModel.addPastCourseToCurrent(course);
+            viewModel.changeCoursePastToNow(course);
           },
           isOngoing: false,
         ),

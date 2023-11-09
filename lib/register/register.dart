@@ -260,9 +260,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         ),
                         SizedBox(height: height * 0.05),
                         TextField(
+                          maxLength: 20,
                           controller: _codeController,
                           enabled: isCodeTextFieldEnabled, // 여기에 변수를 사용합니다.
                           decoration: InputDecoration(
+                            counterText: "", // 이 속성을 추가하여 글자 수 레이블을 숨깁니다.
                             labelText: '인증번호',
                             labelStyle: TextStyle(
                               fontFamily: 'Round',
@@ -624,6 +626,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       await userViewModel.enroll(userViewModel.userDto!);
                       if (userViewModel.registrationStatus == 'ok') {
                         // 회원 가입 성공 처리
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('회원 가입이 완료되었습니다.'),
+                              duration: Duration(seconds: 3), // 팝업이 보이는 시간
+                              behavior: SnackBarBehavior.floating, // 팝업창 스타일
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                BorderRadius.circular(24), // 팝업창 모서리 둥글게
+                              ),
+                            ),
+                        );
                         Navigator.pop(context);
                         Navigator.pop(context);
                         Navigator.pop(context);

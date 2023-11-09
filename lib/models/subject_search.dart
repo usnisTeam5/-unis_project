@@ -1,15 +1,15 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'url.dart';
 class SubjectSearch {
-  final String _baseUrl = "http://3.35.21.123:8080"; // API의 기본 URL
+  //final String _baseUrl = "http://3.35.21.123:8080"; // API의 기본 URL
 
   // 키워드를 사용하여 학과를 검색하는 메소드
   Future<List<String>> findSubject(String keyword) async {
     try {
       // 쿼리 파라미터를 올바르게 인코딩합니다.
       final response = await http.get(
-        Uri.parse("$_baseUrl/find/course?course=${Uri.encodeComponent(keyword)}"),
+        Uri.parse("$BASE_URL/find/course?course=${keyword}"),
         // 요청 헤더에 UTF-8 인코딩을 명시합니다.
       );
 
