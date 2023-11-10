@@ -3,6 +3,11 @@ import 'package:unis_project/chat/report.dart';
 import '../chat/OneToOneChat.dart';
 import '../css/css.dart';
 import 'dart:math';
+
+import 'package:provider/provider.dart';
+import '../view_model/other_profile_view_model.dart';
+
+
 void main() {
   runApp(const OthersProfile());
 }
@@ -11,7 +16,7 @@ class OthersProfile extends StatelessWidget {
   const OthersProfile({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {;
     return MaterialApp(
 
       home: OthersProfilePage(),
@@ -29,35 +34,38 @@ class OthersProfilePage extends StatelessWidget {
     final width = min(MediaQuery.of(context).size.width,500.0);
     final height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
+    return ChangeNotifierProvider(
+      create: (context) => UserProfileViewModel(),
+      child: Scaffold(
         backgroundColor: Colors.white,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: MainGradient(),
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(1.0),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: MainGradient(),
+              ),
+              height: 2.0,
             ),
-            height: 2.0,
+          ),
+          title: GradientText(width: width, text: '프로필', tSize: 0.06, tStyle: 'Bold'),
+          leading: IconButton(
+            icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
-        title: GradientText(width: width, text: '프로필', tSize: 0.06, tStyle: 'Bold'),
-        leading: IconButton(
-          icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            OthersProfileInfoSection(),
-            StatsSection(),
-            SatisfactionAndReportSection(),
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              OthersProfileInfoSection(),
+              StatsSection(),
+              SatisfactionAndReportSection(),
+            ],
+          ),
         ),
       ),
     );
@@ -74,7 +82,19 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
   bool _isPersonAddSelected = false;
   bool _isPersonOffSelected = false;
 
+  @override
+  void initState() {
+    super.initState();
+    final viewModel = Provider.of<UserProfileViewModel>(context, listen: false);
+    viewModel.fetchUserProfile("상대방_닉네임"); // 상대방의 닉네임을 전달
+
+    _isFavoriteSelected = viewModel.isPick;
+    _isPersonAddSelected = viewModel.isFriend;
+    _isPersonOffSelected = viewModel.isBlock;
+  }
+
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<UserProfileViewModel>(context);
 
     final width = min(MediaQuery.of(context).size.width,500.0);
     final height = min(MediaQuery.of(context).size.height,700.0);
@@ -92,92 +112,93 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
             children: [
               CircleAvatar(
                 radius: 50.0,
-                backgroundImage: AssetImage('assets/unis.png'),
+                backgroundImage: NetworkImage(viewModel.profileImage as String),
               ),
               SizedBox(width: width*0.05),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "닉네임 : 물만두",
+                    "닉네임 : ${viewModel.nickname}",
                     style: TextStyle(
-                      fontFamily: 'Bold',
-                      color: Colors.grey[600]
-                    ),
+                        fontFamily: 'Bold', color: Colors.grey[600]),
                   ),
                   SizedBox(height: 15.0),
                   Container(
-                    width: width* 0.5,
+                    width: width * 0.5,
                     child: Text(
-                      "학과(학부): 게임.인터렉티브미디어융합전공",
+                      "학과(학부): ${viewModel.departments}",
                       style: TextStyle(
-                          fontFamily: 'Bold',
-                          color: Colors.grey[600]
-                      ),
+                          fontFamily: 'Bold', color: Colors.grey[600]),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   SizedBox(height: 10.0),
                   Container(
-                    width: width*0.4,
+                    width: width * 0.4,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Column(
                           children: [
                             IconButton(
-                              padding: EdgeInsets.only(bottom: 0), // 패딩 설정
+                              padding: EdgeInsets.only(bottom: 0),
                               constraints: BoxConstraints(),
                               icon: Icon(
-                                _isFavoriteSelected ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                                color: _isFavoriteSelected ? Colors.red : Colors.grey,
+                                _isFavoriteSelected
+                                    ? Icons.favorite_rounded
+                                    : Icons.favorite_border_rounded,
+                                color: _isFavoriteSelected
+                                    ? Colors.red
+                                    : Colors.grey,
                               ),
                               onPressed: () {
-                                  setState(() {
-                                    _isPersonOffSelected = false;
-                                    _isFavoriteSelected = !_isFavoriteSelected;
-                                  });
+                                setState(() {
+                                  _isPersonOffSelected = false;
+                                  _isFavoriteSelected = !_isFavoriteSelected;
+                                });
                               },
                             ),
                             Container(
-                              child:  _isFavoriteSelected
-                                  ? Text('찜', style: TextStyle(fontSize: 11,color: Colors.red))
-                                  : Text('찜', style: TextStyle(fontSize: 11,color: Colors.grey)),
+                              child: _isFavoriteSelected
+                                  ? Text('찜',
+                                  style:
+                                  TextStyle(fontSize: 11, color: Colors.red))
+                                  : Text('찜',
+                                  style: TextStyle(fontSize: 11, color: Colors.grey)),
                             ),
                           ],
                         ),
-                        //SizedBox(width: 15.0),
                         Column(
                           children: [
                             IconButton(
-                              padding: EdgeInsets.only(bottom: 0), // 패딩 설정
+                              padding: EdgeInsets.only(bottom: 0),
                               constraints: BoxConstraints(),
                               icon: _isPersonOffSelected
-                              ? Icon(Icons.chat_bubble_rounded, color: Colors.grey,)
-                              : Icon(Icons.chat_bubble_rounded, color: Colors.grey,),
-                              onPressed: _isPersonOffSelected // 차단 상태라면 null, 아니라면 함수 실행
+                                  ? Icon(Icons.chat_bubble_rounded, color: Colors.grey,)
+                                  : Icon(Icons.chat_bubble_rounded, color: Colors.grey,),
+                              onPressed: _isPersonOffSelected
                                   ? null
                                   : () {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => OneToOneChatScreen()
-                                    )
-                                );
+                                        builder: (context) => OneToOneChatScreen()));
                               },
                             ),
                             Container(
-                              child:  _isPersonOffSelected
-                                  ? Text('대화', style: TextStyle(fontSize: 11,color: Colors.grey))
-                                  : Text('대화', style: TextStyle(fontSize: 11,color: Colors.grey)),
+                              child: _isPersonOffSelected
+                                  ? Text('대화',
+                                  style: TextStyle(fontSize: 11, color: Colors.grey))
+                                  : Text('대화',
+                                  style: TextStyle(fontSize: 11, color: Colors.grey)),
                             ),
                           ],
                         ),
-                       // SizedBox(width: 15.0),
                         Column(
                           children: [
                             IconButton(
-                              padding: EdgeInsets.only(bottom: 0), // 패딩 설정
+                              padding: EdgeInsets.only(bottom: 0),
                               constraints: BoxConstraints(),
                               icon: Icon(
                                 Icons.person_add_rounded,
@@ -185,40 +206,44 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                               ),
                               onPressed: () {
                                 setState(() {
-                                   _isPersonOffSelected = false;
+                                  _isPersonOffSelected = false;
                                   _isPersonAddSelected = !_isPersonAddSelected;
                                 });
                               },
                             ),
                             Container(
-                              child:  _isPersonAddSelected
-                                  ? Text(' 친구', style: TextStyle(fontSize: 11,color: Colors.blue))
-                                  : Text(' 친구', style: TextStyle(fontSize: 11,color: Colors.grey)),
+                              child: _isPersonAddSelected
+                                  ? Text(' 친구',
+                                  style:
+                                  TextStyle(fontSize: 11, color: Colors.blue))
+                                  : Text(' 친구',
+                                  style: TextStyle(fontSize: 11, color: Colors.grey)),
                             ),
                           ],
                         ),
-                        //SizedBox(width: 15.0),
                         Column(
                           children: [
                             IconButton(
-                              padding: EdgeInsets.only(bottom: 0), // 패딩 설정
+                              padding: EdgeInsets.only(bottom: 0),
                               constraints: BoxConstraints(),
                               icon: Icon(
                                 Icons.person_off_rounded,
                                 color: _isPersonOffSelected ? Colors.red : Colors.grey,
                               ),
                               onPressed: () {
-                                  setState(() {
-                                    _isFavoriteSelected = false;
-                                    _isPersonAddSelected = false;
-                                    _isPersonOffSelected = !_isPersonOffSelected;
-                                  });
+                                setState(() {
+                                  _isFavoriteSelected = false;
+                                  _isPersonAddSelected = false;
+                                  _isPersonOffSelected = !_isPersonOffSelected;
+                                });
                               },
                             ),
                             Container(
-                              child:  _isPersonOffSelected
-                                  ? Text('차단', style: TextStyle(fontSize: 11,color: Colors.red))
-                                  : Text('차단', style: TextStyle(fontSize: 11,color: Colors.grey)),
+                              child: _isPersonOffSelected
+                                  ? Text('차단',
+                                  style: TextStyle(fontSize: 11, color: Colors.red))
+                                  : Text('차단',
+                                  style: TextStyle(fontSize: 11, color: Colors.grey)),
                             ),
                           ],
                         ),
@@ -233,12 +258,12 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
           Container(
             alignment: Alignment.centerLeft,
             child: Text(
-              '안녕하세요!',
+              '${viewModel.introduction}',
               style: TextStyle(fontFamily: 'Bold', color: Colors.grey[600], fontSize: 15),
             ),
           ),
           Container(
-            margin: EdgeInsets.only(top: 4,right: width*0.1),
+            margin: EdgeInsets.only(top: 4, right: width * 0.1),
             height: 1.3,
             color: Colors.grey,
           ),
@@ -247,8 +272,6 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
     );
   }
 }
-
-
 
 
 
@@ -349,6 +372,7 @@ class StatsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = min(MediaQuery.of(context).size.width, 500.0);
+    final viewModel = Provider.of<UserProfileViewModel>(context);
 
     return Container(
       padding: EdgeInsets.all(16.0),
@@ -361,13 +385,13 @@ class StatsSection extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Expanded(
-            child: _buildColumn("질문", "0", width),
+            child: _buildColumn("질문", viewModel.question.toString(), width),
           ),
           Expanded(
-            child: _buildColumn("답변", "0", width),
+            child: _buildColumn("답변", viewModel.answer.toString(), width),
           ),
           Expanded(
-            child: _buildColumn("스터디", "0", width),
+            child: _buildColumn("스터디", viewModel.studyCnt.toString(), width),
           ),
         ],
       ),
@@ -407,4 +431,3 @@ class StatsSection extends StatelessWidget {
     );
   }
 }
-
