@@ -42,27 +42,28 @@ class UserProfileViewModel with ChangeNotifier {
   }
 
 
-  Future<void> toggleFavorite(String nickname, String otherNickname) async { // 찜하기를 선택했을 때
-    await UserProfileInfoForShow.setPick(_profileInfo!.nickname, otherNickname);
+  Future<void> setFriend(String nickname, String otherNickname) async {
+    await UserProfileInfoForShow.setFriend(nickname, otherNickname);
     notifyListeners();
   }
 
+  Future<void> setBlock(String nickname, String otherNickname) async {
+    await UserProfileInfoForShow.setBlock(nickname, otherNickname);
+    notifyListeners();
+  }
 
+  /*
+  Future<List<Msg>> getAllMsg(String nickname1, String nickname2) async {
+    return await UserProfileInfoForShow.getAllMsg(nickname1, nickname2);
+  }
 
+  Future<void> sendMsg(SendMsg sendMsg) async {
+    await UserProfileInfoForShow.sendMsg(sendMsg);
+    notifyListeners();
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  Future<List<Msg>> getMsg(String nickname1, String nickname2) async {
+    return await UserProfileInfoForShow.getMsg(nickname1, nickname2);
+  }
+  */
 }
-

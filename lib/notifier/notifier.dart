@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:unis_project/chat/OneToOneChat.dart';
+import 'package:unis_project/chat/chat.dart';
 import '../css/css.dart';
 import 'dart:math';
 void main() {
@@ -169,7 +169,7 @@ class _CustomDrawerState extends State<Notifier> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => OneToOneChatScreen()),
+              MaterialPageRoute(builder: (context) => ChatScreen()),
             );
           },
           child: Container(

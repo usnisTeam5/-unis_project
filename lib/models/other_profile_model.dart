@@ -72,10 +72,10 @@ class UserProfileInfoForShow {
       'introduction': introduction,
       'profileImage': profileImage,
       'isPick': isPick,
-      'question': question,
       'isFriend': isFriend,
       'isBlock': isBlock,
       'answer': answer,
+      'question': question,
       'studyCnt': studyCnt,
     };
   }
@@ -102,11 +102,10 @@ class UserProfileInfoForShow {
   }
 
 
-  static Future<String> setPick(String nickname, String otherNickname) async { // 찜하기를 선택했을 때
-    final url = Uri.parse(
-        '$BASE_URL/user/profile/setPick/$nickname');
+  static Future<String> setPick(String nickname, String otherNickname) async {
+    final url = Uri.parse('$BASE_URL/user/profile/setPick/$nickname');
     final response = await http.post(
-      Uri.parse(url as String),
+      url,
       body: {'otherNickname': otherNickname},
     );
 
@@ -117,8 +116,72 @@ class UserProfileInfoForShow {
     }
   }
 
+  static Future<String> setFriend(String nickname, String otherNickname) async {
+    final url = Uri.parse('$BASE_URL/user/profile/setFriend/$nickname');
+    final response = await http.post(
+      url,
+      body: {'otherNickname': otherNickname},
+    );
 
+    if (response.statusCode == 200) {
+      return "ok";
+    } else {
+      throw Exception('Failed to set friend');
+    }
+  }
 
+  static Future<String> setBlock(String nickname, String otherNickname) async {
+    final url = Uri.parse('$BASE_URL/user/profile/setBlock/$nickname');
+    final response = await http.post(
+      url,
+      body: {'otherNickname': otherNickname},
+    );
 
+    if (response.statusCode == 200) {
+      return "ok";
+    } else {
+      throw Exception('Failed to set block');
+    }
+  }
 
+  /*
+  static Future<List<Msg>> getAllMsg(String nickname1, String nickname2) async {
+    final url = Uri.parse('$BASE_URL/chat?nickname1=$nickname1&nickname2=$nickname2');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
+      return data.map((msgData) => Msg.fromJson(msgData)).toList();
+    } else {
+      throw Exception('Failed to get messages');
+    }
+  }
+
+  static Future<String> sendMsg(SendMsg sendMsg) async {
+    final url = Uri.parse('$BASE_URL/chat/send');
+    final response = await http.post(
+      url,
+      body: json.encode(sendMsg.toJson()),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      return "ok";
+    } else {
+      throw Exception('Failed to send message');
+    }
+  }
+
+  static Future<List<Msg>> getMsg(String nickname1, String nickname2) async {
+    final url = Uri.parse('$BASE_URL/chat/receive?nickname1=$nickname1&nickname2=$nickname2');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(utf8.decode(response.bodyBytes));
+      return data.map((msgData) => Msg.fromJson(msgData)).toList();
+    } else {
+      throw Exception('Failed to receive messages');
+    }
+  }
+  */
 }
