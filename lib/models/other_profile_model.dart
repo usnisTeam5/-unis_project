@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
+import '../view_model/other_profile_view_model.dart';
 
 class UserProfileInfoForShow {
   final String nickname;
@@ -111,4 +112,22 @@ class UserProfileInfoForShow {
     }
   }
 
+  UserProfileInfoForShow copyWith({
+    bool? isPick,
+    bool? isFriend,
+    bool? isBlock,
+  }) {
+    return UserProfileInfoForShow(
+      nickname: this.nickname,
+      departments: this.departments,
+      introduction: this.introduction,
+      profileImage: this.profileImage,
+      isPick: isPick ?? this.isPick,
+      isFriend: this.isFriend,
+      isBlock: this.isBlock,
+      question: this.question,
+      answer: this.answer,
+      studyCnt: this.studyCnt,
+    );
+  }
 }

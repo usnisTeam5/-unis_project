@@ -6,6 +6,7 @@ import 'dart:math';
 
 import 'package:provider/provider.dart';
 import '../view_model/other_profile_view_model.dart';
+import '../models/other_profile_model.dart';
 
 
 void main() {
@@ -82,7 +83,6 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
   bool _isPersonAddSelected = false;
   bool _isPersonOffSelected = false;
 
-  @override
   void initState() {
     super.initState();
     // initState가 완전히 완료된 후 실행되도록 비동기 처리
@@ -100,6 +100,7 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<UserProfileViewModel>(context);
 
@@ -117,9 +118,9 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
         children: [
           Row(
             children: [
-              CircleAvatar(
+              CircleAvatar( // 상대방 프로필 사진
                 radius: 50.0,
-                backgroundImage: NetworkImage(viewModel.profileImage as String),
+                backgroundImage: NetworkImage(viewModel.profileImage),
               ),
               SizedBox(width: width*0.05),
               Column(
@@ -152,27 +153,18 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                               padding: EdgeInsets.only(bottom: 0),
                               constraints: BoxConstraints(),
                               icon: Icon(
-                                _isFavoriteSelected
-                                    ? Icons.favorite_rounded
-                                    : Icons.favorite_border_rounded,
-                                color: _isFavoriteSelected
-                                    ? Colors.red
-                                    : Colors.grey,
+                                viewModel.isPick ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                                color: viewModel.isBlock ? Colors.grey : (viewModel.isPick ? Colors.red : Colors.grey),
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  _isPersonOffSelected = false;
-                                  _isFavoriteSelected = !_isFavoriteSelected;
-                                });
+                              onPressed: viewModel.isBlock ? null : () async {
+                                await viewModel.setPick("currentUserNickname", viewModel.nickname);
                               },
                             ),
                             Container(
-                              child: _isFavoriteSelected
-                                  ? Text('찜',
-                                  style:
-                                  TextStyle(fontSize: 11, color: Colors.red))
-                                  : Text('찜',
-                                  style: TextStyle(fontSize: 11, color: Colors.grey)),
+                              child:
+                              Text('찜', style: TextStyle(fontSize: 11, color: viewModel.isBlock
+                                    ? Colors.grey : (viewModel.isPick ? Colors.red : Colors.grey)),
+                              ),
                             ),
                           ],
                         ),
@@ -181,29 +173,22 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                             IconButton(
                               padding: EdgeInsets.only(bottom: 0),
                               constraints: BoxConstraints(),
-                              icon: _isPersonOffSelected
-                                  ? Icon(Icons.chat_bubble_rounded, color: Colors.grey,)
-                                  : Icon(Icons.chat_bubble_rounded, color: Colors.grey,),
-                              onPressed: _isPersonOffSelected
-                                  ? null
-                                  : () {
+                              icon: Icon(Icons.chat_bubble_rounded, color: Colors.grey,),
+                              onPressed: () {
                                 Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => OneToOneChatScreen(
-                                            nickname1: 'sender',
-                                            nickname2: viewModel.nickname,
-                                            profileImage2: viewModel.profileImage
-                                        )
-                                    ));
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => OneToOneChatScreen(
+                                        nickname1: 'sender',
+                                        nickname2: viewModel.nickname,
+                                        profileImage2: viewModel.profileImage
+                                    ),
+                                  ),
+                                );
                               },
                             ),
                             Container(
-                              child: _isPersonOffSelected
-                                  ? Text('대화',
-                                  style: TextStyle(fontSize: 11, color: Colors.grey))
-                                  : Text('대화',
-                                  style: TextStyle(fontSize: 11, color: Colors.grey)),
+                              child: Text('대화', style: TextStyle(fontSize: 11, color: Colors.grey)),
                             ),
                           ],
                         ),
@@ -213,23 +198,18 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                               padding: EdgeInsets.only(bottom: 0),
                               constraints: BoxConstraints(),
                               icon: Icon(
-                                Icons.person_add_rounded,
-                                color: _isPersonAddSelected ? Colors.blue : Colors.grey,
+                                viewModel.isFriend ? Icons.person_add_rounded : Icons.person_add_rounded,
+                                color: viewModel.isBlock ? Colors.grey : (viewModel.isFriend ? Colors.blue : Colors.grey),
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  _isPersonOffSelected = false;
-                                  _isPersonAddSelected = !_isPersonAddSelected;
-                                });
+                              onPressed: viewModel.isBlock ? null : () async {
+                                await viewModel.setFriend("currentUserNickname", viewModel.nickname);
                               },
                             ),
                             Container(
-                              child: _isPersonAddSelected
-                                  ? Text(' 친구',
-                                  style:
-                                  TextStyle(fontSize: 11, color: Colors.blue))
-                                  : Text(' 친구',
-                                  style: TextStyle(fontSize: 11, color: Colors.grey)),
+                              child:
+                              Text(' 친구', style: TextStyle(fontSize: 11, color: viewModel.isBlock
+                                  ? Colors.grey : (viewModel.isFriend ? Colors.blue : Colors.grey)),
+                              ),
                             ),
                           ],
                         ),
@@ -239,23 +219,21 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                               padding: EdgeInsets.only(bottom: 0),
                               constraints: BoxConstraints(),
                               icon: Icon(
-                                Icons.person_off_rounded,
-                                color: _isPersonOffSelected ? Colors.red : Colors.grey,
+                                viewModel.isBlock ? Icons.person_off_rounded : Icons.person_off_rounded,
+                                color: viewModel.isBlock ? Colors.red : Colors.grey,
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  _isFavoriteSelected = false;
-                                  _isPersonAddSelected = false;
-                                  _isPersonOffSelected = !_isPersonOffSelected;
-                                });
+                              onPressed: () async {
+                                await viewModel.setBlock("currentUserNickname", viewModel.nickname);
+                                // 차단 상태가 변경되면 다른 상태들도 업데이트
+                                if(viewModel.isBlock) {
+                                  viewModel.resetOtherStates();
+                                }
                               },
                             ),
                             Container(
-                              child: _isPersonOffSelected
-                                  ? Text('차단',
-                                  style: TextStyle(fontSize: 11, color: Colors.red))
-                                  : Text('차단',
-                                  style: TextStyle(fontSize: 11, color: Colors.grey)),
+                              child: Text('차단',
+                                style: TextStyle(fontSize: 11, color: viewModel.isBlock ? Colors.red : Colors.grey),
+                              ),
                             ),
                           ],
                         ),
