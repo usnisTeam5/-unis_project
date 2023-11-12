@@ -85,12 +85,19 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
   @override
   void initState() {
     super.initState();
-    final viewModel = Provider.of<UserProfileViewModel>(context, listen: false);
-    viewModel.fetchUserProfile("상대방_닉네임"); // 상대방의 닉네임을 전달
+    // initState가 완전히 완료된 후 실행되도록 비동기 처리
+    Future.delayed(Duration.zero, () async {
+      final viewModel = Provider.of<UserProfileViewModel>(context, listen: false);
+      await viewModel.fetchUserProfile("유저닉네임", "상대방 닉네임");
 
-    _isFavoriteSelected = viewModel.isPick;
-    _isPersonAddSelected = viewModel.isFriend;
-    _isPersonOffSelected = viewModel.isBlock;
+      if (mounted) {
+        setState(() {
+          _isFavoriteSelected = viewModel.isPick;
+          _isPersonAddSelected = viewModel.isFriend;
+          _isPersonOffSelected = viewModel.isBlock;
+        });
+      }
+    });
   }
 
   Widget build(BuildContext context) {
@@ -183,7 +190,12 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => OneToOneChatScreen()));
+                                        builder: (context) => OneToOneChatScreen(
+                                            nickname1: 'sender',
+                                            nickname2: viewModel.nickname,
+                                            profileImage2: viewModel.profileImage
+                                        )
+                                    ));
                               },
                             ),
                             Container(
@@ -291,7 +303,7 @@ class _InteractionButtonState extends State<InteractionButton> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        setState(() {
+        (() {
           _isTapped = !_isTapped;
         });
       },

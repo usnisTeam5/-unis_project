@@ -172,9 +172,8 @@ class _StudyChatScreenState extends State<StudyChatScreen> {
                 itemCount: _messages.length,
                 itemBuilder: (context, index) {
                   final message = _messages[index];
-                  final bool shouldDisplayHeader = showProfile == 1 &&
-                      (index == 0 ||
-                          _messages[index - 1].sender != message.sender);
+                  final bool shouldDisplayHeader =
+                      showProfile == 1 && (index == 0 || _messages[index - 1].sender != message.sender);
                   final bool shouldDisplayTime = (index ==
                       _messages.length - 1 ||
                       _messages[index + 1].sender != message.sender);
@@ -192,7 +191,7 @@ class _StudyChatScreenState extends State<StudyChatScreen> {
                             children: [
                               CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                    message.senderImageURL),
+                                    message.senderImageURL/*profileImage*/),
                                 radius: 15,
                               ),
                               SizedBox(height: 2),

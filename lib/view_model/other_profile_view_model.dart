@@ -16,7 +16,7 @@ class UserProfileViewModel with ChangeNotifier {
   String get nickname => _profileInfo?.nickname ?? "정보없음";
   List<String?> get departments => _profileInfo?.departments ?? [];
   String get introduction => _profileInfo?.introduction ?? "정보없음";
-  String get profileImage => _profileInfo?.profileImage ?? "";
+  String get profileImage => _profileInfo?.profileImage ?? "message.profileImage";
   bool get isPick => _profileInfo?.isPick ?? false;
   bool get isFriend => _profileInfo?.isFriend ?? false;
   bool get isBlock => _profileInfo?.isBlock ?? false;
@@ -26,11 +26,11 @@ class UserProfileViewModel with ChangeNotifier {
   bool get isLoading => _isLoading;
 
 
-  Future<void> fetchUserProfile(String nickname) async {
+  Future<void> fetchUserProfile(String nickname, String friendNickname) async {
     try {
       _isLoading = true;
       notifyListeners();
-      _profileInfo = await UserProfileInfoForShow.fetchUserProfile(nickname);
+      _profileInfo = await UserProfileInfoForShow.fetchUserProfile(nickname, friendNickname);
       _isLoading = false;
       notifyListeners();
     } catch (e) {
