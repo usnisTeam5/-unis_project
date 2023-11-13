@@ -22,7 +22,7 @@ class UserProfileOtherViewModel extends ChangeNotifier {
   //   notifyListeners();
   // }
 
-  UserProfileInfoForShow? _profileInfo; // _profileInfo를 null로 초기화
+  UserProfileInfoForShow? _profileInfo = UserProfileInfoForShow.defaultValues(); // _profileInfo를 null로 초기화
   bool _isLoading = false;
   bool _isPick = false; // 초기값으로 false 설정
 

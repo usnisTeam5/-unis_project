@@ -1,7 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +10,6 @@ import 'dart:math';
 
 import 'package:provider/provider.dart';
 import '../view_model/other_profile_view_model.dart';
-import '../models/other_profile_model.dart';
 
 void main() {
   runApp(const OthersProfile());
@@ -33,106 +29,118 @@ class OthersProfile extends StatelessWidget {
   }
 }
 
+// class OthersProfilePage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return ChangeNotifierProvider(
+//         create: (_) => UserProfileOtherViewModel(),
+//         builder: (context, child) {
+//           return OthersProfilePage1();
+//         });
+//   }
+// }
+
+
+// class OthersProfilePage extends StatefulWidget {
+//   @override
+//   _OthersProfilePageState createState() => _OthersProfilePageState();
+// }
+
 class OthersProfilePage extends StatelessWidget {
   @override
+  int count =0;
   Widget build(BuildContext context) {
+    final width = min(MediaQuery.of(context).size.width, 500.0);
+    //final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen: true);
+    //if(view.myNickname == null) return Center(child: CircularProgressIndicator());
     return ChangeNotifierProvider(
         create: (_) => UserProfileOtherViewModel(),
         builder: (context, child) {
-          return OthersProfilePage1();
-        });
-  }
-}
+          WidgetsBinding.instance.addPostFrameCallback((_) { // 나중에 호출됨.
+            // context를 사용하여 UserProfileViewModel에 접근
+            final nickName = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
+            // 다른 비동기 작업 실행
+            Provider.of<UserProfileOtherViewModel>(context, listen: false)
+                .fetchUserProfile(nickName, "별뚜기");
+          });
 
-class OthersProfilePage1 extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // context를 사용하여 UserProfileViewModel에 접근
-      final nickName = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
-      // 다른 비동기 작업 실행
-      Provider.of<UserProfileOtherViewModel>(context, listen: false)
-          .fetchUserProfile(nickName, "별뚜기");
-    });
-
-    final width = min(MediaQuery.of(context).size.width, 500.0);
-    final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen: false);
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: MainGradient(),
+      return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.white,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(1.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: MainGradient(),
+                ),
+                height: 2.0,
+              ),
             ),
-            height: 2.0,
+            title: GradientText(
+                width: width, text: '프로필', tSize: 0.06, tStyle: 'Bold'),
+            leading: IconButton(
+              icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
           ),
-        ),
-        title: GradientText(
-            width: width, text: '프로필', tSize: 0.06, tStyle: 'Bold'),
-        leading: IconButton(
-          icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            OthersProfileInfoSection(),
-            StatsSection(),
-            SatisfactionAndReportSection(),
-          ],
-        ),
-      ),
+          body:  Consumer<UserProfileOtherViewModel>(
+              builder: (context, viewModel, child) {
+                if (viewModel.isLoading && count ==0) { // 처음만 로딩 걸리게. 안걸리면 에러남.
+                  //print(viewModel.isLoading);
+                  count ++;
+                  return Center(child: CircularProgressIndicator());
+                }
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    OthersProfileInfoSection(),
+                    StatsSection(),
+                    SatisfactionAndReportSection(),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      }
     );
   }
 }
 
 class OthersProfileInfoSection extends StatefulWidget {
 //  final String profileImage;
-
   const OthersProfileInfoSection({
     super.key,
   });
-
   @override
   _OthersProfileInfoSectionState createState() =>
       _OthersProfileInfoSectionState();
 }
 
+
 class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
-  // bool _isFavoriteSelected = false;
-  // bool _isPersonAddSelected = false;
-  // bool _isPersonOffSelected = false;
 
   XFile? _image; //이미지를 담을 변수 선언
-
-  final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
+  int buildCount = 0;
 
   @override
   Widget build(BuildContext context) {
-    return _buildWithImage();
-  }
+    // if(buildCount == 0){
+    //   buildCount++;
+    //   return Container();
+    // }
+    final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen: true);
 
-  Widget _buildWithImage() {
-    final viewModel =
-        Provider.of<UserProfileOtherViewModel>(context, listen: true);
     _image = XFile(viewModel.profileImage);
-    //Uint8List? decodedImage;
+    //print("\ntqt@@@@@@@@@@@@@qt${_image!.path}\n");
 
     final width = min(MediaQuery.of(context).size.width, 500.0);
-    final height = min(MediaQuery.of(context).size.height, 700.0);
+    //final height = min(MediaQuery.of(context).size.height, 700.0);
 
-    if (viewModel.isLoading) {
-      return Center(child: CircularProgressIndicator());
-    }
     return Container(
       padding: EdgeInsets.only(left: 30.0, top: 30.0, bottom: 30.0),
       margin: EdgeInsets.all(20.0),
@@ -148,7 +156,7 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                 radius: 50.0,
                 //backgroundImage:
                 backgroundImage:
-                    FileImage(File(_image?.path ?? 'image/unis.png')),
+                    FileImage(File(_image!.path)),
               ),
               SizedBox(width: width * 0.05),
               Column(
@@ -228,10 +236,8 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => OneToOneChatScreen(
-                                        nickname1: viewModel.myNickname,
-                                        // 1 나
-                                        nickname2: viewModel.nickname,
-                                        // 2 상대
+                                        nickname1: viewModel.myNickname, // 1 나
+                                        nickname2: viewModel.nickname, // 2 상대
                                         profileImage2: viewModel.profileImage),
                                   ),
                                 );
@@ -449,9 +455,7 @@ class StatsSection extends StatelessWidget {
     double width = min(MediaQuery.of(context).size.width, 500.0);
     final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen: false);
     print("dfdfdfd${viewModel.question}");
-    if (viewModel.isLoading) {
-      return Center(child: CircularProgressIndicator());
-    }
+
     return Container(
       padding: EdgeInsets.all(16.0),
       margin: EdgeInsets.all(16.0),

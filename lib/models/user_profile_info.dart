@@ -68,6 +68,8 @@ class UserProfileInfo {
   double review;
   //static const BASE_URL = "http://3.35.21.123:8080";
 
+
+
   UserProfileInfo({
     required this.nickName,
     required this.departments,

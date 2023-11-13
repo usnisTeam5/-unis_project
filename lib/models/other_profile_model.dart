@@ -8,7 +8,7 @@ import '../view_model/other_profile_view_model.dart';
 
 class UserProfileInfoForShow {
 
-  String nickname = "";
+  String nickname = "안녕";
   List<String> departments = ["없음"];
   String introduction = "";
   String profileImage = 'image/unis.png';
@@ -19,6 +19,19 @@ class UserProfileInfoForShow {
   int answer = 0;
   int studyCnt = 0;
   double review = 0.0;
+
+  UserProfileInfoForShow.defaultValues() :
+        nickname = '',
+        departments = ["안녕"],
+        introduction = '',
+        profileImage = 'image/unis.png',
+        isPick = false,
+        isFriend = false,
+        isBlock = false,
+        question = 0,
+        answer = 0,
+        studyCnt = 0,
+        review = 0.0;
 
   UserProfileInfoForShow({
     required this.nickname,
