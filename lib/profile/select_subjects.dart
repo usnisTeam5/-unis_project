@@ -3,6 +3,8 @@ import 'package:unis_project/search_department/search_department.dart';
 import 'package:unis_project/search_subject/search_subject.dart';
 import 'dart:math';
 import '../css/css.dart';
+import '../view_model/user_profile_info_view_model.dart';
+import 'package:provider/provider.dart';
 void main() {
   runApp(Department_selection_screen());
 }
@@ -26,14 +28,28 @@ class SubjectSelectionScreen extends StatefulWidget {
 }
 
 class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
-  List<String> selectedDepartments = [];
+  List<String> selectedCurCourses = [];
   List<String> selectedCourses = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 처음에 한 번만 실행되어야 하는 코드를 여기에 작성합니다.
+    Future.delayed(Duration.zero, () {
+      final viewModel = Provider.of<UserProfileViewModel>(context, listen: false);
+      setState(() {
+        selectedCurCourses = viewModel.currentCourses;
+        selectedCourses = viewModel.pastCourses;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final double width = min(MediaQuery.of(context).size.width,500.0);
     final double height = MediaQuery.of(context).size.height;
-    selectedDepartments = selectedDepartments.toSet().toList(); // 중복제거
+    selectedCurCourses = selectedCurCourses.toSet().toList(); // 중복제거
     selectedCourses = selectedCourses.toSet().toList();
     return Scaffold(
       appBar: AppBar(
@@ -53,7 +69,7 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
         //centerTitle: true,
         // Title을 중앙에 배치
         title: GradientText(
-            width: width, text: '학과 및 수강과목 설정', tSize: 0.05, tStyle: 'Bold'),
+            width: width, text: '수강과목 설정', tSize: 0.05, tStyle: 'Bold'),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1.0),
           // Set the height of the underline
@@ -76,18 +92,18 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                 crossAxisAlignment: CrossAxisAlignment.baseline,  // baseline으로 정렬
                 textBaseline: TextBaseline.alphabetic,
                 children: [
-                  GradientText(width: width, tSize: 0.05, text:'학과', tStyle: 'Round' ),
-                  SizedBox(width: 10),  // 공간 추가
-                  Text('최대 2개 선택', style: TextStyle(fontFamily: 'Round', color: Colors.grey,fontSize: width*0.03)),
+                  GradientText(width: width, tSize: 0.05, text:'수강중인 과목', tStyle: 'Round' ),
+                  // SizedBox(width: 10),  // 공간 추가
+                  // Text('최대 2개 선택', style: TextStyle(fontFamily: 'Round', color: Colors.grey,fontSize: width*0.03)),
                 ],
               ),
               TextField(
                 readOnly: true,
                 onTap: () async {
                   final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => SearchDepartment()));
-                  if (result != null && selectedDepartments.length < 2) {
+                  if (result != null && selectedCurCourses.length < 2) {
                     setState(() {
-                      selectedDepartments.add(result);
+                      selectedCurCourses.add(result);
                     });
                   }
                 },
@@ -99,14 +115,14 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                 height: height * 0.2,  // 높이 설정
                 child: ListView(
                   shrinkWrap: true,
-                  children: selectedDepartments.map((department) {
+                  children: selectedCurCourses.map((department) {
                     return ListTile(
                       title: Text(department, style: TextStyle(fontFamily: 'Bold'),),
                       trailing: IconButton(
                         icon: Icon(Icons.close),
                         onPressed: () {
                           setState(() {
-                            selectedDepartments.remove(department);
+                            selectedCurCourses.remove(department);
                           });
                         },
                       ),
@@ -122,9 +138,9 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                   crossAxisAlignment: CrossAxisAlignment.baseline,  // baseline으로 정렬
                   textBaseline: TextBaseline.alphabetic,
                   children: [
-                    GradientText(width: width, tSize: 0.05, text:'수강 과목', tStyle: 'Round' ),
-                    SizedBox(width: 10),  // 공간 추가
-                    Text('최소 1개 선택', style: TextStyle(fontFamily: 'Round', color: Colors.grey,fontSize: width*0.03)),
+                    GradientText(width: width, tSize: 0.05, text:'수강한 과목', tStyle: 'Round' ),
+                    // SizedBox(width: 10),  // 공간 추가
+                    // Text('최소 1개 선택', style: TextStyle(fontFamily: 'Round', color: Colors.grey,fontSize: width*0.03)),
                   ]
               ),
               TextField(
