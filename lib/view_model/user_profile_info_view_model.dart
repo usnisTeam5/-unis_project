@@ -7,7 +7,7 @@ class UserProfileViewModel with ChangeNotifier {
 
   UserProfileInfo get profileInfo => _profileInfo!;
   String get nickName => _profileInfo!.nickName;
-  List<String?> get departments => _profileInfo!.departments;
+  List<String> get departments => _profileInfo!.departments;
   String get introduction => _profileInfo!.introduction;
   List<String> get currentCourses => _profileInfo!.currentCourses;
   List<String> get pastCourses => _profileInfo!.pastCourses;

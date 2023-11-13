@@ -26,17 +26,17 @@ class UserProfileOtherViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool _isPick = false; // 초기값으로 false 설정
 
-  UserProfileInfoForShow? get profileInfo => _profileInfo;
-  String get nickname => _profileInfo?.nickname ?? "정보없음";
-  List<String?> get departments => _profileInfo!.departments;
-  String get introduction => _profileInfo?.introduction ?? "정보없음";
-  String get profileImage => _profileInfo?.profileImage ?? "";
-  bool get isPick => _profileInfo?.isPick ?? true;
-  bool get isFriend => _profileInfo?.isFriend ?? false;
-  bool get isBlock => _profileInfo?.isBlock ?? false;
-  int get question => _profileInfo?.question ?? 1;
-  int get answer => _profileInfo?.answer ?? 2;
-  int get studyCnt => _profileInfo?.studyCnt ?? 3;
+  UserProfileInfoForShow? get profileInfo => _profileInfo ;
+  String get nickname => _profileInfo!.nickname ?? "정보없음";
+  List<String> get departments => _profileInfo!.departments;
+  String get introduction => _profileInfo!.introduction ?? "정보없음";
+  String get profileImage => _profileInfo!.profileImage ?? 'image/unis.png';
+  bool get isPick => _profileInfo!.isPick ?? true;
+  bool get isFriend => _profileInfo!.isFriend ?? false;
+  bool get isBlock => _profileInfo!.isBlock ?? false;
+  int get question => _profileInfo!.question ?? 1;
+  int get answer => _profileInfo!.answer ?? 2;
+  int get studyCnt => _profileInfo!.studyCnt ?? 3;
   bool get isLoading => _isLoading;
 
 

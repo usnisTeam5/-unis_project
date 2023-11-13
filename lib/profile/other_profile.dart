@@ -24,7 +24,6 @@ class OthersProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ;
     return MaterialApp(
       home: OthersProfilePage(),
       theme: ThemeData(
@@ -37,7 +36,28 @@ class OthersProfile extends StatelessWidget {
 class OthersProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+        create: (_) => UserProfileOtherViewModel(),
+        builder: (context, child) {
+          return OthersProfilePage1();
+        });
+  }
+}
+
+class OthersProfilePage1 extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // context를 사용하여 UserProfileViewModel에 접근
+      final nickName = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
+      // 다른 비동기 작업 실행
+      Provider.of<UserProfileOtherViewModel>(context, listen: false)
+          .fetchUserProfile(nickName, "별뚜기");
+    });
+
     final width = min(MediaQuery.of(context).size.width, 500.0);
+    final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -62,26 +82,14 @@ class OthersProfilePage extends StatelessWidget {
           },
         ),
       ),
-      body: ChangeNotifierProvider(
-        create: (_) => UserProfileOtherViewModel(),
-        builder: (context, child) {
-    Future.delayed(Duration.zero, () {
-      String nickName = Provider
-          .of<UserProfileViewModel>(context, listen: false)
-          .nickName;
-      Provider.of<UserProfileOtherViewModel>(context, listen: false)
-          .fetchUserProfile(nickName, "별뚜기"); // **추가
-    });
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                OthersProfileInfoSection(),
-                StatsSection(),
-                SatisfactionAndReportSection(),
-              ],
-            ),
-          );
-        },
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            OthersProfileInfoSection(),
+            StatsSection(),
+            SatisfactionAndReportSection(),
+          ],
+        ),
       ),
     );
   }
@@ -90,10 +98,13 @@ class OthersProfilePage extends StatelessWidget {
 class OthersProfileInfoSection extends StatefulWidget {
 //  final String profileImage;
 
-  const OthersProfileInfoSection({super.key,});
+  const OthersProfileInfoSection({
+    super.key,
+  });
 
   @override
-  _OthersProfileInfoSectionState createState() => _OthersProfileInfoSectionState();
+  _OthersProfileInfoSectionState createState() =>
+      _OthersProfileInfoSectionState();
 }
 
 class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
@@ -102,29 +113,26 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
   // bool _isPersonOffSelected = false;
 
   XFile? _image; //이미지를 담을 변수 선언
+
   final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
 
   @override
-  void initState() {
-    super.initState();
-      final viewModel = Provider.of<UserProfileOtherViewModel>(
-          context, listen: false);
-      _image = XFile(viewModel.profileImage);
-  }
-
-  @override
   Widget build(BuildContext context) {
-      return _buildWithImage();
+    return _buildWithImage();
   }
 
   Widget _buildWithImage() {
-    final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen:false);
-
+    final viewModel =
+        Provider.of<UserProfileOtherViewModel>(context, listen: true);
+    _image = XFile(viewModel.profileImage);
     //Uint8List? decodedImage;
 
     final width = min(MediaQuery.of(context).size.width, 500.0);
     final height = min(MediaQuery.of(context).size.height, 700.0);
 
+    if (viewModel.isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
     return Container(
       padding: EdgeInsets.only(left: 30.0, top: 30.0, bottom: 30.0),
       margin: EdgeInsets.all(20.0),
@@ -139,7 +147,8 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
               CircleAvatar(
                 radius: 50.0,
                 //backgroundImage:
-                backgroundImage: FileImage(File(_image!.path)),
+                backgroundImage:
+                    FileImage(File(_image?.path ?? 'image/unis.png')),
               ),
               SizedBox(width: width * 0.05),
               Column(
@@ -286,8 +295,8 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                                     : Colors.grey,
                               ),
                               onPressed: () async {
-                                await viewModel.setBlock(viewModel.myNickname,
-                                    viewModel.nickname);
+                                await viewModel.setBlock(
+                                    viewModel.myNickname, viewModel.nickname);
                                 // 차단 상태가 변경되면 다른 상태들도 업데이트
                                 if (viewModel.isBlock) {
                                   viewModel.resetOtherStates();
@@ -438,8 +447,11 @@ class StatsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = min(MediaQuery.of(context).size.width, 500.0);
-    final viewModel = Provider.of<UserProfileOtherViewModel>(context,listen: false);
-
+    final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen: false);
+    print("dfdfdfd${viewModel.question}");
+    if (viewModel.isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
     return Container(
       padding: EdgeInsets.all(16.0),
       margin: EdgeInsets.all(16.0),

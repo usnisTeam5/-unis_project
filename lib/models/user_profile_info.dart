@@ -56,7 +56,7 @@ class CourseDto {
 
 class UserProfileInfo {
   final String nickName;
-  List<String?> departments;
+  List<String> departments;
   String introduction;
   List<String> currentCourses;
   List<String> pastCourses;
@@ -89,7 +89,7 @@ class UserProfileInfo {
 
     return UserProfileInfo(
       nickName: json['nickName'],
-      departments: List<String?>.from(json['departments'] ?? []),
+      departments: List<String>.from(json['departments'] ?? []),
       introduction: json['introduction'] ?? '',
       currentCourses: List<String>.from(json['currentCourses'] ?? []),
       pastCourses: List<String>.from(json['pastCourses'] ?? []),
@@ -129,7 +129,7 @@ class UserProfileInfo {
     );
     try {
       if (response.statusCode == 200) {
-        print('Response data(유저정보): ${utf8.decode(response.bodyBytes)}'); // 확인
+        //print('Response data(유저정보): ${utf8.decode(response.bodyBytes)}'); // 확인
         final Map<String, dynamic> data =
             json.decode(utf8.decode(response.bodyBytes));
 
@@ -150,21 +150,22 @@ class UserProfileInfo {
         }
 
         data['nickName'] = nickname; // 서버 응답에 없는 닉네임을 추가
-        if (data['departments'][1] == null) {
-          data['departments'].removeLast();
-          print(data['departments']);
-        }
+        // if (data['departments'][1] == null) {
+        //   data['departments'].removeLast();
+        //   print(data['departments']);
+        // }
         // data.forEach((key, value) {
         //   print('$key: $value');
         // });
         //if (data['departments'] is List) { print("리스트입니다.!!");}
         final temp = UserProfileInfo.fromJson(data);
-        print(temp.toJson());
+        print(" 유저정보 패치 ${temp.toJson()}");
         return temp;
       } else {
         throw Exception('Failed to load user profile'); //
       }
     } catch (error) {
+      print("패치 오류 $error");
       // 네트워크 호출 중 발생한 예외 처리
       print("fetchUserprofile error ");
     }
@@ -277,7 +278,8 @@ class UserProfileInfo {
 
     if (response.statusCode == 200) {
       departments[0] = departmentDto.depts[0];
-      if( departmentDto.depts.length == 2) departments.add(departmentDto.depts[1]);
+      if(departments.length == 2) departments.removeLast();
+      if(departmentDto.depts.length == 2) departments.add(departmentDto.depts[1]);
       return response.body;
     } else {
 

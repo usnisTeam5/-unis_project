@@ -8,17 +8,17 @@ import '../view_model/other_profile_view_model.dart';
 
 class UserProfileInfoForShow {
 
-  final String nickname;
-  List<String?> departments;
-  String introduction;
-  String profileImage;
-  bool isPick;
-  bool isFriend;
-  bool isBlock;
-  int question;
-  int answer;
-  int studyCnt;
-  double review;
+  String nickname = "";
+  List<String> departments = ["없음"];
+  String introduction = "";
+  String profileImage = 'image/unis.png';
+  bool isPick = false;
+  bool isFriend = false;
+  bool isBlock = false;
+  int question = 0;
+  int answer = 0;
+  int studyCnt = 0;
+  double review = 0.0;
 
   UserProfileInfoForShow({
     required this.nickname,
@@ -37,7 +37,7 @@ class UserProfileInfoForShow {
   factory UserProfileInfoForShow.fromJson(Map<String, dynamic> json) {
     return UserProfileInfoForShow(
       nickname: json['nickname'],
-      departments: List<String?>.from(json['departments'] ?? []),
+      departments: List<String>.from(json['departments'] ?? []),
       introduction: json['introduction'] ?? '',
       profileImage: json['profileImage'] ?? 'image/unis.png',
       isPick: json['isPick'],
@@ -60,11 +60,10 @@ class UserProfileInfoForShow {
       'isPick': isPick,
       'isBlock': isBlock,
       'isFriend': isFriend,
-      'profileImage': profileImage,
       'question': question,
       'answer': answer,
       'studyCnt': studyCnt,
-      'reciew': review,
+      'review': review,
     };
   }
 
@@ -76,7 +75,7 @@ class UserProfileInfoForShow {
       final response = await http.get(Uri.parse(endpoint));
       if (response.statusCode == 200) {
         final Map<String, dynamic> data =jsonDecode(utf8.decode(response.bodyBytes));
-        print("data입니다:$data");
+        //print("data입니다:$data");
         // 이미지 처리 base64 string으로 받아서 임시 파일에 profile_image.png로 저장 후 경로 반환.
         if (data['profileImage'] != null) {
           final bytes = base64Decode(data['profileImage']);
@@ -94,12 +93,12 @@ class UserProfileInfoForShow {
         }
 
         //data['nickName'] = nickname; // 서버 응답에 없는 닉네임을 추가
-        if (data['departments'][1] == null) {
-          data['departments'].removeLast();
-          print(data['departments']);
-        }
+        // if (data['departments'][1] == null) {
+        //   data['departments'].removeLast();
+        //   print(data['departments']);
+        // }
         final temp = UserProfileInfoForShow.fromJson(data);
-        //print(temp.toJson());
+        print("친구정보 패치 ${temp.toJson()}");
 
         return temp;
       } else {
