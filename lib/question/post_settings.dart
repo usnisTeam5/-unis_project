@@ -190,7 +190,7 @@ class _PostSettingsState extends State<PostSettings> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('족보 관련 질문시, 해당 글의 포인트 전액을 신고자에게 전달하는 것에 동의합니다.', style: TextStyle(fontSize: 12, fontFamily: 'Bold', color: Colors.grey[400])),
+                Text('족보 관련 질문시, 해당 글의 포인트 전액을 신고자에게\n전달하는 것에 동의합니다.', style: TextStyle(fontSize: 12, fontFamily: 'Bold', color: Colors.grey[400])),
                 Checkbox(
                   value: isWarningSelected,
                   onChanged: (value) {
