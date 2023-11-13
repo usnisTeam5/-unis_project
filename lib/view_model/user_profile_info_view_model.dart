@@ -58,5 +58,39 @@ class UserProfileViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> selectDepartment(DepartmentDto departmentDto) async {
+    try {
+      await _profileInfo!.setDepartment(nickName, departmentDto);
+      notifyListeners();
+    } catch (e) {
+      // 에러 처리
+      print(e.toString());
+    }
+  }
+
+  // 과목 설정
+  Future<void> addCourse(CourseDto courseDto) async {
+    try {
+      await _profileInfo!.setCourse(nickName, courseDto);
+      notifyListeners();
+    } catch (e) {
+      // 에러 처리
+      print(e.toString());
+    }
+  }
+
+  // 과목 삭제
+  Future<void> deleteCourse(CourseDto courseDto) async {
+    try {
+      await _profileInfo!.removeCourse(nickName, courseDto);
+      // 과목 목록에서 삭제된 과목 제거
+      //courses.removeWhere((course) => courseDto.courses.contains(course));
+      notifyListeners();
+    } catch (e) {
+      // 에러 처리
+      print(e.toString());
+    }
+  }
 // 필요한 다른 메서드들을 여기에 추가하세요 (예: 프로필 정보 변경, 포인트 증가 등)
 }
+

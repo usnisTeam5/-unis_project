@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+// body: ChangeNotifierProvider(
+//         create: () => ,
+//           builder: (context, child) {
 // cntl + alt + L 자동정렬 , cntl + shift + F 모두찾기 , F 대신 R -> 모두바꾸기
 // final responseData = jsonDecode(utf8.decode(response.bodyBytes)); 이렇게 해야 안깨짐 한글.
 // 비밀번호 8! 20자 , 닉네임 10자 이하.

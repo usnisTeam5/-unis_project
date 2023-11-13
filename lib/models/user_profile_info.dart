@@ -5,6 +5,36 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'url.dart';
+
+
+// 학과 DTO
+class DepartmentDto {
+  List<String> depts;
+
+  DepartmentDto({required this.depts});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'dept_name1': depts[0],
+      'dept_name2': depts.length == 2 ? depts[1] : null,
+    };
+  }
+}
+
+// 과목 DTO
+class CourseDto {
+  List<String> courses;
+
+  CourseDto({required this.courses});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'course': courses,
+    };
+  }
+}
+
+
 class UserProfileInfo {
   final String nickName;
   List<String?> departments;
@@ -133,13 +163,13 @@ class UserProfileInfo {
     // 프로필 이미지 업로드 API 호출
     final url = Uri.parse('$BASE_URL/user/profile/setImage/$nickname');
     // HTTP 헤더에 'Content-Type': 'application/json'을 추가
-    final headers = {'Content-Type': 'application/json'};
+    //final headers = {'Content-Type': 'application/json'};
     // 요청 본문에 Base64 인코딩된 이미지 데이터를 담은 JSON 생성
     final body = {'img': base64Image};
     // POST 요청을 전송
     final response = await http.post(
         url,
-        //headers: headers,
+      headers: {'Content-Type': 'application/json'},
         body: json.encode(body),
     );
     // 응답 처리
@@ -170,6 +200,8 @@ class UserProfileInfo {
   Future<String> changeCourseNowToPast(
       String nickname, String courseName) async {
     // 현재 과목을 수강한 과목으로 변경하는 API 호출
+    currentCourses.remove(courseName);
+    pastCourses.add(courseName);
     final url = Uri.parse(
         '$BASE_URL/user/profile/nowToPastCourse/$nickname?courseName=$courseName');
     final response = await http.post(url);
@@ -177,33 +209,93 @@ class UserProfileInfo {
     if (response.statusCode == 200) {
       // 업데이트 성공 시 처리
       // 예: currentCourses에서 해당 과목 삭제, pastCourses에 추가
-      currentCourses.remove(courseName);
-      pastCourses.add(courseName);
       return response.body; // ok
     } else {
+      pastCourses.remove(courseName);
+      currentCourses.add(courseName);
       throw Exception(
           'Failed to change course from now to past ${response.statusCode}');
     }
   }
 
-  Future<String> changeCoursePastToNow(
-      String nickname, String courseName) async {
+  Future<String> changeCoursePastToNow(String nickname, String courseName) async {
     // 수강한 과목을 현재 과목으로 변경하는 API 호출
+    pastCourses.remove(courseName);
+    currentCourses.add(courseName);
     final url = Uri.parse(
-        '$BASE_URL/profile/PastToNowCourse/$nickname?courseName=$courseName');
+        '$BASE_URL/user/profile/PastToNowCourse/$nickname?courseName=$courseName');
     final response = await http.post(url);
+
 
     if (response.statusCode == 200) {
       // 업데이트 성공 시 처리
       // 예: pastCourses에서 해당 과목 삭제, currentCourses에 추가
-      pastCourses.remove(courseName);
-      currentCourses.add(courseName);
       return response.body;
     } else {
+      currentCourses.remove(courseName);
+      pastCourses.add(courseName);
       throw Exception('Failed to change course from past to now');
     }
   }
+
+  Future<String> setDepartment(String nickname, DepartmentDto departmentDto) async { // 학과 선택
+
+    final response = await http.post(
+      Uri.parse('$BASE_URL/user/profile/setDepartment/$nickname'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(departmentDto.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      departments[0] = departmentDto.depts[0];
+      if( departmentDto.depts.length == 2) departments.add(departmentDto.depts[1]);
+      return response.body;
+    } else {
+
+      throw Exception('Failed to set department : ${response.body}');
+    }
+  }
+
+// 과목 설정 함수
+  Future<String> setCourse(String nickname, CourseDto courseDto) async {
+    final response = await http.post(
+      Uri.parse('$BASE_URL/user/profile/setCourse/$nickname'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: json.encode(courseDto.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('Failed to set course');
+    }
+  }
+
+// 과목 삭제 함수
+  Future<String> removeCourse(String nickname, CourseDto courseDto) async {
+    final response = await http.post(
+      Uri.parse('$BASE_URL/user/profile/removeCourse/$nickname'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: json.encode(courseDto.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('Failed to remove course');
+    }
+  }
 }
+
+
+// 학과 설정 함수
+
 
 // UserProfileInfo.defaultValues() :// 디폴트값 넣어놓음.
 //       nickName = "꽃구리",
