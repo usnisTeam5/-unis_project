@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:unis_project/css/css.dart';
+import 'package:unis_project/profile/select_department.dart';
+import 'package:unis_project/profile/select_subjects.dart';
 import 'dart:math';
 
-import '../search_department/search_department.dart';
-import '../search_subject/search_subject.dart';
+
 import '../login/login.dart';
-import 'package:restart_app/restart_app.dart';
 import 'package:provider/provider.dart';
 import '../view_model/login_result_view_model.dart';
 import '../view_model/user_profile_info_view_model.dart';
@@ -69,84 +69,83 @@ class ProfileSettings extends StatelessWidget {
                     case '학부 설정':
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SearchDepartment()),
+                        MaterialPageRoute(builder: (context) => DepartmentSelectionScreen()),
                       );
                       break;
                     case '과목 설정하기':
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SearchSubject()),
+                        MaterialPageRoute(builder: (context) => SubjectSelectionScreen()),
                       );
                       break;
                     case '로그아웃':
                       await viewModel.logout();
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(builder: (context) => LoginScreen()),
+                                    (Route<dynamic> route) => false,
+                              );
+                              break;
+                            case '회원 탈퇴':
+                              final String nickname = userProfileViewModel.nickName;
+                              final viewQuitModel = Provider.of<UserQuitViewModel>(context, listen: false);
+                            // 회원 탈퇴 확인 대화상자
+                              bool confirm = await showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text('회원 탈퇴 확인'),
+                                  content: Text('정말로 탈퇴하시겠습니까? \n ${userProfileViewModel.point} 의 포인트가 있습니다.'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('취소'),
+                                      onPressed: () => Navigator.of(context).pop(false),
+                                    ),
+                                    TextButton(
+                                      child: Text('탈퇴'),
+                                      onPressed: () => Navigator.of(context).pop(true),
+                                    ),
+                                  ],
+                                ),
+                              );
 
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()),
-                            (Route<dynamic> route) => false,
-                      );
-                      break;
-                    case '회원 탈퇴':
-                      final String nickname = userProfileViewModel.nickName;
-                      final viewQuitModel = Provider.of<UserQuitViewModel>(context, listen: false);
-                    // 회원 탈퇴 확인 대화상자
-                      bool confirm = await showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('회원 탈퇴 확인'),
-                          content: Text('정말로 탈퇴하시겠습니까? \n ${userProfileViewModel.point} 의 포인트가 있습니다.'),
-                          actions: <Widget>[
-                            TextButton(
-                              child: Text('취소'),
-                              onPressed: () => Navigator.of(context).pop(false),
+                              // 회원 탈퇴 절차 수행
+                              if (confirm) {
+                                await viewQuitModel.userQuit(nickname);
+                                await viewModel.logout();
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                                      (Route<dynamic> route) => false,
+                                );
+                              }
+                              break;
+                          } //
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(color: Colors.grey[300]!, width: 1.0),
                             ),
-                            TextButton(
-                              child: Text('탈퇴'),
-                              onPressed: () => Navigator.of(context).pop(true),
-                            ),
-                          ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                itemsText[index],
+                                style: TextStyle(
+                                  color: itemsText[index] == '회원 탈퇴' ? Colors.red : Colors.grey[600],
+                                  fontSize: 20,
+                                  fontFamily: 'Bold',
+                                ),
+                              ),
+                              Icon(Icons.keyboard_arrow_right, size: 35, color: Colors.grey[400],),
+                            ],
+                          ),
                         ),
                       );
-
-                      // 회원 탈퇴 절차 수행
-                      if (confirm) {
-                        await viewQuitModel.userQuit(nickname);
-                        await viewModel.logout();
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginScreen()),
-                              (Route<dynamic> route) => false,
-                        );
-                      }
-                      break;
-                  } //
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: Colors.grey[300]!, width: 1.0),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        itemsText[index],
-                        style: TextStyle(
-                          color: itemsText[index] == '회원 탈퇴' ? Colors.red : Colors.grey[600],
-                          fontSize: 20,
-                          fontFamily: 'Bold',
-                        ),
-                      ),
-                      Icon(Icons.keyboard_arrow_right, size: 35, color: Colors.grey[400],),
-                    ],
-                  ),
-                ),
+                    },
               );
-            },
-          );
         }
       ),
     );
