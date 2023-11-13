@@ -97,9 +97,9 @@ class OthersProfileInfoSection extends StatefulWidget {
 }
 
 class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
-  bool _isFavoriteSelected = false;
-  bool _isPersonAddSelected = false;
-  bool _isPersonOffSelected = false;
+  // bool _isFavoriteSelected = false;
+  // bool _isPersonAddSelected = false;
+  // bool _isPersonOffSelected = false;
 
   XFile? _image; //이미지를 담을 변수 선언
   final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
@@ -107,19 +107,13 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, ()
-    {
       final viewModel = Provider.of<UserProfileOtherViewModel>(
           context, listen: false);
       _image = XFile(viewModel.profileImage);
-      //_introductionController = TextEditingController(text: viewModel.introduction);
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen:false);
-
       return _buildWithImage();
   }
 
@@ -444,7 +438,7 @@ class StatsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = min(MediaQuery.of(context).size.width, 500.0);
-    final viewModel = Provider.of<UserProfileViewModel>(context,listen: false);
+    final viewModel = Provider.of<UserProfileOtherViewModel>(context,listen: false);
 
     return Container(
       padding: EdgeInsets.all(16.0),

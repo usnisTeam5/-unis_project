@@ -6,7 +6,26 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'url.dart';
 
+class CourseAllDto {
+  List<String> currentCourses;
+  List<String> pastCourses;
 
+  CourseAllDto({required this.currentCourses, required this.pastCourses});
+
+  factory CourseAllDto.fromJson(Map<String, dynamic> json) {
+    return CourseAllDto(
+      currentCourses: List<String>.from(json['currentCourses']),
+      pastCourses: List<String>.from(json['pastCourses']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'currentCourses': currentCourses,
+      'pastCourses': pastCourses,
+    };
+  }
+}
 // 학과 DTO
 class DepartmentDto {
   List<String> depts;
@@ -46,6 +65,7 @@ class UserProfileInfo {
   int question;
   int answer;
   int studyCnt;
+  double review;
   //static const BASE_URL = "http://3.35.21.123:8080";
 
   UserProfileInfo({
@@ -59,6 +79,7 @@ class UserProfileInfo {
     required this.question,
     required this.answer,
     required this.studyCnt,
+    required this.review,
   });
 
   factory UserProfileInfo.fromJson(Map<String, dynamic> json) {
@@ -79,6 +100,7 @@ class UserProfileInfo {
       question: json['question'],
       answer: json['answer'],
       studyCnt: json['studyCnt'],
+      review: json['review'],
     );
   }
 
@@ -96,6 +118,7 @@ class UserProfileInfo {
       'question': question,
       'answer': answer,
       'studyCnt': studyCnt,
+      'review': review,
     };
   }
 
@@ -117,6 +140,9 @@ class UserProfileInfo {
           //final imageExtension = path.extension(data['profileImage']).replaceAll('.', '');
           // 이미지 파일을 생성하고 원본 확장자를 사용하여 파일명 설정
           final file = File('${directory.path}/profile_image${path.extension(data['profileImage'])}');
+          if (file.existsSync()) {
+            file.deleteSync();
+          }
           // 파일에 바이트 데이터를 씀
           file.writeAsBytesSync(bytes);
           // 파일 경로 반환
@@ -136,7 +162,7 @@ class UserProfileInfo {
         print(temp.toJson());
         return temp;
       } else {
-        throw Exception('Failed to load user profile');
+        throw Exception('Failed to load user profile'); //
       }
     } catch (error) {
       // 네트워크 호출 중 발생한 예외 처리
@@ -166,6 +192,7 @@ class UserProfileInfo {
     //final headers = {'Content-Type': 'application/json'};
     // 요청 본문에 Base64 인코딩된 이미지 데이터를 담은 JSON 생성
     final body = {'img': base64Image};
+   // print("sdfdf    $body");
     // POST 요청을 전송
     final response = await http.post(
         url,
@@ -258,39 +285,60 @@ class UserProfileInfo {
     }
   }
 
-// 과목 설정 함수
-  Future<String> setCourse(String nickname, CourseDto courseDto) async {
+  Future<String> setCourseAll(String nickname, CourseAllDto course) async {
+    final url = Uri.parse('$BASE_URL/user/profile/setCourseAll/$nickname');
+
+    final headers = <String, String>{
+      'Content-Type': 'application/json',
+    };
+
+    final body = jsonEncode(course.toJson());
+
     final response = await http.post(
-      Uri.parse('$BASE_URL/user/profile/setCourse/$nickname'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: json.encode(courseDto.toJson()),
+      url,
+      headers: headers,
+      body: body,
     );
 
     if (response.statusCode == 200) {
-      return response.body;
+      return 'ok';
     } else {
-      throw Exception('Failed to set course');
+      throw Exception('Failed to set course data.');
     }
   }
-
-// 과목 삭제 함수
-  Future<String> removeCourse(String nickname, CourseDto courseDto) async {
-    final response = await http.post(
-      Uri.parse('$BASE_URL/user/profile/removeCourse/$nickname'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: json.encode(courseDto.toJson()),
-    );
-
-    if (response.statusCode == 200) {
-      return response.body;
-    } else {
-      throw Exception('Failed to remove course');
-    }
-  }
+// // 과목 설정 함수
+//   Future<String> setCourse(String nickname, CourseDto courseDto) async {
+//     final response = await http.post(
+//       Uri.parse('$BASE_URL/user/profile/setCourse/$nickname'),
+//       headers: <String, String>{
+//         'Content-Type': 'application/json; charset=UTF-8',
+//       },
+//       body: json.encode(courseDto.toJson()),
+//     );
+//
+//     if (response.statusCode == 200) {
+//       return response.body;
+//     } else {
+//       throw Exception('Failed to set course');
+//     }
+//   }
+//
+// // 과목 삭제 함수
+//   Future<String> removeCourse(String nickname, CourseDto courseDto) async {
+//     final response = await http.post(
+//       Uri.parse('$BASE_URL/user/profile/removeCourse/$nickname'),
+//       headers: <String, String>{
+//         'Content-Type': 'application/json; charset=UTF-8',
+//       },
+//       body: json.encode(courseDto.toJson()),
+//     );
+//
+//     if (response.statusCode == 200) {
+//       return response.body;
+//     } else {
+//       throw Exception('Failed to remove course');
+//     }
+//   }
 }
 
 

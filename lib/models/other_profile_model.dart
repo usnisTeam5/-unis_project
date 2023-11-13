@@ -18,6 +18,7 @@ class UserProfileInfoForShow {
   int question;
   int answer;
   int studyCnt;
+  double review;
 
   UserProfileInfoForShow({
     required this.nickname,
@@ -30,6 +31,7 @@ class UserProfileInfoForShow {
     required this.question,
     required this.answer,
     required this.studyCnt,
+    required this.review,
   });
 
   factory UserProfileInfoForShow.fromJson(Map<String, dynamic> json) {
@@ -44,6 +46,7 @@ class UserProfileInfoForShow {
       question: json['question'],
       answer: json['answer'],
       studyCnt: json['studyCnt'],
+      review: json['review'],
     );
   }
 
@@ -61,6 +64,7 @@ class UserProfileInfoForShow {
       'question': question,
       'answer': answer,
       'studyCnt': studyCnt,
+      'reciew': review,
     };
   }
 
@@ -80,6 +84,9 @@ class UserProfileInfoForShow {
           //final imageExtension = path.extension(data['profileImage']).replaceAll('.', '');
           // 이미지 파일을 생성하고 원본 확장자를 사용하여 파일명 설정
           final file = File('${directory.path}/$friendNickname${path.extension(data['profileImage'])}');
+          if (file.existsSync()) {
+            file.deleteSync();
+          }
           // 파일에 바이트 데이터를 씀
           file.writeAsBytesSync(bytes);
           // 파일 경로 반환
@@ -163,6 +170,7 @@ class UserProfileInfoForShow {
       question: this.question,
       answer: this.answer,
       studyCnt: this.studyCnt,
+      review: this.review,
     );
   }
 }
