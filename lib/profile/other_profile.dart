@@ -236,9 +236,7 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => OneToOneChatScreen(
-                                        // nickname1: viewModel.myNickname, // 1 나
-                                        // nickname2: viewModel.nickname, // 2 상대
-                                        // receiverProfile: viewModel.profileImage),
+                                        friendName: viewModel.nickname, // 2 상대
                                   ),
                                   ),
                                 );

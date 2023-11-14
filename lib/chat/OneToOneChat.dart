@@ -1,96 +1,93 @@
 import 'dart:convert';
-import 'dart:math';
+import 'package:http/http.dart' as http;
+import 'package:flutter/scheduler.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:typed_data';
+
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:unis_project/chat/report.dart';
 import '../view_model/user_profile_info_view_model.dart';
 import 'image_picker_popup.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter/scheduler.dart';
-import 'package:image_picker/image_picker.dart';
+
 
 import '../view_model/OneToOneChat_view_model.dart';
 import '../models/OneToOneChat_model.dart';
 
 
-class OneToOneChatScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final width = min(MediaQuery
-        .of(context)
-        .size
-        .width, 500.0);
-    final height = min(MediaQuery
-        .of(context)
-        .size
-        .height, 700.0);
+class OneToOneChatScreen extends StatefulWidget {
 
-    return MaterialApp(
-      home: OneToOneChatScreen(),
-      theme: ThemeData(
-        textTheme: TextTheme(
-          bodyText2: TextStyle(fontFamily: 'Round'),
-        ),
-      ),
-    );
-  }
+  final String friendName;
+  OneToOneChatScreen({required this.friendName});
+  @override
+  _OneToOneChatScreenState createState() => _OneToOneChatScreenState();
 }
 
-class _OneToOneChatScreenState extends StatelessWidget {
+class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
 
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _messageController = TextEditingController();
+  int count = 1;
+
+  void _scrollToBottom() {
+    //SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    //});
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    //final viewModel = Provider.of<OneToOneChatViewModel>(context, listen: true);
 
     return ChangeNotifierProvider(
       create: (_) => OneToOneChatViewModel(),
       builder: (context, child) {
+        final myprofile = Provider.of<UserProfileViewModel>(context, listen: false);
+        final chatModel = Provider.of<OneToOneChatViewModel>(context, listen: true);
 
-        final viewModel = Provider.of<OneToOneChatViewModel>(context, listen: true);
+        final width = min(MediaQuery.of(context).size.width, 500.0);
+        final height = min(MediaQuery.of(context).size.height, 700.0);
+
+        final myNickname = myprofile.nickName;
+        final friendNickname = widget.friendName;
+
+        chatModel.myNickname = myNickname; // 쓸지는 모르겠음.
+        chatModel.friendNickname = friendNickname;
+
+        int showProfile = 1;
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if(count == 1) {
+              setState(() {
+                count --;
+              });
+             // count --;
+              //final chatModel = Provider.of<OneToOneChatViewModel>(context, listen: false);
+
+              chatModel.getAllMsg(
+                  myNickname, friendNickname); // 별뚜기는 상대방 닉네임. 아마 별뚜기 될거임.
+
+              //chatModel.getMsg(myNickname, friendNickname);
+
+            }
+            _scrollToBottom();
+          });
 
 
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-
-          final viewModel = Provider.of<OneToOneChatViewModel>(context, listen: true);
-          final nickName = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
-          viewModel.getAllMsg(nickName, "abc");
-        });
-
-        void _showReportDialog() {
+        void _showReportDialog() { // 신고하기 창
           showDialog(
             context: context,
             builder: (context) => ReportPopup(),
           );
         }
-
-        void _scrollToBottom() {
-          ((_) {
-            if (_scrollController.hasClients) {
-              _scrollController.animateTo(
-                _scrollController.position.maxScrollExtent,
-                duration: Duration(milliseconds: 300),
-                curve: Curves.easeOut,
-              );
-            }
-          });
-        }
-
-
-        List<String> _image = []; // 이미지
-        //List<Message> _messages = []; // 메시지 저장.
-
-
-        int showProfile = 1;
-        final width = min(MediaQuery.of(context).size.width, 500.0);
-        final height = min(MediaQuery.of(context).size.height, 700.0);
-
 
         return Scaffold(
           appBar: AppBar(
@@ -108,48 +105,51 @@ class _OneToOneChatScreenState extends StatelessWidget {
               ),
             ),
             title: Text(
-              "${viewModel.friendNickname}",
+              "${chatModel.friendNickname}",
               style: TextStyle(
                 color: Colors.grey[600],
                 fontFamily: 'Bold',
               ),
             ),
           ),
-          body: Container(
+
+          body:
+          (chatModel.isLoading == true) ? Center(child: CircularProgressIndicator(),):
+          Container(
             color: Colors.grey[200],
             child: Column(
               children: [
                 Expanded(
                   child: ListView.builder(
                     controller: _scrollController,
-                    itemCount: viewModel.messages.length,
+                    itemCount: chatModel.messages.length,
                     itemBuilder: (context, index) {
-                      final MsgDto message = viewModel.messages[index];
-                      final bool shouldDisplayHeader =
-                          showProfile == 1 && (index == 0 || viewModel
+
+                      final MsgDto message = chatModel.messages[index]; // 메시지 저장
+
+                      final bool shouldDisplayHeader =               // 필요 없음 건들지 말것
+                          showProfile == 1 && (index == 0 || chatModel
                               .messages[index - 1].nickname !=
                               message.nickname);
-                      final bool shouldDisplayTime = (index == viewModel
+
+                      final bool shouldDisplayTime = (index == chatModel  // 모르겠는데, 일단 둔다.
                           .messages.length - 1 ||
-                          viewModel.messages[index + 1].nickname !=
+                          chatModel.messages[index + 1].nickname !=
                               message.nickname);
-                      return Padding(
+
+                      return Padding( // 메시지 보내는곳.
                         padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: message.nickname ==
-                              viewModel.nickname1
+                        child: Row( // 메시지 가로로 길게 쭉 있음.
+                          mainAxisAlignment: message.nickname == myNickname
                               ? MainAxisAlignment.end
                               : MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (message.nickname != viewModel.nickname1 &&
-                                shouldDisplayHeader)
-                              Column(
+                            if (message.nickname != myNickname && shouldDisplayHeader) // 내 메시지가 아닌 상대방 메시지 인데, hear를 보여줄 때
+                              Column( //
                                 children: [
                                   CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                        message.nickname == viewModel.nickname2
-                                            ? viewModel.profileImage : message.profileImage),
+                                    backgroundImage: MemoryImage(chatModel.friendProfileImage),// ** 추가
                                     radius: 15,
                                   ),
                                   SizedBox(height: 2),
@@ -157,18 +157,16 @@ class _OneToOneChatScreenState extends StatelessWidget {
                               ),
                             SizedBox(width: 5),
                             Expanded(
-                              child: Column(
-                                crossAxisAlignment: message.nickname ==
-                                    viewModel.nickname1
+                              child: Column( //  이름 답 시간
+                                crossAxisAlignment: message.nickname == myNickname
                                     ? CrossAxisAlignment.end
                                     : CrossAxisAlignment.start,
                                 children: [
-                                  if (message.nickname != viewModel.nickname1 &&
-                                      shouldDisplayHeader)
+                                  if (message.nickname != myNickname && shouldDisplayHeader) // 상대방의 경우
                                     Padding(
                                       padding: const EdgeInsets.only(
                                           left: 12, bottom: 7),
-                                      child: Text(
+                                      child: Text( // 닉네임 표기 *******************************************
                                         message.nickname,
                                         style: TextStyle(
                                           fontSize: 12,
@@ -176,17 +174,16 @@ class _OneToOneChatScreenState extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                  Row(
-                                    mainAxisAlignment: viewModel.nickname1 ==
-                                        viewModel.nickname1
+                                  Row( // 메시지 내용과 시간 표기
+                                    mainAxisAlignment: message.nickname == myNickname
                                         ? MainAxisAlignment.end
                                         : MainAxisAlignment.start,
                                     children: [
-                                      if (viewModel.nickname1 == viewModel.nickname1)
+                                      if (message.nickname == myNickname) // 나일 경우 **추가
                                         Padding(
                                           padding: const EdgeInsets.only(
                                               right: 8.0, top: 20.0),
-                                          child: shouldDisplayTime
+                                          child: shouldDisplayTime // 시간 표기
                                               ? Text(
                                             message.time,
                                             style: TextStyle(
@@ -206,19 +203,16 @@ class _OneToOneChatScreenState extends StatelessWidget {
                                               .width * 0.6,
                                         ),
                                         margin: EdgeInsets.only(
-                                          left: viewModel.nickname1 ==
-                                              viewModel.nickname1
+                                          left: (message.nickname == myNickname)
                                               ? 0
                                               : (shouldDisplayHeader
                                               ? (showProfile == 1 ? 8.0 : 4.0)
                                               : (showProfile == 0 ? 0 : 39.0)),
-                                          top: viewModel.nickname1 ==
-                                              viewModel.nickname1 ? 0 : 0,
+                                          top: (message.nickname == myNickname) ? 0 : 0,
                                         ),
                                         padding: const EdgeInsets.all(8.0),
                                         decoration: BoxDecoration(
-                                          color: viewModel.nickname1 ==
-                                              viewModel.nickname1
+                                          color: (message.nickname == myNickname)
                                               ? Colors.lightBlue
                                               : Colors.white,
                                           borderRadius: BorderRadius.circular(
@@ -227,26 +221,25 @@ class _OneToOneChatScreenState extends StatelessWidget {
                                         child: message.type == "text"
                                             ? Text(message.msg,
                                           style: TextStyle(
-                                            color: viewModel.nickname1 ==
-                                                viewModel.nickname1
+                                            color: (message.nickname == myNickname)
                                                 ? Colors.white
                                                 : Colors.black,
                                             fontFamily: 'Round',),)
-                                            : message.type == "image"
-                                            ? Image.network(
-                                          message.image,
+                                            : message.type == "img"
+                                            ? Image.memory(
+                                          base64Decode(message.image),
                                           width: 150,
                                           fit: BoxFit.cover,
                                         )
                                             : SizedBox(),
                                       ),
-                                      if (message.nickname != viewModel.nickname1)
+                                      if (message.nickname != myNickname) // 내 닉네임이 아닌 경우
                                         Padding(
                                           padding: const EdgeInsets.only(
                                               left: 8.0, top: 20.0),
                                           child: shouldDisplayTime
                                               ? Text(
-                                            message.time,
+                                            message.time, // 시간을 보여줌
                                             style: TextStyle(
                                               fontSize: 10,
                                               fontFamily: 'Round',
@@ -254,7 +247,7 @@ class _OneToOneChatScreenState extends StatelessWidget {
                                                   0.5),
                                             ),
                                           )
-                                              : Container(),
+                                              : Container(), // 대화 내용
                                         ),
                                     ],
                                   ),
@@ -263,11 +256,11 @@ class _OneToOneChatScreenState extends StatelessWidget {
                             ),
                           ],
                         ),
-                      );
+                      ); // 메시지 주고받는것들
                     },
                   ),
                 ),
-                Container(
+                Container( // 하단에  있는것들.
                   color: Colors.white,
                   padding: EdgeInsets.all(8.0),
                   child: Row(
@@ -287,14 +280,16 @@ class _OneToOneChatScreenState extends StatelessWidget {
                             context: context,
                             builder: (context) {
                               return ImagePickerPopup(
-                                onImagePicked: (imagePath) {_image.add(imagePath);
-                                  viewModel.sendMsg(viewModel.myNickname, viewModel.friendNickname,
-                                  viewModel.type, viewModel.msg, viewModel.image, viewModel.time);
+                                onImagePicked: (pickedFile) async {
+                                      Uint8List imageBytes = await pickedFile!.readAsBytes();
+                                      DateTime time = DateTime.now();
+                                      //String strTime = "${time.hour}:${time.minute.toString().padLeft(2, '0')}";
+                                      chatModel.sendMsg(myNickname, friendNickname, 'img' , '', imageBytes, time.toString()); // 내부적으로 저 경로를 따라서 이미지를 다른곳에 저장 후 그 저장된 경로를 profileImage 에 저장함.
                                 },
-                              );
+                              ); //
                             },
                           );
-                        },
+                        }, // //
                       ),
                       Expanded(
                         child: Container(
@@ -337,7 +332,11 @@ class _OneToOneChatScreenState extends StatelessWidget {
                         onPressed: () {
                           if (_messageController.text.isNotEmpty) {
                             //_sendMessage(_messageController.text);
-                            viewModel.chatSendMsg!;
+                            DateTime time = DateTime.now();
+                            String strTime = "${time.hour}:${time.minute.toString().padLeft(2, '0')}";
+                            chatModel.sendMsg(myNickname, friendNickname, 'text' , _messageController.text, Uint8List(0), time.toString());
+                            _messageController.text = '';
+                            _scrollToBottom();
                           }
                         },
                       )

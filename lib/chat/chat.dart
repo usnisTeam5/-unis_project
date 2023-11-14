@@ -554,8 +554,8 @@ class _ChatScreenState extends State<ChatScreen> {
                           return ImagePickerPopup(
                             onImagePicked: (imagePath) {
                               // 이미지를 선택한 경우, savedMessages에 이미지 경로를 저장
-                              savedMessages.add(imagePath);
-                              _sendMessage(imagePath, "", true); // 메시지 전송 함수 호출
+                              savedMessages.add(imagePath!.path);
+                              _sendMessage(imagePath.path, "", true); // 메시지 전송 함수 호출
                             },
                           );
                         },

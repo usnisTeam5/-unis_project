@@ -117,31 +117,27 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
     _introductionController = TextEditingController(text: viewModel.introduction);
   }
 
-  Future<File?> compressImage(String path) async {
-    final filePath = path;
-    final lastIndex = filePath.lastIndexOf(RegExp(r'.jp'));
-    final splitted = filePath.substring(0, lastIndex);
-    final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
-
-    var result = await FlutterImageCompress.compressAndGetFile(
-      filePath,
-      outPath,
-      quality: 88, // 필요에 따라 품질을 조정할 수 있습니다.
-    );
-
-    return result;
-  }
+  // Future<File?> compressImage(String path) async {
+  //   final filePath = path;
+  //   final lastIndex = filePath.lastIndexOf(RegExp(r'.jp'));
+  //   final splitted = filePath.substring(0, lastIndex);
+  //   final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+  //
+  //   var result = await FlutterImageCompress.compressAndGetFile(
+  //     filePath,
+  //     outPath,
+  //     quality: 88, // 필요에 따라 품질을 조정할 수 있습니다.
+  //   );
+  //
+  //   return result;
+  // }
   Future getImage(ImageSource imageSource) async {
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
     if (pickedFile != null) {
 
-    //  print("asdfasdfsdfasdfasdf${pickedFile.path}");
-
-//      File? compressedFile = await compressImage(pickedFile.path);
-
       Uint8List imageBytes = await pickedFile.readAsBytes();
 
-      print("asdfasdfsdfasdfasdf${pickedFile}");
+      //print("asdfasdfsdfasdfasdf${pickedFile}");
       setState(() {
         _image = imageBytes; // 가져온 이미지를 _image에 저장
       });

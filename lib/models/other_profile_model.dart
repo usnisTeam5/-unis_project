@@ -107,7 +107,7 @@ class UserProfileInfoForShow {
         //   print(data['departments']);
         // }
         final temp = UserProfileInfoForShow.fromJson(data);
-        print("친구정보 패치 ${temp.toJson()}");
+       // print("친구정보 패치 ${temp.toJson()}");
 
         return temp;
       } else {

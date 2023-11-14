@@ -169,7 +169,7 @@ class _CustomDrawerState extends State<Notifier> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => OneToOneChatScreen()),
+              MaterialPageRoute(builder: (context) => OneToOneChatScreen(friendName:"")),
             );
           },
           child: Container(
