@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 //import 'package:circle_avatar/circle_avatar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:unis_project/bottom_navigation_bar/bottom_navigation_bar.dart';
@@ -100,7 +103,7 @@ class ProfileInfoSection extends StatefulWidget {
 }
 
 class _ProfileInfoSectionState extends State<ProfileInfoSection>{
-  XFile? _image; //이미지를 담을 변수 선언
+  Uint8List? _image; //이미지를 담을 변수 선언
   final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
   //이미지를 가져오는 함수
   TextEditingController _introductionController = TextEditingController() ;
@@ -110,19 +113,41 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
     super.initState();
 
     final viewModel = Provider.of<UserProfileViewModel>(context, listen: false);
-    _image = XFile(viewModel.profileImage);
+    _image = viewModel.profileImage;
     _introductionController = TextEditingController(text: viewModel.introduction);
   }
 
+  Future<File?> compressImage(String path) async {
+    final filePath = path;
+    final lastIndex = filePath.lastIndexOf(RegExp(r'.jp'));
+    final splitted = filePath.substring(0, lastIndex);
+    final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+
+    var result = await FlutterImageCompress.compressAndGetFile(
+      filePath,
+      outPath,
+      quality: 88, // 필요에 따라 품질을 조정할 수 있습니다.
+    );
+
+    return result;
+  }
   Future getImage(ImageSource imageSource) async {
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
     if (pickedFile != null) {
-      setState(() {
-        _image = XFile(pickedFile.path); // 가져온 이미지를 _image에 저장
-      });
 
+    //  print("asdfasdfsdfasdfasdf${pickedFile.path}");
+
+//      File? compressedFile = await compressImage(pickedFile.path);
+
+      Uint8List imageBytes = await pickedFile.readAsBytes();
+
+      print("asdfasdfsdfasdfasdf${pickedFile}");
+      setState(() {
+        _image = imageBytes; // 가져온 이미지를 _image에 저장
+      });
+ //
       final viewModel = Provider.of<UserProfileViewModel>(context, listen: false);
-      viewModel.updateProfileImage(_image!.path); // 내부적으로 저 경로를 따라서 이미지를 다른곳에 저장 후 그 저장된 경로를 profileImage 에 저장함.
+      viewModel.updateProfileImage(_image!); // 내부적으로 저 경로를 따라서 이미지를 다른곳에 저장 후 그 저장된 경로를 profileImage 에 저장함.
     }
   }
 
@@ -148,7 +173,7 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
                 },
                 child: CircleAvatar(
                   radius: 50.0,
-                  backgroundImage: FileImage(File(_image!.path))
+                  backgroundImage: MemoryImage(_image!),
                 ),
               ),
               SizedBox(width: 20.0),

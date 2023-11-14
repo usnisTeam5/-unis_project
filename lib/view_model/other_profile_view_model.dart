@@ -31,7 +31,7 @@ class UserProfileOtherViewModel extends ChangeNotifier {
   String get nickname => _profileInfo!.nickname ?? "정보없음";
   List<String> get departments => _profileInfo!.departments;
   String get introduction => _profileInfo!.introduction ?? "정보없음";
-  String get profileImage => _profileInfo!.profileImage ?? 'image/unis.png';
+  Uint8List get profileImage => _profileInfo!.profileImage;
   bool get isPick => _profileInfo!.isPick ?? true;
   bool get isFriend => _profileInfo!.isFriend ?? false;
   bool get isBlock => _profileInfo!.isBlock ?? false;

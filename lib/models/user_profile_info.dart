@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -60,7 +61,7 @@ class UserProfileInfo {
   String introduction;
   List<String> currentCourses;
   List<String> pastCourses;
-  String profileImage;
+  Uint8List profileImage;
   int point;
   int question;
   int answer;
@@ -96,7 +97,7 @@ class UserProfileInfo {
       currentCourses: List<String>.from(json['currentCourses'] ?? []),
       pastCourses: List<String>.from(json['pastCourses'] ?? []),
       // `profileImage` 처리는 Flutter 앱 내에서 이미지 처리 방식에 따라 달라질 수 있습니다.
-      profileImage: json['profileImage'] ?? 'image/unis.png',
+      profileImage: json['profileImage'] ?? File('image/unis.png').readAsBytesSync(),
       // 예시로 네트워크 이미지를 사용하였습니다.
       point: json['point'],
       question: json['question'],
@@ -138,28 +139,15 @@ class UserProfileInfo {
         // 이미지 처리 base64 string으로 받아서 임시 파일에 profile_image.png로 저장 후 경로 반환.
         if (data['profileImage'] != null) {
           final bytes = base64Decode(data['profileImage']);
-          final directory = await getApplicationDocumentsDirectory();
-          //final imageExtension = path.extension(data['profileImage']).replaceAll('.', '');
-          // 이미지 파일을 생성하고 원본 확장자를 사용하여 파일명 설정
-          final file = File('${directory.path}/profile_image${path.extension(data['profileImage'])}');
-          if (file.existsSync()) {
-            file.deleteSync();
-          }
-          // 파일에 바이트 데이터를 씀
-          file.writeAsBytesSync(bytes);
-          // 파일 경로 반환
-          data['profileImage'] = file.path; //
+
+          data['profileImage'] = bytes; //
+        } else{
+          data['profileImage'] = File('image/unis.png').readAsBytesSync();
         }
 
+
         data['nickName'] = nickname; // 서버 응답에 없는 닉네임을 추가
-        // if (data['departments'][1] == null) {
-        //   data['departments'].removeLast();
-        //   print(data['departments']);
-        // }
-        // data.forEach((key, value) {
-        //   print('$key: $value');
-        // });
-        //if (data['departments'] is List) { print("리스트입니다.!!");}
+
         final temp = UserProfileInfo.fromJson(data);
         print(" 유저정보 패치 ${temp.toJson()}");
         return temp;
@@ -174,19 +162,11 @@ class UserProfileInfo {
     return null;
   }
 
-  Future<String> setImage(String nickname, String imagePath) async {
+  Future<String> setImage(String nickname, Uint8List bytes) async {
     // 이미지 파일을 Base64 문자열로 인코딩
-    final bytes = File(imagePath).readAsBytesSync();
 
-    final directory = await getApplicationDocumentsDirectory();
-    // 이미지 파일을 생성
-    final file = File('${directory.path}/profile_image${path.extension(imagePath)}');
-    // 파일에 바이트 데이터를 씀
-    file.writeAsBytesSync(bytes);
-    // 경로에 저장.
-    profileImage = file.path;
     // profileImage에 경로 저장
-
+    profileImage = bytes;
     final String base64Image = base64Encode(bytes);
 
     // 프로필 이미지 업로드 API 호출
