@@ -65,13 +65,10 @@ class OthersProfilePage extends StatelessWidget {
       body: ChangeNotifierProvider(
         create: (_) => UserProfileOtherViewModel(),
         builder: (context, child) {
-    Future.delayed(Duration.zero, () {
-      String nickName = Provider
-          .of<UserProfileViewModel>(context, listen: false)
-          .nickName;
-      Provider.of<UserProfileOtherViewModel>(context, listen: false)
-          .fetchUserProfile(nickName, "별뚜기"); // **추가
-    });
+          Future.delayed(Duration.zero, () {
+            String nickName = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
+            Provider.of<UserProfileOtherViewModel>(context, listen: false).fetchUserProfile(nickName, "별뚜기"); // **추가
+          });
           return SingleChildScrollView(
             child: Column(
               children: [

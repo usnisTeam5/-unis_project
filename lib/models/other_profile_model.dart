@@ -18,6 +18,7 @@ class UserProfileInfoForShow {
   int question;
   int answer;
   int studyCnt;
+  double review;
 
   UserProfileInfoForShow({
     required this.nickname,
@@ -30,6 +31,7 @@ class UserProfileInfoForShow {
     required this.question,
     required this.answer,
     required this.studyCnt,
+    required this.review,
   });
 
   factory UserProfileInfoForShow.fromJson(Map<String, dynamic> json) {
@@ -44,6 +46,7 @@ class UserProfileInfoForShow {
       question: json['question'],
       answer: json['answer'],
       studyCnt: json['studyCnt'],
+      review: json['review'],
     );
   }
 
@@ -61,6 +64,7 @@ class UserProfileInfoForShow {
       'question': question,
       'answer': answer,
       'studyCnt': studyCnt,
+      'review': review,
     };
   }
 
@@ -153,16 +157,17 @@ class UserProfileInfoForShow {
     bool? isBlock,
   }) {
     return UserProfileInfoForShow(
-      nickname: this.nickname,
-      departments: this.departments,
-      introduction: this.introduction,
-      profileImage: this.profileImage,
-      isPick: isPick ?? this.isPick,
+      nickname: nickname!,
+      departments: departments!,
+      introduction: introduction!,
+      profileImage: profileImage!,
+      isPick: isPick!,
       isFriend: isFriend!,
       isBlock: isBlock!,
-      question: this.question,
-      answer: this.answer,
-      studyCnt: this.studyCnt,
+      question: question!,
+      answer: answer!,
+      studyCnt: studyCnt!,
+      review: review,
     );
   }
 }
