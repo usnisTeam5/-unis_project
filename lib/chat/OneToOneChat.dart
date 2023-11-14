@@ -58,7 +58,7 @@ class _OneToOneChatScreenState extends StatelessWidget {
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
 
-          final viewModel = Provider.of<OneToOneChatViewModel>(context, listen: true);
+          // final viewModel = Provider.of<OneToOneChatViewModel>(context, listen: true);
           final nickName = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
           viewModel.getAllMsg(nickName, "abc");
         });
@@ -84,7 +84,7 @@ class _OneToOneChatScreenState extends StatelessWidget {
 
 
         List<String> _image = []; // 이미지
-        //List<Message> _messages = []; // 메시지 저장.
+        // List<Message> _messages = []; // 메시지 저장.
 
 
         int showProfile = 1;
@@ -137,18 +137,18 @@ class _OneToOneChatScreenState extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           mainAxisAlignment: message.nickname ==
-                              viewModel.nickname1
+                              viewModel.myNickname
                               ? MainAxisAlignment.end
                               : MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (message.nickname != viewModel.nickname1 &&
+                            if (message.nickname != viewModel.myNickname &&
                                 shouldDisplayHeader)
                               Column(
                                 children: [
                                   CircleAvatar(
                                     backgroundImage: NetworkImage(
-                                        message.nickname == viewModel.nickname2
+                                        message.nickname == viewModel.friendNickname
                                             ? viewModel.profileImage : message.profileImage),
                                     radius: 15,
                                   ),
@@ -159,11 +159,11 @@ class _OneToOneChatScreenState extends StatelessWidget {
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: message.nickname ==
-                                    viewModel.nickname1
+                                    viewModel.myNickname
                                     ? CrossAxisAlignment.end
                                     : CrossAxisAlignment.start,
                                 children: [
-                                  if (message.nickname != viewModel.nickname1 &&
+                                  if (message.nickname != viewModel.myNickname &&
                                       shouldDisplayHeader)
                                     Padding(
                                       padding: const EdgeInsets.only(
@@ -177,12 +177,12 @@ class _OneToOneChatScreenState extends StatelessWidget {
                                       ),
                                     ),
                                   Row(
-                                    mainAxisAlignment: viewModel.nickname1 ==
-                                        viewModel.nickname1
+                                    mainAxisAlignment: viewModel.myNickname ==
+                                        viewModel.myNickname
                                         ? MainAxisAlignment.end
                                         : MainAxisAlignment.start,
                                     children: [
-                                      if (viewModel.nickname1 == viewModel.nickname1)
+                                      if (viewModel.myNickname == viewModel.myNickname)
                                         Padding(
                                           padding: const EdgeInsets.only(
                                               right: 8.0, top: 20.0),
@@ -206,19 +206,19 @@ class _OneToOneChatScreenState extends StatelessWidget {
                                               .width * 0.6,
                                         ),
                                         margin: EdgeInsets.only(
-                                          left: viewModel.nickname1 ==
-                                              viewModel.nickname1
+                                          left: viewModel.myNickname ==
+                                              viewModel.myNickname
                                               ? 0
                                               : (shouldDisplayHeader
                                               ? (showProfile == 1 ? 8.0 : 4.0)
                                               : (showProfile == 0 ? 0 : 39.0)),
-                                          top: viewModel.nickname1 ==
-                                              viewModel.nickname1 ? 0 : 0,
+                                          top: viewModel.myNickname ==
+                                              viewModel.myNickname ? 0 : 0,
                                         ),
                                         padding: const EdgeInsets.all(8.0),
                                         decoration: BoxDecoration(
-                                          color: viewModel.nickname1 ==
-                                              viewModel.nickname1
+                                          color: viewModel.myNickname ==
+                                              viewModel.myNickname
                                               ? Colors.lightBlue
                                               : Colors.white,
                                           borderRadius: BorderRadius.circular(
@@ -227,8 +227,8 @@ class _OneToOneChatScreenState extends StatelessWidget {
                                         child: message.type == "text"
                                             ? Text(message.msg,
                                           style: TextStyle(
-                                            color: viewModel.nickname1 ==
-                                                viewModel.nickname1
+                                            color: viewModel.myNickname ==
+                                                viewModel.myNickname
                                                 ? Colors.white
                                                 : Colors.black,
                                             fontFamily: 'Round',),)
@@ -240,7 +240,7 @@ class _OneToOneChatScreenState extends StatelessWidget {
                                         )
                                             : SizedBox(),
                                       ),
-                                      if (message.nickname != viewModel.nickname1)
+                                      if (message.nickname != viewModel.myNickname)
                                         Padding(
                                           padding: const EdgeInsets.only(
                                               left: 8.0, top: 20.0),
