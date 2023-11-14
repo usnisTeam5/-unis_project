@@ -78,20 +78,30 @@ class _UserAgreementScreenState extends State<UserAgreementScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(width * 0.2, height * 0.05),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+                Container(
+                  constraints: BoxConstraints(
+                    minWidth: width * 0.2, // Minimum width of the container
+                    minHeight: height * 0.05, // Minimum height of the container
                   ),
-                  onPressed: null,
-                  child:  Text(
-                    '이전',
-                    style: TextStyle(
-                      //color: Colors.white,
-                      fontFamily: 'Bold',
-                      fontSize: width * 0.04,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16.0),
+                   // gradient: MainGradient(),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                     // minimumSize: Size(width * 0.2, height * 0.05),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    onPressed: null,
+                    child:  Text(
+                      '이전',
+                      style: TextStyle(
+                        //color: Colors.white,
+                        fontFamily: 'Bold',
+                        fontSize: width * 0.04,
+                      ),
                     ),
                   ),
                 ),

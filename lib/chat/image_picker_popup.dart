@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -12,7 +10,7 @@ class ImagePickerPopup extends StatelessWidget {
     Navigator.pop(context); // Close the bottom sheet
     final pickedFile = await ImagePicker().pickImage(source: source);
     if (pickedFile != null) {
-      onImagePicked(pickedFile.path); // 선택한 이미지의 경로를 전달
+      onImagePicked(pickedFile.path);
     }
   }
 
@@ -32,22 +30,6 @@ class ImagePickerPopup extends StatelessWidget {
           onTap: () => _pickImage(ImageSource.camera, context),
         ),
       ],
-    );
-  }
-}
-
-class ImageDisplayWidget extends StatelessWidget {
-  final String imagePath;
-
-  ImageDisplayWidget({required this.imagePath});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Image.file(
-        File(imagePath), // 이미지 경로로부터 이미지를 표시
-        fit: BoxFit.cover,
-      ),
     );
   }
 }

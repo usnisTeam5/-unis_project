@@ -7,7 +7,7 @@ class UserProfileViewModel with ChangeNotifier {
 
   UserProfileInfo get profileInfo => _profileInfo!;
   String get nickName => _profileInfo!.nickName;
-  List<String?> get departments => _profileInfo!.departments;
+  List<String> get departments => _profileInfo!.departments;
   String get introduction => _profileInfo!.introduction;
   List<String> get currentCourses => _profileInfo!.currentCourses;
   List<String> get pastCourses => _profileInfo!.pastCourses;
@@ -17,6 +17,7 @@ class UserProfileViewModel with ChangeNotifier {
   int get answer => _profileInfo!.answer;
   int get studyCnt => _profileInfo!.studyCnt;
   bool get isLoading => _isLoading;
+  double get review => _profileInfo!.review;
 
   Future<void> fetchUserProfile(String nickName) async { // 유저 프로필 정보 가져옴. 실패시에 모델에서 오류 던진 것 받아서 뷰로 던짐
     try {
@@ -68,29 +69,39 @@ class UserProfileViewModel with ChangeNotifier {
     }
   }
 
-  // 과목 설정
-  Future<void> addCourse(CourseDto courseDto) async {
+  Future<void> setCourseAll(CourseAllDto course) async {
     try {
-      await _profileInfo!.setCourse(nickName, courseDto);
-      notifyListeners();
+      await _profileInfo!.setCourseAll(_profileInfo!.nickName, course);
+      // 성공적으로 저장한 경우 다른 작업을 수행할 수 있습니다.
     } catch (e) {
-      // 에러 처리
-      print(e.toString());
+      // 저장 실패 시 예외 처리
+      print('Failed to set course data: $e');
+      rethrow;
     }
   }
-
-  // 과목 삭제
-  Future<void> deleteCourse(CourseDto courseDto) async {
-    try {
-      await _profileInfo!.removeCourse(nickName, courseDto);
-      // 과목 목록에서 삭제된 과목 제거
-      //courses.removeWhere((course) => courseDto.courses.contains(course));
-      notifyListeners();
-    } catch (e) {
-      // 에러 처리
-      print(e.toString());
-    }
-  }
+  // // 과목 설정
+  // Future<void> addCourse(CourseDto courseDto) async {
+  //   try {
+  //     await _profileInfo!.setCourse(nickName, courseDto);
+  //     notifyListeners();
+  //   } catch (e) {
+  //     // 에러 처리
+  //     print(e.toString());
+  //   }
+  // }
+  //
+  // // 과목 삭제
+  // Future<void> deleteCourse(CourseDto courseDto) async {
+  //   try {
+  //     await _profileInfo!.removeCourse(nickName, courseDto);
+  //     // 과목 목록에서 삭제된 과목 제거
+  //     //courses.removeWhere((course) => courseDto.courses.contains(course));
+  //     notifyListeners();
+  //   } catch (e) {
+  //     // 에러 처리
+  //     print(e.toString());
+  //   }
+  // }
 // 필요한 다른 메서드들을 여기에 추가하세요 (예: 프로필 정보 변경, 포인트 증가 등)
 }
 

@@ -22,21 +22,22 @@ class UserProfileOtherViewModel extends ChangeNotifier {
   //   notifyListeners();
   // }
 
-  UserProfileInfoForShow? _profileInfo; // _profileInfo를 null로 초기화
+  UserProfileInfoForShow? _profileInfo = UserProfileInfoForShow.defaultValues(); // _profileInfo를 null로 초기화
   bool _isLoading = false;
   bool _isPick = false; // 초기값으로 false 설정
 
-  UserProfileInfoForShow? get profileInfo => _profileInfo;
-  String get nickname => _profileInfo!.nickname;
-  List<String?> get departments => _profileInfo!.departments;
-  String get introduction => _profileInfo!.introduction;
-  String get profileImage => _profileInfo!.profileImage;
-  bool get isPick => _profileInfo!.isPick;
-  bool get isFriend => _profileInfo!.isFriend;
-  bool get isBlock => _profileInfo!.isBlock;
-  int get question => _profileInfo!.question;
-  int get answer => _profileInfo!.answer;
-  int get studyCnt => _profileInfo!.studyCnt;
+
+  UserProfileInfoForShow? get profileInfo => _profileInfo ;
+  String get nickname => _profileInfo!.nickname ?? "정보없음";
+  List<String> get departments => _profileInfo!.departments;
+  String get introduction => _profileInfo!.introduction ?? "정보없음";
+  String get profileImage => _profileInfo!.profileImage ?? 'image/unis.png';
+  bool get isPick => _profileInfo!.isPick ?? true;
+  bool get isFriend => _profileInfo!.isFriend ?? false;
+  bool get isBlock => _profileInfo!.isBlock ?? false;
+  int get question => _profileInfo!.question ?? 1;
+  int get answer => _profileInfo!.answer ?? 2;
+  int get studyCnt => _profileInfo!.studyCnt ?? 3;
   bool get isLoading => _isLoading;
 
 
@@ -45,7 +46,7 @@ class UserProfileOtherViewModel extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      // _profileInfo를 UserProfileInfoForShow 클래스의 인스턴스로 초기화
+      // _profileInfo를 UserProfileInfoForShow 클래스의 인스턴스로 초기
       _profileInfo = await UserProfileInfoForShow.fetchUserProfile(userNickname, friendNickname);
       _myNickname = userNickname;
       _isLoading = false;
@@ -59,7 +60,7 @@ class UserProfileOtherViewModel extends ChangeNotifier {
   }
 
 
-  Future<void> setPick(String nickname, String otherNickname) async { // 찜/
+  Future<void> setPick(String nickname, String otherNickname) async { // 찜
     try {
       var response = await UserProfileInfoForShow.setPick(nickname, otherNickname);
       if (response == "ok") {

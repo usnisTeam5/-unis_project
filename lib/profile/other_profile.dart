@@ -1,7 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +10,6 @@ import 'dart:math';
 
 import 'package:provider/provider.dart';
 import '../view_model/other_profile_view_model.dart';
-import '../models/other_profile_model.dart';
 
 void main() {
   runApp(const OthersProfile());
@@ -24,7 +20,6 @@ class OthersProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ;
     return MaterialApp(
       home: OthersProfilePage(),
       theme: ThemeData(
@@ -34,99 +29,118 @@ class OthersProfile extends StatelessWidget {
   }
 }
 
+// class OthersProfilePage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return ChangeNotifierProvider(
+//         create: (_) => UserProfileOtherViewModel(),
+//         builder: (context, child) {
+//           return OthersProfilePage1();
+//         });
+//   }
+// }
+
+
+// class OthersProfilePage extends StatefulWidget {
+//   @override
+//   _OthersProfilePageState createState() => _OthersProfilePageState();
+// }
+
 class OthersProfilePage extends StatelessWidget {
   @override
+  int count =0;
   Widget build(BuildContext context) {
     final width = min(MediaQuery.of(context).size.width, 500.0);
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: MainGradient(),
-            ),
-            height: 2.0,
-          ),
-        ),
-        title: GradientText(
-            width: width, text: '프로필', tSize: 0.06, tStyle: 'Bold'),
-        leading: IconButton(
-          icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: ChangeNotifierProvider(
+    //final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen: true);
+    //if(view.myNickname == null) return Center(child: CircularProgressIndicator());
+    return ChangeNotifierProvider(
         create: (_) => UserProfileOtherViewModel(),
         builder: (context, child) {
-          Future.delayed(Duration.zero, () {
-            String nickName = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
-            Provider.of<UserProfileOtherViewModel>(context, listen: false).fetchUserProfile(nickName, "별뚜기"); // **추가
+
+          WidgetsBinding.instance.addPostFrameCallback((_) { // 나중에 호출됨.
+            // context를 사용하여 UserProfileViewModel에 접근
+            final nickName = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
+            // 다른 비동기 작업 실행
+            Provider.of<UserProfileOtherViewModel>(context, listen: false)
+                .fetchUserProfile(nickName, "abc"); // **
           });
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                OthersProfileInfoSection(),
-                StatsSection(),
-                SatisfactionAndReportSection(),
-              ],
+
+      return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.white,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(1.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: MainGradient(),
+                ),
+                height: 2.0,
+              ),
             ),
-          );
-        },
-      ),
+            title: GradientText(
+                width: width, text: '프로필', tSize: 0.06, tStyle: 'Bold'),
+            leading: IconButton(
+              icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          body:  Consumer<UserProfileOtherViewModel>(
+              builder: (context, viewModel, child) {
+                if (viewModel.isLoading && count ==0) { // 처음만 로딩 걸리게. 안걸리면 에러남.
+                  //print(viewModel.isLoading);
+                  count ++;
+                  return Center(child: CircularProgressIndicator());
+                }
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    OthersProfileInfoSection(),
+                    StatsSection(),
+                    SatisfactionAndReportSection(),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      }
     );
   }
 }
 
 class OthersProfileInfoSection extends StatefulWidget {
 //  final String profileImage;
-
-  const OthersProfileInfoSection({super.key,});
-
+  const OthersProfileInfoSection({
+    super.key,
+  });
   @override
-  _OthersProfileInfoSectionState createState() => _OthersProfileInfoSectionState();
+  _OthersProfileInfoSectionState createState() =>
+      _OthersProfileInfoSectionState();
 }
 
+
 class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
-  bool _isFavoriteSelected = false;
-  bool _isPersonAddSelected = false;
-  bool _isPersonOffSelected = false;
 
   XFile? _image; //이미지를 담을 변수 선언
-  final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, ()
-    {
-      final viewModel = Provider.of<UserProfileOtherViewModel>(
-          context, listen: false);
-      _image = XFile(viewModel.profileImage);
-      //_introductionController = TextEditingController(text: viewModel.introduction);
-    });
-  }
+  int buildCount = 0;
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen:false);
+    // if(buildCount == 0){
+    //   buildCount++;
+    //   return Container();
+    // }
+    final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen: true);
 
-      return _buildWithImage();
-  }
-
-  Widget _buildWithImage() {
-    final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen:false);
-
-    //Uint8List? decodedImage;
+    _image = XFile(viewModel.profileImage);
+    //print("\ntqt@@@@@@@@@@@@@qt${_image!.path}\n");
 
     final width = min(MediaQuery.of(context).size.width, 500.0);
-    final height = min(MediaQuery.of(context).size.height, 700.0);
+    //final height = min(MediaQuery.of(context).size.height, 700.0);
 
     return Container(
       padding: EdgeInsets.only(left: 30.0, top: 30.0, bottom: 30.0),
@@ -142,7 +156,8 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
               CircleAvatar(
                 radius: 50.0,
                 //backgroundImage:
-                backgroundImage: FileImage(File(_image!.path)),
+                backgroundImage:
+                    FileImage(File(_image!.path)),
               ),
               SizedBox(width: width * 0.05),
               Column(
@@ -222,11 +237,10 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => OneToOneChatScreen(
-                                        nickname1: viewModel.myNickname,
-                                        // 1 나
-                                        nickname2: viewModel.nickname,
-                                        // 2 상대
-                                        profileImage2: viewModel.profileImage),
+                                        // nickname1: viewModel.myNickname, // 1 나
+                                        // nickname2: viewModel.nickname, // 2 상대
+                                        // receiverProfile: viewModel.profileImage),
+                                  ),
                                   ),
                                 );
                               },
@@ -289,8 +303,8 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                                     : Colors.grey,
                               ),
                               onPressed: () async {
-                                await viewModel.setBlock(viewModel.myNickname,
-                                    viewModel.nickname);
+                                await viewModel.setBlock(
+                                    viewModel.myNickname, viewModel.nickname);
                                 // 차단 상태가 변경되면 다른 상태들도 업데이트
                                 if (viewModel.isBlock) {
                                   viewModel.resetOtherStates();
@@ -441,7 +455,8 @@ class StatsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = min(MediaQuery.of(context).size.width, 500.0);
-    final viewModel = Provider.of<UserProfileViewModel>(context,listen: false);
+    final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen: false);
+    print("dfdfdfd${viewModel.question}");
 
     return Container(
       padding: EdgeInsets.all(16.0),

@@ -8,17 +8,30 @@ import '../view_model/other_profile_view_model.dart';
 
 class UserProfileInfoForShow {
 
-  final String nickname;
-  List<String?> departments;
-  String introduction;
-  String profileImage;
-  bool isPick;
-  bool isFriend;
-  bool isBlock;
-  int question;
-  int answer;
-  int studyCnt;
-  double review;
+  String nickname = "안녕";
+  List<String> departments = ["없음"];
+  String introduction = "";
+  String profileImage = 'image/unis.png';
+  bool isPick = false;
+  bool isFriend = false;
+  bool isBlock = false;
+  int question = 0;
+  int answer = 0;
+  int studyCnt = 0;
+  double review = 0.0;
+
+  UserProfileInfoForShow.defaultValues() :
+        nickname = '',
+        departments = ["안녕"],
+        introduction = '',
+        profileImage = 'image/unis.png',
+        isPick = false,
+        isFriend = false,
+        isBlock = false,
+        question = 0,
+        answer = 0,
+        studyCnt = 0,
+        review = 0.0;
 
   UserProfileInfoForShow({
     required this.nickname,
@@ -37,7 +50,7 @@ class UserProfileInfoForShow {
   factory UserProfileInfoForShow.fromJson(Map<String, dynamic> json) {
     return UserProfileInfoForShow(
       nickname: json['nickname'],
-      departments: List<String?>.from(json['departments'] ?? []),
+      departments: List<String>.from(json['departments'] ?? []),
       introduction: json['introduction'] ?? '',
       profileImage: json['profileImage'] ?? 'image/unis.png',
       isPick: json['isPick'],
@@ -60,7 +73,6 @@ class UserProfileInfoForShow {
       'isPick': isPick,
       'isBlock': isBlock,
       'isFriend': isFriend,
-      'profileImage': profileImage,
       'question': question,
       'answer': answer,
       'studyCnt': studyCnt,
@@ -76,7 +88,7 @@ class UserProfileInfoForShow {
       final response = await http.get(Uri.parse(endpoint));
       if (response.statusCode == 200) {
         final Map<String, dynamic> data =jsonDecode(utf8.decode(response.bodyBytes));
-        print("data입니다:$data");
+        //print("data입니다:$data");
         // 이미지 처리 base64 string으로 받아서 임시 파일에 profile_image.png로 저장 후 경로 반환.
         if (data['profileImage'] != null) {
           final bytes = base64Decode(data['profileImage']);
@@ -84,6 +96,9 @@ class UserProfileInfoForShow {
           //final imageExtension = path.extension(data['profileImage']).replaceAll('.', '');
           // 이미지 파일을 생성하고 원본 확장자를 사용하여 파일명 설정
           final file = File('${directory.path}/$friendNickname${path.extension(data['profileImage'])}');
+          if (file.existsSync()) {
+            file.deleteSync();
+          }
           // 파일에 바이트 데이터를 씀
           file.writeAsBytesSync(bytes);
           // 파일 경로 반환
@@ -91,12 +106,12 @@ class UserProfileInfoForShow {
         }
 
         //data['nickName'] = nickname; // 서버 응답에 없는 닉네임을 추가
-        if (data['departments'][1] == null) {
-          data['departments'].removeLast();
-          print(data['departments']);
-        }
+        // if (data['departments'][1] == null) {
+        //   data['departments'].removeLast();
+        //   print(data['departments']);
+        // }
         final temp = UserProfileInfoForShow.fromJson(data);
-        //print(temp.toJson());
+        print("친구정보 패치 ${temp.toJson()}");
 
         return temp;
       } else {
@@ -164,10 +179,10 @@ class UserProfileInfoForShow {
       isPick: isPick!,
       isFriend: isFriend!,
       isBlock: isBlock!,
-      question: question!,
-      answer: answer!,
-      studyCnt: studyCnt!,
-      review: review,
+      question: this.question,
+      answer: this.answer,
+      studyCnt: this.studyCnt,
+      review: this.review,
     );
   }
 }
