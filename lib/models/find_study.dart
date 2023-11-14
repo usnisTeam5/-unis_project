@@ -157,7 +157,7 @@ class StudyService {
   Future<String> makeStudyRoom(StudyMakeDto info) async { // 스터디 생성.
     final response = await http.post(
       Uri.parse('$BASE_URL/study/make'),
-      body: json.encode(info.toJson()),
+      //body: json.encode(info.toJson()),
       headers: {'Content-Type': 'application/json'},
     );
 

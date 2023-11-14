@@ -26,6 +26,7 @@ class UserProfileOtherViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool _isPick = false; // 초기값으로 false 설정
 
+
   UserProfileInfoForShow? get profileInfo => _profileInfo ;
   String get nickname => _profileInfo!.nickname ?? "정보없음";
   List<String> get departments => _profileInfo!.departments;
@@ -45,7 +46,7 @@ class UserProfileOtherViewModel extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      // _profileInfo를 UserProfileInfoForShow 클래스의 인스턴스로 초기화
+      // _profileInfo를 UserProfileInfoForShow 클래스의 인스턴스로 초기
       _profileInfo = await UserProfileInfoForShow.fetchUserProfile(userNickname, friendNickname);
       _myNickname = userNickname;
       _isLoading = false;
@@ -59,7 +60,7 @@ class UserProfileOtherViewModel extends ChangeNotifier {
   }
 
 
-  Future<void> setPick(String nickname, String otherNickname) async { // 찜/
+  Future<void> setPick(String nickname, String otherNickname) async { // 찜
     try {
       var response = await UserProfileInfoForShow.setPick(nickname, otherNickname);
       if (response == "ok") {

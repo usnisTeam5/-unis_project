@@ -56,12 +56,13 @@ class OthersProfilePage extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (_) => UserProfileOtherViewModel(),
         builder: (context, child) {
+
           WidgetsBinding.instance.addPostFrameCallback((_) { // 나중에 호출됨.
             // context를 사용하여 UserProfileViewModel에 접근
             final nickName = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
             // 다른 비동기 작업 실행
             Provider.of<UserProfileOtherViewModel>(context, listen: false)
-                .fetchUserProfile(nickName, "별뚜기");
+                .fetchUserProfile(nickName, "abc"); // **
           });
 
       return Scaffold(
@@ -235,9 +236,10 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => OneToOneChatScreen(
-                                        nickname1: viewModel.myNickname, // 1 나
-                                        nickname2: viewModel.nickname, // 2 상대
-                                        profileImage2: viewModel.profileImage),
+                                        // nickname1: viewModel.myNickname, // 1 나
+                                        // nickname2: viewModel.nickname, // 2 상대
+                                        // receiverProfile: viewModel.profileImage),
+                                  ),
                                   ),
                                 );
                               },

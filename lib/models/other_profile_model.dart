@@ -168,11 +168,11 @@ class UserProfileInfoForShow {
     bool? isBlock,
   }) {
     return UserProfileInfoForShow(
-      nickname: this.nickname,
-      departments: this.departments,
-      introduction: this.introduction,
-      profileImage: this.profileImage,
-      isPick: isPick ?? this.isPick,
+      nickname: nickname!,
+      departments: departments!,
+      introduction: introduction!,
+      profileImage: profileImage!,
+      isPick: isPick!,
       isFriend: isFriend!,
       isBlock: isBlock!,
       question: this.question,

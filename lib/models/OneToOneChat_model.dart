@@ -19,6 +19,14 @@ class MsgDto {
   final String image;
   final String time;
 
+  MsgDto.defaultValues() :
+        nickname = '',
+        profileImage = 'image/unis.png',
+        type = '',
+        msg = '',
+        image = '',
+        time = '';
+
   MsgDto({
     required this.nickname,
     required this.profileImage,
@@ -45,6 +53,11 @@ class MsgDto {
   }
 }
 
+
+
+
+
+
 class SendMsgDto {
   final String sender;
   final String receiver;
@@ -52,6 +65,14 @@ class SendMsgDto {
   final String msg;
   final String img;
   final String time;
+
+  SendMsgDto.defaultValues() :
+        sender = '',
+        receiver = '',
+        type = '',
+        msg = '',
+        img = '',
+        time = '';
 
   SendMsgDto({
     required this.sender,
@@ -74,9 +95,16 @@ class SendMsgDto {
   }
 }
 
+
+
+
 class ChatMemberDto {
   final String nickname1;
   final String nickname2;
+
+  ChatMemberDto.defaultValues() :
+        nickname1 = '',
+        nickname2 = '';
 
   ChatMemberDto({
     required this.nickname1,
@@ -93,40 +121,47 @@ class ChatMemberDto {
 
 
 
+
+
 class OneToOneChatModel {
 
-  Future<List<MsgDto>> getAllMessages(String nickname1, String nickname2) async {
+
+
+
+  static Future<List<MsgDto>> getAllMsg(String myNickname, String friendNickname) async {
     final response = await http.get(
-      Uri.parse('http://3.35.21.123:8080/chat?nickname1=$nickname1&nickname2=$nickname2'),
-    ); //nickname1이 유저 닉네임, nickname2가 상대방 닉네임
+      Uri.parse('/chat?nickname1=$myNickname&nickname2=$friendNickname'),
+    );
 
     if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
+      final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
       final List<MsgDto> messages = data.map((item) {
         return MsgDto.fromJson(item);
       }).toList();
-
-      return messages;
+      return messages; // 메시지 목록 반환
     } else {
       throw Exception('Failed to load messages');
     }
   }
 
-  Future<void> sendMessage(String sender, String receiver, String type, String msg, String img, String time) async {
+
+
+
+
+
+  static Future<void> sendMsg(String sender, String receiver, String sendtype, String sendmsg, String img, String sendtime) async { // 메세지 보내기
     final SendMsgDto sendMsg = SendMsgDto(
       sender: sender,
       receiver: receiver,
-      type: type,
-      msg: msg,
+      type: sendtype,
+      msg: sendmsg,
       img: img,
-      time: time,
+      time: sendtime,
     );
 
-    final response = await http.post(
-      Uri.parse('http://3.35.21.123:8080/chat/sendMsg'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    final url = Uri.parse('/chat/sendMsg');
+    final response = await http.post(url,
+      headers: {'Content-Type': 'application/json',},
       body: json.encode(sendMsg.toJson()),
     );
 
@@ -135,9 +170,12 @@ class OneToOneChatModel {
     }
   }
 
-  Future<List<MsgDto>> getChatMessages(String nickname1, String nickname2) async {
+
+
+
+  static Future<List<MsgDto>> getMsg(String myNickname, String friendNickname) async { // 메세지 받아오기, MsgDto
     final response = await http.get(
-      Uri.parse('http://3.35.21.123:8080/chat/getMsg?nickname1=$nickname1&nickname2=$nickname2'),
+      Uri.parse('/chat/getMsg?nickname1=$myNickname&nickname2=$friendNickname'),
     );
 
     if (response.statusCode == 200) {
@@ -152,17 +190,18 @@ class OneToOneChatModel {
     }
   }
 
-  Future<void> leaveChat(String nickname1, String nickname2) async {
+
+
+
+  static Future<void> outChat(String myNickname, String friendNickname) async { // 채팅방 나가기, ChatMemberDto
     final ChatMemberDto chatMember = ChatMemberDto(
-      nickname1: nickname1,
-      nickname2: nickname2,
+      nickname1: myNickname,
+      nickname2: friendNickname,
     );
 
-    final response = await http.post(
-      Uri.parse('http://3.35.21.123:8080/chat/outChat'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    final url = Uri.parse('/chat/outChat');
+    final response = await http.post(url,
+      headers: {'Content-Type': 'application/json',},
       body: json.encode(chatMember.toJson()),
     );
 
@@ -170,4 +209,6 @@ class OneToOneChatModel {
       throw Exception('Failed to leave chat');
     }
   }
+
+
 }
