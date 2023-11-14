@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import '../models/user_profile_info.dart';  // UserProfileInfo 클래스의 경로를 넣어주세요
 
@@ -11,7 +13,7 @@ class UserProfileViewModel with ChangeNotifier {
   String get introduction => _profileInfo!.introduction;
   List<String> get currentCourses => _profileInfo!.currentCourses;
   List<String> get pastCourses => _profileInfo!.pastCourses;
-  String get profileImage => _profileInfo!.profileImage;
+  Uint8List get profileImage => _profileInfo!.profileImage;
   int get point => _profileInfo!.point;
   int get question => _profileInfo!.question;
   int get answer => _profileInfo!.answer;
@@ -36,7 +38,7 @@ class UserProfileViewModel with ChangeNotifier {
   }
 
   // 모델 클래스의 함수를 활용하여 프로필 이미지 업데이트
-  Future<void> updateProfileImage(String imagePath) async {
+  Future<void> updateProfileImage(Uint8List imagePath) async {
     await _profileInfo!.setImage(_profileInfo!.nickName, imagePath); // 모델 클래스의 setImage 함수 활용
     notifyListeners();
   }

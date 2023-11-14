@@ -1,4 +1,34 @@
 import 'package:flutter/material.dart';
+
+//WidgetsBinding.instance.addPostFrameCallback((_) { // 나중에 호출됨.
+//             // context를 사용하여 UserProfileViewModel에 접근
+//             final nickName = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
+//             // 다른 비동기 작업 실행
+//             Provider.of<UserProfileOtherViewModel>(context, listen: false)
+//                 .fetchUserProfile(nickName, "별뚜기");
+//           });
+
+// Consumer<UserProfileOtherViewModel>( // consumer 사용법.
+//               builder: (context, viewModel, child) {
+//                 if (viewModel.isLoading && count ==0) { // 처음만 로딩 걸리게. 여기서 isLoading은
+//                   //print(viewModel.isLoading);
+//                   count ++;
+//                   return Center(child: CircularProgressIndicator());
+//                 }
+//               return SingleChildScrollView(
+//                 child: Column(
+//                   children: [
+//                     OthersProfileInfoSection(),
+//                     StatsSection(),
+//                     SatisfactionAndReportSection(),
+//                   ],
+//                 ),
+//               );
+//             },
+//           ),
+
+
+
 // body: ChangeNotifierProvider(
 //         create: () => ,
 //           builder: (context, child) {

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'url.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -11,7 +13,7 @@ class UserProfileInfoForShow {
   String nickname = "안녕";
   List<String> departments = ["없음"];
   String introduction = "";
-  String profileImage = 'image/unis.png';
+  Uint8List profileImage = File('image/unis.png').readAsBytesSync();
   bool isPick = false;
   bool isFriend = false;
   bool isBlock = false;
@@ -24,7 +26,7 @@ class UserProfileInfoForShow {
         nickname = '',
         departments = ["안녕"],
         introduction = '',
-        profileImage = 'image/unis.png',
+        profileImage = File('image/unis.png').readAsBytesSync(),
         isPick = false,
         isFriend = false,
         isBlock = false,
@@ -52,7 +54,7 @@ class UserProfileInfoForShow {
       nickname: json['nickname'],
       departments: List<String>.from(json['departments'] ?? []),
       introduction: json['introduction'] ?? '',
-      profileImage: json['profileImage'] ?? 'image/unis.png',
+      profileImage: json['profileImage'] ?? File('image/unis.png').readAsBytesSync(),
       isPick: json['isPick'],
       isFriend: json['isFriend'],
       isBlock: json['isBlock'],
@@ -92,18 +94,12 @@ class UserProfileInfoForShow {
         // 이미지 처리 base64 string으로 받아서 임시 파일에 profile_image.png로 저장 후 경로 반환.
         if (data['profileImage'] != null) {
           final bytes = base64Decode(data['profileImage']);
-          final directory = await getApplicationDocumentsDirectory();
-          //final imageExtension = path.extension(data['profileImage']).replaceAll('.', '');
-          // 이미지 파일을 생성하고 원본 확장자를 사용하여 파일명 설정
-          final file = File('${directory.path}/$friendNickname${path.extension(data['profileImage'])}');
-          if (file.existsSync()) {
-            file.deleteSync();
-          }
-          // 파일에 바이트 데이터를 씀
-          file.writeAsBytesSync(bytes);
-          // 파일 경로 반환
-          data['profileImage'] = file.path;     //
+
+          data['profileImage'] = bytes; //
+        } else{
+          data['profileImage'] = File('image/unis.png').readAsBytesSync();
         }
+
 
         //data['nickName'] = nickname; // 서버 응답에 없는 닉네임을 추가
         // if (data['departments'][1] == null) {

@@ -89,7 +89,7 @@ class OthersProfilePage extends StatelessWidget {
           ),
           body:  Consumer<UserProfileOtherViewModel>(
               builder: (context, viewModel, child) {
-                if (viewModel.isLoading && count ==0) { // 처음만 로딩 걸리게. 안걸리면 에러남.
+                if (viewModel.isLoading && count ==0) { // 처음만 로딩 걸리게. 여기서 isLoading은
                   //print(viewModel.isLoading);
                   count ++;
                   return Center(child: CircularProgressIndicator());
@@ -124,7 +124,7 @@ class OthersProfileInfoSection extends StatefulWidget {
 
 class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
 
-  XFile? _image; //이미지를 담을 변수 선언
+  Uint8List? _image;//이미지를 담을 변수 선언
   int buildCount = 0;
 
   @override
@@ -135,7 +135,7 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
     // }
     final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen: true);
 
-    _image = XFile(viewModel.profileImage);
+    _image = viewModel.profileImage;
     //print("\ntqt@@@@@@@@@@@@@qt${_image!.path}\n");
 
     final width = min(MediaQuery.of(context).size.width, 500.0);
@@ -155,8 +155,7 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
               CircleAvatar(
                 radius: 50.0,
                 //backgroundImage:
-                backgroundImage:
-                    FileImage(File(_image!.path)),
+                backgroundImage: MemoryImage(_image!),
               ),
               SizedBox(width: width * 0.05),
               Column(
