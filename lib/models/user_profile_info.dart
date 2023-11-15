@@ -149,7 +149,7 @@ class UserProfileInfo {
         data['nickName'] = nickname; // 서버 응답에 없는 닉네임을 추가
 
         final temp = UserProfileInfo.fromJson(data);
-        print(" 유저정보 패치 ${temp.toJson()}");
+        //print(" 유저정보 패치 ${temp.toJson()}");
         return temp;
       } else {
         throw Exception('Failed to load user profile'); //

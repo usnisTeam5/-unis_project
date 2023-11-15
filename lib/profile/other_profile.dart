@@ -62,7 +62,7 @@ class OthersProfilePage extends StatelessWidget {
             final nickName = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
             // 다른 비동기 작업 실행
             Provider.of<UserProfileOtherViewModel>(context, listen: false)
-                .fetchUserProfile(nickName, "abc"); // **
+                .fetchUserProfile(nickName, "별뚜기"); // **
           });
 
       return Scaffold(
@@ -236,9 +236,7 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => OneToOneChatScreen(
-                                        // nickname1: viewModel.myNickname, // 1 나
-                                        // nickname2: viewModel.nickname, // 2 상대
-                                        // receiverProfile: viewModel.profileImage),
+                                        friendName: viewModel.nickname, // 2 상대
                                   ),
                                   ),
                                 );

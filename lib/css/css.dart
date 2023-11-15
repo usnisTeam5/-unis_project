@@ -1,4 +1,20 @@
 import 'package:flutter/material.dart';
+//*********************************************************************
+ // File('image/unis.png').readAsBytesSync(),
+//   final bytes = base64Decode(data['profileImage']); // base64 디코드.
+//
+//           data['profileImage'] = bytes; // byte로 저장.
+//         } else{
+//           data['profileImage'] = File('image/unis.png').readAsBytesSync();
+// 위에는 모델 ****************************************************************
+//Uint8List? _image; //이미지를 담을 변수 선언
+//  child: CircleAvatar(
+//                   radius: 50.0,
+//                   backgroundImage: MemoryImage(_image!),
+//                 ),
+// 뷰~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
 
 //WidgetsBinding.instance.addPostFrameCallback((_) { // 나중에 호출됨.
 //             // context를 사용하여 UserProfileViewModel에 접근

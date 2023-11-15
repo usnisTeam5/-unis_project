@@ -51,10 +51,10 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
   final TextEditingController _messageController = TextEditingController();
   List<Message> _messages = [];
 
-  void _onImagePicked(String imagePath) {
+  void _onImagePicked(XFile? imagePath) {
     setState(() {
       _messages.add(Message(
-        imagePath: imagePath,
+        imagePath: imagePath!.path,
         sender: 'YourName',
         isMine: true,
         senderImageURL: "your_image_url",

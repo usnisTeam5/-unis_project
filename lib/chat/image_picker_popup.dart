@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImagePickerPopup extends StatelessWidget {
-  final Function(String) onImagePicked;
+  final Function(XFile?) onImagePicked;
 
   ImagePickerPopup({required this.onImagePicked});
 
@@ -10,7 +10,7 @@ class ImagePickerPopup extends StatelessWidget {
     Navigator.pop(context); // Close the bottom sheet
     final pickedFile = await ImagePicker().pickImage(source: source);
     if (pickedFile != null) {
-      onImagePicked(pickedFile.path);
+      onImagePicked(pickedFile);
     }
   }
 
