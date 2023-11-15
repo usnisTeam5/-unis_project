@@ -75,7 +75,7 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
               chatModel.getAllMsg(
                   myNickname, friendNickname); // 별뚜기는 상대방 닉네임. 아마 별뚜기 될거임.
 
-              //chatModel.getMsg(myNickname, friendNickname);
+              chatModel.getMsg(myNickname, friendNickname);
 
             }
             _scrollToBottom();

@@ -135,7 +135,7 @@ class OneToOneChatModel {
 
 
   static Future<List<MsgDto>> getAllMsg(String myNickname, String friendNickname) async { // 이전에 있었던 모든 메시지를 받아옴.
-    print("111");
+    //print("111");
     final response = await http.get(
       Uri.parse('$BASE_URL/chat?nickname1=$myNickname&nickname2=$friendNickname'),
     );
@@ -143,7 +143,7 @@ class OneToOneChatModel {
 
       final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
 
-      print("getAllMsg $data");
+      //print("getAllMsg $data");
       final List<MsgDto> messages = data.map((item) {
         return MsgDto.fromJson(item);
       }).toList();
@@ -189,27 +189,30 @@ class OneToOneChatModel {
 
 
   static Future<List<MsgDto>> getMsg(String myNickname, String friendNickname) async { // 메세지 받아오기, MsgDto
-    final response = await http.get(
-      Uri.parse('$BASE_URL/chat/getMsg?nickname1=$myNickname&nickname2=$friendNickname'),
-    );
-
-    if (response.statusCode == 200) {
-
-        //await Future.delayed(const Duration(milliseconds: 5000));
+    while(true) {
+      final response = await http.get(
+        Uri.parse(
+            '$BASE_URL/chat/getMsg?nickname1=$myNickname&nickname2=$friendNickname'),
+      );
+      //print(response.body);
+      if (response.statusCode == 200) {
+        await Future.delayed(const Duration(milliseconds: 300));
         final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
-        // if (data.isEmpty) {
-        //   //continue;
-        // }
-         //print("getMsg ${data}");
-        final List<MsgDto> messages = data.map((item) {
+        print("getMsewrwerwerg ${data}");
+        if (data.isEmpty) {
+          continue;
+        }
+        print("getMsg ${data}");
+        final List<MsgDto> messages = data.map((item) { //
           return MsgDto.fromJson(item);
         }).toList();
         return messages;
-    } else {
-      throw Exception('Failed to load chat messages');
+      }
+      else {
+        throw Exception('Failed to load chat messages');
+      }
     }
-  }
-
+  }//
 
 
 

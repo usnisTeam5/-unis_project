@@ -99,7 +99,7 @@ class OneToOneChatViewModel extends ChangeNotifier {
     try {
       //print("sendMsgview $img");
       await OneToOneChatModel.sendMsg(sender, receiver, type, msg, img, time);
-        await getMsg(sender, receiver);
+        //await getMsg(sender, receiver);
         notifyListeners();
     } catch (e) {
       print('Error sending message: $e');
@@ -109,14 +109,17 @@ class OneToOneChatViewModel extends ChangeNotifier {
 
   Future<void> getMsg(String myNickname, String friendNickname) async {
     try {
-
+      while(true) {
+        print("objecsdfsdfsdft");
+        //await Future.delayed(Duration(milliseconds: 500));
         notifyListeners();
         List<MsgDto> temp = await OneToOneChatModel.getMsg(
             myNickname, friendNickname);
-       // print("getMsg ${temp[0]}");
+        // print("getMsg ${temp[0]}");
         messages.addAll(temp); // message에  추가함.
         //_isLoading = false;
         notifyListeners();
+      }
       //}
     } catch (e) { // 에러나도 상관 x
       print("GET MSG 에러");
