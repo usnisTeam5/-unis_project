@@ -189,7 +189,6 @@ class OneToOneChatModel {
 
 
   static Future<List<MsgDto>> getMsg(String myNickname, String friendNickname) async { // 메세지 받아오기, MsgDto
-    while(true) {
       final response = await http.get(
         Uri.parse(
             '$BASE_URL/chat/getMsg?nickname1=$myNickname&nickname2=$friendNickname'),
@@ -200,7 +199,7 @@ class OneToOneChatModel {
         final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
         print("getMsewrwerwerg ${data}");
         if (data.isEmpty) {
-          continue;
+          return [];
         }
         print("getMsg ${data}");
         final List<MsgDto> messages = data.map((item) { //
@@ -211,7 +210,6 @@ class OneToOneChatModel {
       else {
         throw Exception('Failed to load chat messages');
       }
-    }
   }//
 
 

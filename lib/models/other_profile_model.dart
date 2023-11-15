@@ -13,7 +13,7 @@ class UserProfileInfoForShow {
   String nickname = "안녕";
   List<String> departments = ["없음"];
   String introduction = "";
-  Uint8List profileImage = File('image/unis.png').readAsBytesSync();
+  Uint8List profileImage = Uint8List(0); //File('image/unis.png').readAsBytesSync();
   bool isPick = false;
   bool isFriend = false;
   bool isBlock = false;
@@ -26,7 +26,7 @@ class UserProfileInfoForShow {
         nickname = '',
         departments = ["안녕"],
         introduction = '',
-        profileImage = File('image/unis.png').readAsBytesSync(),
+        profileImage = Uint8List(0), //File('image/unis.png').readAsBytesSync(),
         isPick = false,
         isFriend = false,
         isBlock = false,
@@ -86,7 +86,7 @@ class UserProfileInfoForShow {
   static Future<UserProfileInfoForShow?> fetchUserProfile(String userNickname, String friendNickname) async {
     try {
       String endpoint = "$BASE_URL/user/profile/forShow?nickname=$userNickname&friendNickname=$friendNickname";
-
+       print("other profile fetch");
       final response = await http.get(Uri.parse(endpoint));
       if (response.statusCode == 200) {
         final Map<String, dynamic> data =jsonDecode(utf8.decode(response.bodyBytes));
@@ -129,6 +129,7 @@ class UserProfileInfoForShow {
 
     if (response.statusCode == 200) {
       return "ok";
+
     } else {
       throw Exception('Failed to set pick');
     }
@@ -162,23 +163,4 @@ class UserProfileInfoForShow {
     }
   }
 
-  UserProfileInfoForShow copyWith({
-    bool? isPick,
-    bool? isFriend,
-    bool? isBlock,
-  }) {
-    return UserProfileInfoForShow(
-      nickname: nickname!,
-      departments: departments!,
-      introduction: introduction!,
-      profileImage: profileImage!,
-      isPick: isPick!,
-      isFriend: isFriend!,
-      isBlock: isBlock!,
-      question: this.question,
-      answer: this.answer,
-      studyCnt: this.studyCnt,
-      review: this.review,
-    );
-  }
 }

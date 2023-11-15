@@ -30,7 +30,7 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
 
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _messageController = TextEditingController();
-  int count = 1;
+  int count = 0;
 
   void _scrollToBottom() {
     //SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -42,6 +42,14 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
         );
       }
     //});
+  }
+
+  bool _isDisposed = false; // Add this variable to track if the screen is disposed
+
+  @override
+  void dispose() {
+    _isDisposed = true; // Set the flag to true when disposing the screen
+    super.dispose();
   }
 
   @override
@@ -64,8 +72,15 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
 
         int showProfile = 1;
 
+        void startGettingMessages() async {
+          while (!_isDisposed) {
+            await Future.delayed(const Duration(milliseconds: 500)); // Adjust the delay duration as needed
+            await chatModel.getMsg(myNickname, friendNickname);
+          }
+        }
+
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if(count == 1) {
+            if(count == 0) {
               setState(() {
                 count --;
               });
@@ -75,7 +90,7 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
               chatModel.getAllMsg(
                   myNickname, friendNickname); // 별뚜기는 상대방 닉네임. 아마 별뚜기 될거임.
 
-              chatModel.getMsg(myNickname, friendNickname);
+              startGettingMessages(); // Start the function to get messages in an infinite loop
 
             }
             _scrollToBottom();
@@ -114,7 +129,7 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
           ),
 
           body:
-          (chatModel.isLoading == true) ? Center(child: CircularProgressIndicator(),):
+          (chatModel.isLoading == true && count == 0) ? Center(child: CircularProgressIndicator(),):
           Container(
             color: Colors.grey[200],
             child: Column(
@@ -145,7 +160,7 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                               : MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (message.nickname != myNickname && shouldDisplayHeader) // 내 메시지가 아닌 상대방 메시지 인데, hear를 보여줄 때
+                            if (message.nickname != myNickname && shouldDisplayHeader) // 내 메시지가 아닌 상대방 메시지 인데, header를 보여줄 때
                               Column( //
                                 children: [
                                   CircleAvatar(
@@ -228,7 +243,7 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                                             : message.type == "img"
                                             ? Image.memory(
                                           base64Decode(message.image),
-                                          width: 150,
+                                          width: width*0.8,
                                           fit: BoxFit.cover,
                                         )
                                             : SizedBox(),

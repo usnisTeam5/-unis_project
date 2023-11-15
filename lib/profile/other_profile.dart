@@ -57,57 +57,62 @@ class OthersProfilePage extends StatelessWidget {
         create: (_) => UserProfileOtherViewModel(),
         builder: (context, child) {
 
-          WidgetsBinding.instance.addPostFrameCallback((_) { // 나중에 호출됨.
+          WidgetsBinding.instance.addPostFrameCallback((_) async{ // 나중에 호출됨.
             // context를 사용하여 UserProfileViewModel에 접근
-            final nickName = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
-            // 다른 비동기 작업 실행
-            Provider.of<UserProfileOtherViewModel>(context, listen: false)
-                .fetchUserProfile(nickName, "abc"); // **
+            if(count == 0) {
+              print("count: ${count}");
+              final nickName = Provider
+                  .of<UserProfileViewModel>(context, listen: false)
+                  .nickName;
+              // 다른 비동기 작업 실행
+              await Provider.of<UserProfileOtherViewModel>(context, listen: false)
+                  .fetchUserProfile(nickName, "abc"); // **
+            }
           });
 
-      return Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            elevation: 0,
+          return Scaffold(
             backgroundColor: Colors.white,
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(1.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: MainGradient(),
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.white,
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(1.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: MainGradient(),
+                  ),
+                  height: 2.0,
                 ),
-                height: 2.0,
+              ),
+              title: GradientText(
+                  width: width, text: '프로필', tSize: 0.06, tStyle: 'Bold'),
+              leading: IconButton(
+                icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
             ),
-            title: GradientText(
-                width: width, text: '프로필', tSize: 0.06, tStyle: 'Bold'),
-            leading: IconButton(
-              icon: Icon(Icons.keyboard_arrow_left, color: Colors.grey),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-          body:  Consumer<UserProfileOtherViewModel>(
+            body:  Consumer<UserProfileOtherViewModel>(
               builder: (context, viewModel, child) {
                 if (viewModel.isLoading && count ==0) { // 처음만 로딩 걸리게. 여기서 isLoading은
                   //print(viewModel.isLoading);
                   count ++;
                   return Center(child: CircularProgressIndicator());
                 }
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    OthersProfileInfoSection(),
-                    StatsSection(),
-                    SatisfactionAndReportSection(),
-                  ],
-                ),
-              );
-            },
-          ),
-        );
-      }
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      OthersProfileInfoSection(),
+                      StatsSection(),
+                      SatisfactionAndReportSection(),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+        }
     );
   }
 }
@@ -135,8 +140,8 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
     //   return Container();
     // }
     final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen: true);
-
-    _image = viewModel.profileImage;
+    final viewModel2 = Provider.of<UserProfileOtherViewModel>(context, listen: false);
+    _image = viewModel2.profileImage;
     //print("\ntqt@@@@@@@@@@@@@qt${_image!.path}\n");
 
     final width = min(MediaQuery.of(context).size.width, 500.0);
@@ -165,7 +170,7 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                   Text(
                     "닉네임 : ${viewModel.nickname}",
                     style:
-                        TextStyle(fontFamily: 'Bold', color: Colors.grey[600]),
+                    TextStyle(fontFamily: 'Bold', color: Colors.grey[600]),
                   ),
                   SizedBox(height: 15.0),
                   Container(
@@ -197,16 +202,16 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                                 color: viewModel.isBlock
                                     ? Colors.grey
                                     : (viewModel.isPick
-                                        ? Colors.red
-                                        : Colors.grey),
+                                    ? Colors.red
+                                    : Colors.grey),
                               ),
                               onPressed: viewModel.isBlock
                                   ? null
                                   : () async {
-                                      await viewModel.setPick(
-                                          viewModel.myNickname,
-                                          viewModel.nickname);
-                                    },
+                                await viewModel.setPick(
+                                    viewModel.myNickname,
+                                    viewModel.nickname);
+                              },
                             ),
                             Container(
                               child: Text(
@@ -216,8 +221,8 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                                     color: viewModel.isBlock
                                         ? Colors.grey
                                         : (viewModel.isPick
-                                            ? Colors.red
-                                            : Colors.grey)),
+                                        ? Colors.red
+                                        : Colors.grey)),
                               ),
                             ),
                           ],
@@ -236,8 +241,8 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => OneToOneChatScreen(
-                                        friendName: viewModel.nickname, // 2 상대
-                                  ),
+                                      friendName: viewModel.nickname, // 2 상대
+                                    ),
                                   ),
                                 );
                               },
@@ -261,16 +266,16 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                                 color: viewModel.isBlock
                                     ? Colors.grey
                                     : (viewModel.isFriend
-                                        ? Colors.blue
-                                        : Colors.grey),
+                                    ? Colors.blue
+                                    : Colors.grey),
                               ),
                               onPressed: viewModel.isBlock
                                   ? null
                                   : () async {
-                                      await viewModel.setFriend(
-                                          viewModel.myNickname,
-                                          viewModel.nickname);
-                                    },
+                                await viewModel.setFriend(
+                                    viewModel.myNickname,
+                                    viewModel.nickname);
+                              },
                             ),
                             Container(
                               child: Text(
@@ -280,8 +285,8 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                                     color: viewModel.isBlock
                                         ? Colors.grey
                                         : (viewModel.isFriend
-                                            ? Colors.blue
-                                            : Colors.grey)),
+                                        ? Colors.blue
+                                        : Colors.grey)),
                               ),
                             ),
                           ],
@@ -303,9 +308,6 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                                 await viewModel.setBlock(
                                     viewModel.myNickname, viewModel.nickname);
                                 // 차단 상태가 변경되면 다른 상태들도 업데이트
-                                if (viewModel.isBlock) {
-                                  viewModel.resetOtherStates();
-                                }
                               },
                             ),
                             Container(
