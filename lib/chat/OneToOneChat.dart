@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:unis_project/chat/report.dart';
+import '../image_viewer/image_viewer.dart';
 import '../view_model/user_profile_info_view_model.dart';
 import 'chat.dart';
 import 'image_picker_popup.dart';
@@ -31,7 +32,7 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
 
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _messageController = TextEditingController();
-  int count = 1;
+  int count = 0;
 
   void _scrollToBottom() {
     //SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -45,8 +46,13 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
     //});
   }
 
-  List<String> savedMessages = []; // 이미지
-  List<Message> _messages = []; // 메시지 저장.
+  bool _isDisposed = false; // Add this variable to track if the screen is disposed
+
+  @override
+  void dispose() {
+    _isDisposed = true; // Set the flag to true when disposing the screen
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,18 +74,24 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
 
         int showProfile = 1;
 
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if(count == 1) {
+        void startGettingMessages() async {
+          while (!_isDisposed) {
+            await Future.delayed(const Duration(milliseconds: 500)); // Adjust the delay duration as needed
+            await chatModel.getMsg(myNickname, friendNickname);
+          }
+        } //
+
+          WidgetsBinding.instance.addPostFrameCallback((_) async{
+            if(count == 0) {
               setState(() {
-                count --;
+                count ++; // 여기서 1로 만들면 아래에서 로딩이 활성화됨.
               });
              // count --;
               //final chatModel = Provider.of<OneToOneChatViewModel>(context, listen: false);
-
-              chatModel.getAllMsg(
+              await chatModel.getAllMsg(
                   myNickname, friendNickname); // 별뚜기는 상대방 닉네임. 아마 별뚜기 될거임.
-
-              chatModel.getMsg(myNickname, friendNickname);
+              chatModel.loadProfileImage(friendNickname);
+              startGettingMessages(); // getmsg 무한루프 돌림.
 
             }
             _scrollToBottom();
@@ -118,7 +130,7 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
           ),
 
           body:
-          (chatModel.isLoading == true) ? Center(child: CircularProgressIndicator(),):
+          (chatModel.isLoading == true && count == 1) ? Center(child: CircularProgressIndicator(),):
           Container(
             color: Colors.grey[200],
             child: Column(
@@ -131,12 +143,12 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
 
                       final MsgDto message = chatModel.messages[index]; // 메시지 저장
 
-                      final bool shouldDisplayHeader =               // 필요 없음 건들지 말것
+                      final bool shouldDisplayHeader =               // 메세지가 상대방 메세지이면 프로필 보여줌
                           showProfile == 1 && (index == 0 || chatModel
                               .messages[index - 1].nickname !=
                               message.nickname);
 
-                      final bool shouldDisplayTime = (index == chatModel  // 모르겠는데, 일단 둔다.
+                      final bool shouldDisplayTime = (index == chatModel  // 메세지가 상대방 메세지이면 시간 보여줌
                           .messages.length - 1 ||
                           chatModel.messages[index + 1].nickname !=
                               message.nickname);
@@ -145,12 +157,12 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: Row( // 메시지 가로로 길게 쭉 있음.
                           mainAxisAlignment: message.nickname == myNickname
-                              ? MainAxisAlignment.end
-                              : MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                              ? MainAxisAlignment.end // 내 닉네임이면 오른쪽 정렬
+                              : MainAxisAlignment.start, // 상대방 닉네임이면 왼쪽 정렬
+                          crossAxisAlignment: CrossAxisAlignment.start, // 세로 방향에서 위젯을 시작 부분에 정렬 (모르겠음)
                           children: [
-                            if (message.nickname != myNickname && shouldDisplayHeader) // 내 메시지가 아닌 상대방 메시지 인데, hear를 보여줄 때
-                              Column( //
+                            if (message.nickname != myNickname && shouldDisplayHeader) // 내 메시지가 아닌 상대방 메시지 인데, header를 보여줄 때
+                              Column( // 상대방 프로필 표시
                                 children: [
                                   CircleAvatar(
                                     backgroundImage: MemoryImage(chatModel.friendProfileImage),// ** 추가
@@ -183,10 +195,10 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                                         ? MainAxisAlignment.end
                                         : MainAxisAlignment.start,
                                     children: [
-                                      if (message.nickname == myNickname) // 나일 경우 **추가
+                                      if (message.nickname == myNickname) // 나일 경우 **추가, 내 메세지의 시간 표시
                                         Padding(
                                           padding: const EdgeInsets.only(
-                                              right: 8.0, top: 20.0),
+                                              right: 8.0, top: 20.0), // 내 메세지 기준으로 시간을 어디에 표시할지
                                           child: shouldDisplayTime // 시간 표기
                                               ? Text(
                                             message.time,
@@ -200,49 +212,53 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                                               : Container(),
                                         ),
                                       Container(
-                                        constraints: BoxConstraints(
-                                          maxWidth: MediaQuery
-                                              .of(context)
-                                              .size
-                                              .width * 0.6,
-                                        ),
-                                        margin: EdgeInsets.only(
+                                        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.6,),
+                                        margin: EdgeInsets.only( // 필요없음
                                           left: (message.nickname == myNickname)
                                               ? 0
                                               : (shouldDisplayHeader
-                                              ? (showProfile == 1 ? 8.0 : 4.0)
-                                              : (showProfile == 0 ? 0 : 39.0)),
+                                              ? (showProfile == 1 ? 8.0 : 4.0) // 익명 아닐 때 프로필 위치
+                                              : (showProfile == 0 ? 0 : 39.0)), // 익명 일 때 프로필 위치
                                           top: (message.nickname == myNickname) ? 0 : 0,
                                         ),
                                         padding: const EdgeInsets.all(8.0),
-                                        decoration: BoxDecoration(
+                                        decoration: BoxDecoration( // 메세지 배경 색
                                           color: (message.nickname == myNickname)
-                                              ? Colors.lightBlue
-                                              : Colors.white,
-                                          borderRadius: BorderRadius.circular(
+                                              ? Colors.lightBlue // 내 메세지는 파란색
+                                              : Colors.white, // 상대방 메세지는 흰 색
+                                          borderRadius: BorderRadius.circular( // 메세지 모서리
                                               15),
                                         ),
-                                        child: message.type == "text"
+                                        child: message.type == "text" // 메세지가 텍스트일 때
                                             ? Text(message.msg,
                                           style: TextStyle(
                                             color: (message.nickname == myNickname)
                                                 ? Colors.white
                                                 : Colors.black,
                                             fontFamily: 'Round',),)
-                                            : message.type == "img"
-                                            ? Image.memory(
-                                          base64Decode(message.image),
-                                          width: width*0.8,
-                                          fit: BoxFit.cover,
+                                            : message.type == "img" // 메세지가 이미지일 때
+                                            ? GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).push(MaterialPageRoute(
+                                              builder: (context) => PhotoView(
+                                                photoData: base64Decode(message.image),
+                                              ),
+                                            ));
+                                          },
+                                          child: Image.memory(
+                                            base64Decode(message.image),
+                                            width: MediaQuery.of(context).size.width * 0.8,
+                                            fit: BoxFit.cover,
+                                          ),
                                         )
                                             : SizedBox(),
                                       ),
                                       if (message.nickname != myNickname) // 내 닉네임이 아닌 경우
                                         Padding(
-                                          padding: const EdgeInsets.only(
+                                          padding: const EdgeInsets.only( // 상대방 메세지의 시간 표시
                                               left: 8.0, top: 20.0),
                                           child: shouldDisplayTime
-                                              ? Text(
+                                              ? Text( // 메세지 시간 표시 스타일
                                             message.time, // 시간을 보여줌
                                             style: TextStyle(
                                               fontSize: 10,

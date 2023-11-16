@@ -167,9 +167,16 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
                 onTap: () {
                   getImage(ImageSource.gallery);
                 },
-                child: CircleAvatar(
-                  radius: 50.0,
-                  backgroundImage: MemoryImage(_image!),
+                child:  Container(
+                  width: 100.0, // 이미지의 크기 조절
+                  height: 100.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle, // 원형 모양을 만들기 위해 사용
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: MemoryImage(_image!),
+                    ),
+                  ),
                 ),
               ),
               SizedBox(width: 20.0),

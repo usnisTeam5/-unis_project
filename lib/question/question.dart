@@ -1,3 +1,8 @@
+/*
+* 로그인 했을 때, 처음 뜨는 질문 목록 창
+*
+* */
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../chat/chat.dart';

@@ -10,7 +10,7 @@ import 'package:unis_project/models/OneToOneChat_model.dart';
 
 class OneToOneChatViewModel extends ChangeNotifier {
 
-  Uint8List _friendProfileImage = File('image/unis.png').readAsBytesSync();
+  Uint8List _friendProfileImage = Uint8List(0);
   Uint8List get friendProfileImage => _friendProfileImage;
   String _myNickname = "";
   String _friendNickname = "";
@@ -109,17 +109,16 @@ class OneToOneChatViewModel extends ChangeNotifier {
 
   Future<void> getMsg(String myNickname, String friendNickname) async {
     try {
-      while(true) {
-        print("objecsdfsdfsdft");
+        //print("objecsdfsdfsdft");
         //await Future.delayed(Duration(milliseconds: 500));
-        notifyListeners();
+        //notifyListeners();
         List<MsgDto> temp = await OneToOneChatModel.getMsg(
             myNickname, friendNickname);
         // print("getMsg ${temp[0]}");
-        messages.addAll(temp); // message에  추가함.
-        //_isLoading = false;
-        notifyListeners();
-      }
+        if(temp.isNotEmpty) {
+          messages.addAll(temp); // message에  추가함.
+          notifyListeners();
+        }
       //}
     } catch (e) { // 에러나도 상관 x
       print("GET MSG 에러");

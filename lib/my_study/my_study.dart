@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:unis_project/view_model/user_profile_info_view_model.dart';
 import '../css/css.dart';
 import 'dart:math';
 import '../models/study_info.dart';
@@ -23,39 +24,57 @@ class MyApp extends StatelessWidget {
 
 class StudyScreen extends StatelessWidget {
 
+  int count = 0;
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => StudyInfoViewModel(),
+      create: (_) => MyStudyInfoViewModel(),
       builder: (context, child) {
 
-        final mystudy = Provider.of<StudyInfoViewModel>(context, listen: false);
+        final mystudy = Provider.of<MyStudyInfoViewModel>(context, listen: true);
+
 
         final width = min(MediaQuery.of(context).size.width,500.0);
         final height = MediaQuery.of(context).size.height;
 
-        final List<StudyInfo> studies = [
-          StudyInfo(roomKey: mystudy.roomKey, roomName: mystudy.roomName, course: mystudy.course, studyIntroduction: mystudy.studyIntroduction, curNum: mystudy.curNum, maximumNum: mystudy.maximumNum, startDate: mystudy.startDate, leader: mystudy.leader, isOpen: mystudy.isOpen),
-          StudyInfo(roomKey: mystudy.roomKey, roomName: mystudy.roomName, course: mystudy.course, studyIntroduction: mystudy.studyIntroduction, curNum: mystudy.curNum, maximumNum: mystudy.maximumNum, startDate: mystudy.startDate, leader: mystudy.leader, isOpen: mystudy.isOpen),
-          // ... more studies
+
+        List<MyStudyInfo> mystudylist = [
+          // MyStudyInfo(roomKey: mystudy.roomKey, roomName: mystudy.roomName, course: mystudy.course, studyIntroduction: mystudy.studyIntroduction, curNum: mystudy.curNum, maxNum: mystudy.maxNum, startDate: mystudy.startDate),
+          // MyStudyInfo(roomKey: mystudy.roomKey, roomName: mystudy.roomName, course: mystudy.course, studyIntroduction: mystudy.studyIntroduction, curNum: mystudy.curNum, maxNum: mystudy.maxNum, startDate: mystudy.startDate),
+          // // ... more mystudylist
         ];
+
+        WidgetsBinding.instance.addPostFrameCallback((_) async{
+          if(count == 0) {
+              count ++; // 여기서 1로 만들면 아래에서 로딩이 활성화됨.
+              final nickname = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
+            await mystudy.getMyStudyRoomList(nickname);
+            mystudylist = mystudy.MyStudyInfoList;
+          }
+        });
+
+
 
         return Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            centerTitle: true, // Title을 중앙에 배치
+            centerTitle: true,
             title: GradientText(width: width, tSize: 0.06, text:'내 스터디', tStyle: 'Bold' ),
             backgroundColor: Colors.white,
             elevation: 0,
           ),
-          body: Container(
+          body:
+            (mystudy.isLoading || count ==0)
+           ? Center(child: CircularProgressIndicator())
+          : Container(
             padding: EdgeInsets.only(top: 10.0),
             color: Colors.grey[200],
             child: ListView.builder(
               physics: BouncingScrollPhysics(),
-              itemCount: studies.length,
+              itemCount: mystudylist.length,
               itemBuilder: (context, index) {
-                final StudyInfo = studies[index];
+                final MyStudyInfo = mystudylist[index];
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()),);
@@ -102,7 +121,7 @@ class StudyScreen extends StatelessWidget {
                                 children: [
                                   Icon(Icons.person, color: Colors.grey,),
                                   SizedBox(width: 4),
-                                  Text("${mystudy.curNum}/${mystudy.maximumNum}명",
+                                  Text("${mystudy.curNum}/${mystudy.maxNum}명",
                                       style: TextStyle(fontFamily: 'Round', fontSize: 13)),
                                 ],
                               ),

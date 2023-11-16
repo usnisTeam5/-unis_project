@@ -64,7 +64,7 @@ class LoginService { // 로그인 백 프론트 연동
       }
       print("Model 200이 아닙니다sdfsdfsd2222\n");
     } catch (error) {
-      print("Model error\n");
+      print("Model error \n");
     }
     return null;
   }

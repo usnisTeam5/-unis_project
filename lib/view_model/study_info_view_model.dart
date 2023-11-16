@@ -1,51 +1,74 @@
 import 'package:flutter/foundation.dart';
 import '../models/study_info.dart';
 
-class StudyInfoViewModel with ChangeNotifier {
-  StudyInfo? _studyInfo;
-
-  StudyInfoViewModel({StudyInfo? studyInfo})
-      : _studyInfo = studyInfo ?? StudyInfo.defaultValues();
-
+class MyStudyInfoViewModel with ChangeNotifier {
+  MyStudyInfo? _MystudyInfo;
+  // int _studyCount =0;
+  MyStudyInfoViewModel({MyStudyInfo? MystudyInfo})
+      : _MystudyInfo = MystudyInfo ?? MyStudyInfo.defaultValues();
+  List<MyStudyInfo> _MyStudyInfoList = [];
+  bool _isLoading = false;
   // Getters
-  StudyInfo? get studyInfo => _studyInfo;
+  bool get isLoading => _isLoading;
+  MyStudyInfo? get studyInfo => _MystudyInfo;
 
-  int get roomKey => _studyInfo?.roomKey ?? 0;
-  String get roomName => _studyInfo?.roomName ?? '';
-  String get course => _studyInfo?.course ?? '';
-  int get maximumNum => _studyInfo?.maximumNum ?? 0;
-  int get curNum => _studyInfo?.curNum ?? 0;
-  String get leader => _studyInfo?.leader ?? '';
-  String get startDate => _studyInfo?.startDate ?? '';
-  bool get isOpen => _studyInfo?.isOpen ?? false;
-  String get studyIntroduction => _studyInfo?.studyIntroduction ?? '';
 
+  int get roomKey => _MystudyInfo?.roomKey ?? 0;
+  String get roomName => _MystudyInfo?.roomName ?? '';
+  String get course => _MystudyInfo?.course ?? '';
+  int get maxNum => _MystudyInfo?.maxNum ?? 0;
+  int get curNum => _MystudyInfo?.curNum ?? 0;
+  String get startDate => _MystudyInfo?.startDate ?? '';
+  String get studyIntroduction => _MystudyInfo?.studyIntroduction ?? '';
+  List<MyStudyInfo> get MyStudyInfoList => _MyStudyInfoList ?? [];
+
+
+
+  //int get studyCount => _studyCount;
   // Setters
-  void updateRoomName(String newRoomName) {
-    if (_studyInfo != null) {
-      _studyInfo = StudyInfo(
-        roomKey: _studyInfo!.roomKey,
-        roomName: newRoomName,
-        course: _studyInfo!.course,
-        maximumNum: _studyInfo!.maximumNum,
-        curNum: _studyInfo!.curNum,
-        leader: _studyInfo!.leader,
-        startDate: _studyInfo!.startDate,
-        isOpen: _studyInfo!.isOpen,
-        studyIntroduction: _studyInfo!.studyIntroduction,
-      );
+  // void updateRoomName(String newRoomName) {
+  //   if (_MystudyInfo != null) {
+  //     _MystudyInfo = MyStudyInfo(
+  //       roomKey: _MystudyInfo!.roomKey,
+  //       roomName: newRoomName,
+  //       course: _MystudyInfo!.course,
+  //       maxNum: _MystudyInfo!.maxNum,
+  //       curNum: _MystudyInfo!.curNum,
+  //       startDate: _MystudyInfo!.startDate,
+  //       studyIntroduction: _MystudyInfo!.studyIntroduction,
+  //     );
+  //     notifyListeners();
+  //   }
+  // }
+
+  // Add other setters as needed
+
+  // void fromJson(Map<String, dynamic> json) {
+  //   _MyStudyInfoList = MyStudyInfo.fromJson(json);
+  //   notifyListeners();
+  // }
+  //
+  // Map<String, dynamic> toJson() {
+  //   return _MyStudyInfoList?.toJson() ?? {};
+  // }
+
+
+  Future<void> getMyStudyRoomList(String nickname) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      List<MyStudyInfo> MyStudyInfoList = await MyStudyInfoModel.getMyStudyRoomList(nickname);
+      //_studyCount = MyStudyInfoList.length;
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      print("getMyStudyRoomList viewmodel $e");
+      _isLoading = false;
       notifyListeners();
     }
   }
 
-  // Add other setters as needed
 
-  void fromJson(Map<String, dynamic> json) {
-    _studyInfo = StudyInfo.fromJson(json);
-    notifyListeners();
-  }
 
-  Map<String, dynamic> toJson() {
-    return _studyInfo?.toJson() ?? {};
-  }
 }
