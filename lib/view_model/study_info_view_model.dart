@@ -10,12 +10,12 @@ class StudyInfoViewModel with ChangeNotifier {
   // Getters
   StudyInfo? get studyInfo => _studyInfo;
 
-  int get roomNum => _studyInfo?.roomNum ?? 0;
+  int get roomKey => _studyInfo?.roomKey ?? 0;
   String get roomName => _studyInfo?.roomName ?? '';
-  String get major => _studyInfo?.major ?? '';
+  String get course => _studyInfo?.course ?? '';
   int get maximumNum => _studyInfo?.maximumNum ?? 0;
-  int get num => _studyInfo?.num ?? 0;
-  String get leaderNickName => _studyInfo?.leaderNickName ?? '';
+  int get curNum => _studyInfo?.curNum ?? 0;
+  String get leader => _studyInfo?.leader ?? '';
   String get startDate => _studyInfo?.startDate ?? '';
   bool get isOpen => _studyInfo?.isOpen ?? false;
   String get studyIntroduction => _studyInfo?.studyIntroduction ?? '';
@@ -24,12 +24,12 @@ class StudyInfoViewModel with ChangeNotifier {
   void updateRoomName(String newRoomName) {
     if (_studyInfo != null) {
       _studyInfo = StudyInfo(
-        roomNum: _studyInfo!.roomNum,
+        roomKey: _studyInfo!.roomKey,
         roomName: newRoomName,
-        major: _studyInfo!.major,
+        course: _studyInfo!.course,
         maximumNum: _studyInfo!.maximumNum,
-        num: _studyInfo!.num,
-        leaderNickName: _studyInfo!.leaderNickName,
+        curNum: _studyInfo!.curNum,
+        leader: _studyInfo!.leader,
         startDate: _studyInfo!.startDate,
         isOpen: _studyInfo!.isOpen,
         studyIntroduction: _studyInfo!.studyIntroduction,

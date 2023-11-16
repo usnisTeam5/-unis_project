@@ -232,7 +232,7 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                                             : message.type == "img"
                                             ? Image.memory(
                                           base64Decode(message.image),
-                                          width: 150,
+                                          width: width*0.8,
                                           fit: BoxFit.cover,
                                         )
                                             : SizedBox(),
