@@ -150,7 +150,7 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<UserProfileViewModel>(context);
-
+    print("프로필에 입장했습니다.");
     return Container(
       padding: EdgeInsets.all(30.0),
       margin: EdgeInsets.all(20.0),

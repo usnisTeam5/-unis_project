@@ -59,6 +59,7 @@ class OthersProfilePage extends StatelessWidget {
 
           WidgetsBinding.instance.addPostFrameCallback((_) async{ // 나중에 호출됨.
             // context를 사용하여 UserProfileViewModel에 접근
+            //print("sdfsdfsdfsadfasdfsadfasdf");
             if(count == 0) {
               print("count: ${count}");
               final nickName = Provider

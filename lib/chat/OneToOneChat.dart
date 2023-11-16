@@ -33,7 +33,7 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   int count = 0;
 
-  void _scrollToBottom() {
+  void _scrollToBottom() { // 스크롤을 계속 하단으로 내려주는 메소드.
     //SchedulerBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
@@ -45,7 +45,7 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
     //});
   }
 
-  bool _isDisposed = false; // Add this variable to track if the screen is disposed
+  bool _isDisposed = false; // 화면을 나갈 때, getMsg를 종료시키도록 하기위해서 필요
 
   @override
   void dispose() {
@@ -91,7 +91,6 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                   myNickname, friendNickname); // 별뚜기는 상대방 닉네임. 아마 별뚜기 될거임.
               chatModel.loadProfileImage(friendNickname);
               startGettingMessages(); // getmsg 무한루프 돌림.
-
             }
             _scrollToBottom();
           });
@@ -147,11 +146,10 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                               .messages[index - 1].nickname !=
                               message.nickname);
 
-                      final bool shouldDisplayTime = (index == chatModel  // 모르겠는데, 일단 둔다.
-                          .messages.length - 1 ||
-                          chatModel.messages[index + 1].nickname !=
-                              message.nickname);
+                      final bool shouldDisplayTime = (index == chatModel.messages.length - 1 ||
+                          chatModel.messages[index + 1].nickname != message.nickname || chatModel.messages[index + 1].time != message.time);
 
+                      final byteImage = base64Decode(message.image);
                       return Padding( // 메시지 보내는곳.
                         padding: const EdgeInsets.all(8.0),
                         child: Row( // 메시지 가로로 길게 쭉 있음.
@@ -193,6 +191,7 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                                     mainAxisAlignment: message.nickname == myNickname
                                         ? MainAxisAlignment.end
                                         : MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       if (message.nickname == myNickname) // 나일 경우 **추가
                                         Padding(
@@ -211,11 +210,11 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                                               : Container(),
                                         ),
                                       Container(
+                                        width: message.type == 'img' ? width*0.6 : null,
+                                        height: message.type == 'img' ? height*0.3 : null,
                                         constraints: BoxConstraints(
-                                          maxWidth: MediaQuery
-                                              .of(context)
-                                              .size
-                                              .width * 0.6,
+                                          maxWidth: width*0.6,
+                                          maxHeight: height*0.5,
                                         ),
                                         margin: EdgeInsets.only(
                                           left: (message.nickname == myNickname)
@@ -226,12 +225,20 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                                           top: (message.nickname == myNickname) ? 0 : 0,
                                         ),
                                         padding: const EdgeInsets.all(8.0),
-                                        decoration: BoxDecoration(
+                                        decoration:
+                                        //message.type == 'img' ? null :
+                                        BoxDecoration(
                                           color: (message.nickname == myNickname)
                                               ? Colors.lightBlue
                                               : Colors.white,
                                           borderRadius: BorderRadius.circular(
                                               15),
+                                          image:
+                                          message.type == 'text' ? null :
+                                          DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: MemoryImage(byteImage),
+                                          ),
                                         ),
                                         child: message.type == "text"
                                             ? Text(message.msg,
@@ -245,15 +252,15 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                                           onTap: () {
                                             Navigator.of(context).push(MaterialPageRoute(
                                               builder: (context) => PhotoView(
-                                                photoData: base64Decode(message.image),
+                                                photoData: byteImage,
                                               ),
                                             ));
                                           },
-                                          child: Image.memory(
-                                            base64Decode(message.image),
-                                            width: MediaQuery.of(context).size.width * 0.8,
-                                            fit: BoxFit.cover,
-                                          ),
+                                          // child: Image.memory(
+                                          //   byteImage,
+                                          //   width: width * 0.6,
+                                          //   fit: BoxFit.cover,
+                                          // ),
                                         )
                                             : SizedBox(),
                                       ),
@@ -318,17 +325,12 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                       Expanded(
                         child: Container(
                           constraints: BoxConstraints(
-                            maxWidth: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.7,
-                            maxHeight: MediaQuery
-                                .of(context)
-                                .size
-                                .height * 0.7,
+                            maxWidth: width * 0.7,
+                            maxHeight: height * 0.7,
                           ),
                           height: 40,
                           child: TextField(
+                            maxLength: 200,
                             controller: _messageController,
                             decoration: InputDecoration(
                               hintText: '메시지를 입력하세요',
@@ -339,6 +341,7 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
+                              counterText: '', // This will hide the character count
                             ),
                           ),
                         ),
