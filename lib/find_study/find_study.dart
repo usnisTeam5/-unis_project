@@ -2,8 +2,10 @@
 import 'package:unis_project/find_study/create_study.dart';
   import '../../../css/css.dart';
   import '../study_room/bottom_navigation_bar.dart';
-  import 'find_study.dart';
+  import '../find_study/joinStudy.dart';
   import 'dart:math';
+
+
   void main() => runApp(MyApp());
 
   class MyApp extends StatelessWidget {
@@ -62,28 +64,27 @@ import 'package:unis_project/find_study/create_study.dart';
     @override
     Widget build(BuildContext context) {
       final  width = min(MediaQuery.of(context).size.width,500.0);
-      final height = MediaQuery
-          .of(context)
-          .size
-          .height;
+      final height = MediaQuery.of(context).size.height;
 
       return Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(102.0),
+          preferredSize: Size.fromHeight(100.0),
           child: AppBar(
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios_new_rounded, size: 35,
-                color: Colors.grey[400],),
-
-              color: Colors.grey,
+            leading:
+            IconButton(
+              padding: const EdgeInsets.only(left: 16.0),
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: Colors.grey[400],
+              ),
               onPressed: () {
-                Navigator.pop(context); // 로그인 화면으로 되돌아가기
+                Navigator.pop(context);
               },
             ),
-            actions: [ // `actions` 속성을 사용하여 IconButton을 추가합니다.
-              IconButton(
-                icon: Icon(Icons.search_rounded, size: 35,),
-                color: Colors.grey,
+            actions: [
+              IconButton( // 스터디 찾기 검색
+                icon: Icon(Icons.search_rounded, size: 30,),
+                color: Colors.grey[400],
                 onPressed: () {
                   //Navigator.pop(context);  // 로그인 화면으로 되돌아가기
                 },
@@ -115,44 +116,37 @@ import 'package:unis_project/find_study/create_study.dart';
             bottom: 20,
             right: 20,
             child:GestureDetector(
-                        onTap: () {
-                          // 스터디 찾기를 호출합니다.
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => CreateStudy()),
-                          );
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          width: width * 0.13,
-                          height: width * 0.13,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 5,
-                                blurRadius: 7,
-                                offset: Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Icon(Icons.add, size: width * 0.06,color: Colors.grey,),
-                        ),
-                      ),
+              onTap: () { // 스터디 생성 호출
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CreateStudy()),);
+                },
+              child: Container(
+                margin: const EdgeInsets.only(top: 10),
+                width: width * 0.13,
+                height: width * 0.13,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3),
                     ),
-              ],
+                  ],
+                ),
+                child: Icon(Icons.add, size: width * 0.06,color: Colors.grey,),
+              ),
             ),
-          );
+          ),
+          ],
+        ),
+      );
     }
 
     Widget _buildTabContent(String tabLabel) {
       final  width = min(MediaQuery.of(context).size.width,500.0);
-      final height = MediaQuery
-          .of(context)
-          .size
-          .height;
+      final height = MediaQuery.of(context).size.height;
 
       return Container(
         padding: EdgeInsets.only(top: 10.0),
@@ -163,17 +157,20 @@ import 'package:unis_project/find_study/create_study.dart';
           itemBuilder: (context, index) {
             final study = studies[index];
             return GestureDetector(
-              onTap: () {
-                // Navigate to study room when a study item is tapped
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyHomePage()),
-                );
+              // onTap: () {
+              //   // 스터디방 눌렀을 때
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => JoinStudy()),
+              //   );
+              // },
+              onTap: () { // 스터디 가입 팝업
+                _joinStudyDialog(context);
               },
               child: Card(
                 elevation: 0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40.0),
+                  borderRadius: BorderRadius.circular(35.0),
                 ),
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Padding(
@@ -186,13 +183,14 @@ import 'package:unis_project/find_study/create_study.dart';
                         crossAxisAlignment: CrossAxisAlignment.baseline,
                         textBaseline: TextBaseline.alphabetic,
                         children: [
-                          Text(study.title, style: TextStyle(
+                          Text(study.title, // 스터디명
+                              style: TextStyle(
                               color: Colors.grey[600],
                               fontFamily: 'Bold',
-                              fontSize: width * 0.06)),
+                              fontSize: width * 0.055)),
                           SizedBox(width: 10,),
                           Expanded(
-                            child: Text(
+                            child: Text( // 과목명
                               study.subject,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
@@ -205,10 +203,11 @@ import 'package:unis_project/find_study/create_study.dart';
                       ),
                       SizedBox(height: 14),
                       Text(
-                        study.description,
+                        study.description, // 스터디 소개
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.grey[600],
+                        style: TextStyle(
+                            color: Colors.grey[600],
                             fontFamily: 'Bold',
                             fontSize: width * 0.025),
                       ),
@@ -220,20 +219,14 @@ import 'package:unis_project/find_study/create_study.dart';
                             children: [
                               Icon(Icons.person, color: Colors.grey,),
                               SizedBox(width: 4),
-                              Text(study.members, style: TextStyle(
-                                  fontFamily: 'Round', fontSize: 13)),
+                              Text(study.members, style: TextStyle(fontFamily: 'Round', fontSize: 13)),
                             ],
                           ),
                           Row(
                             children: [
-                              Text('시작일', style: TextStyle(fontFamily: 'Bold',
-                                  fontSize: 13,
-                                  color: Colors.grey[600]),),
+                              Text('시작일', style: TextStyle(fontFamily: 'Bold', fontSize: 13, color: Colors.grey[600]),),
                               SizedBox(width: 4),
-                              Text(study.startDate, style: TextStyle(
-                                  fontFamily: 'Bold',
-                                  fontSize: 13,
-                                  color: Colors.grey[500]),),
+                              Text(study.startDate, style: TextStyle(fontFamily: 'Bold', fontSize: 13, color: Colors.grey[500]),),
                             ],
                           ),
                         ],
@@ -335,6 +328,15 @@ import 'package:unis_project/find_study/create_study.dart';
         ),
       );
     }
+  }
+
+  void _joinStudyDialog(BuildContext context) { // 스터디 가입 신청
+    showDialog(
+      context: context,
+      builder: (context) {
+        return JoinStudy();
+      },
+    );
   }
 
   class Study {

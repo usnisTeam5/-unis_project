@@ -7,6 +7,7 @@ import '../css/css.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';
 import '../view_model/login_result_view_model.dart';
+import '../view_model/study_info_view_model.dart';
 import '../view_model/user_profile_info_view_model.dart';
 import 'dart:io';
 
@@ -26,6 +27,9 @@ void main() async{
           ChangeNotifierProvider<UserProfileViewModel>(
             create: (context) => UserProfileViewModel(),
           ),
+          // ChangeNotifierProvider<StudyInfoViewModel>(
+          //   create: (context) => StudyInfoViewModel(),
+          // ),
         ],
         child: const UnisApp()
       ),

@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:unis_project/chat/report.dart';
 import '../image_viewer/image_viewer.dart';
 import '../view_model/user_profile_info_view_model.dart';
+import 'chat.dart';
 import 'image_picker_popup.dart';
 
 
@@ -141,7 +142,7 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
 
                       final MsgDto message = chatModel.messages[index]; // 메시지 저장
 
-                      final bool shouldDisplayHeader =               // 필요 없음 건들지 말것
+                      final bool shouldDisplayHeader =               // 메세지가 상대방 메세지이면 프로필 보여줌
                           showProfile == 1 && (index == 0 || chatModel
                               .messages[index - 1].nickname !=
                               message.nickname);
@@ -154,12 +155,12 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: Row( // 메시지 가로로 길게 쭉 있음.
                           mainAxisAlignment: message.nickname == myNickname
-                              ? MainAxisAlignment.end
-                              : MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                              ? MainAxisAlignment.end // 내 닉네임이면 오른쪽 정렬
+                              : MainAxisAlignment.start, // 상대방 닉네임이면 왼쪽 정렬
+                          crossAxisAlignment: CrossAxisAlignment.start, // 세로 방향에서 위젯을 시작 부분에 정렬 (모르겠음)
                           children: [
                             if (message.nickname != myNickname && shouldDisplayHeader) // 내 메시지가 아닌 상대방 메시지 인데, header를 보여줄 때
-                              Column( //
+                              Column( // 상대방 프로필 표시
                                 children: [
                                   CircleAvatar(
                                     backgroundImage: MemoryImage(chatModel.friendProfileImage),// ** 추가
@@ -193,10 +194,10 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                                         : MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      if (message.nickname == myNickname) // 나일 경우 **추가
+                                      if (message.nickname == myNickname) // 나일 경우 **추가, 내 메세지의 시간 표시
                                         Padding(
                                           padding: const EdgeInsets.only(
-                                              right: 8.0, top: 20.0),
+                                              right: 8.0, top: 20.0), // 내 메세지 기준으로 시간을 어디에 표시할지
                                           child: shouldDisplayTime // 시간 표기
                                               ? Text(
                                             message.time,
@@ -220,18 +221,19 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                                           left: (message.nickname == myNickname)
                                               ? 0
                                               : (shouldDisplayHeader
-                                              ? (showProfile == 1 ? 8.0 : 4.0)
-                                              : (showProfile == 0 ? 0 : 39.0)),
+                                              ? (showProfile == 1 ? 8.0 : 4.0) // 익명 아닐 때 프로필 위치
+                                              : (showProfile == 0 ? 0 : 39.0)), // 익명 일 때 프로필 위치
                                           top: (message.nickname == myNickname) ? 0 : 0,
                                         ),
                                         padding: const EdgeInsets.all(8.0),
                                         decoration:
                                         //message.type == 'img' ? null :
                                         BoxDecoration(
+
                                           color: (message.nickname == myNickname)
-                                              ? Colors.lightBlue
-                                              : Colors.white,
-                                          borderRadius: BorderRadius.circular(
+                                              ? Colors.lightBlue // 내 메세지는 파란색
+                                              : Colors.white, // 상대방 메세지는 흰 색
+                                          borderRadius: BorderRadius.circular( // 메세지 모서리
                                               15),
                                           image:
                                           message.type == 'text' ? null :
@@ -240,14 +242,14 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                                             image: MemoryImage(byteImage),
                                           ),
                                         ),
-                                        child: message.type == "text"
+                                        child: message.type == "text" // 메세지가 텍스트일 때
                                             ? Text(message.msg,
                                           style: TextStyle(
                                             color: (message.nickname == myNickname)
                                                 ? Colors.white
                                                 : Colors.black,
                                             fontFamily: 'Round',),)
-                                            : message.type == "img"
+                                            : message.type == "img" // 메세지가 이미지일 때
                                             ? GestureDetector(
                                           onTap: () {
                                             Navigator.of(context).push(MaterialPageRoute(
@@ -266,10 +268,10 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                                       ),
                                       if (message.nickname != myNickname) // 내 닉네임이 아닌 경우
                                         Padding(
-                                          padding: const EdgeInsets.only(
+                                          padding: const EdgeInsets.only( // 상대방 메세지의 시간 표시
                                               left: 8.0, top: 20.0),
                                           child: shouldDisplayTime
-                                              ? Text(
+                                              ? Text( // 메세지 시간 표시 스타일
                                             message.time, // 시간을 보여줌
                                             style: TextStyle(
                                               fontSize: 10,
@@ -379,3 +381,25 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
   }
 }
 
+
+/* // 모델로 옮길 예정
+class Message {
+  final String? text; // 텍스트 메시지 (이미지일 때 null)
+  final String? imagePath; // 이미지 경로 (텍스트일 때 null)
+  final String sender;
+  final bool isMine;
+  final String senderImageURL;
+  final String senderName;
+  final DateTime sentAt;
+
+  Message({
+    this.text,
+    this.imagePath,
+    required this.sender,
+    required this.isMine,
+    required this.senderImageURL,
+    required this.senderName,
+    required this.sentAt,
+  });
+}
+*/

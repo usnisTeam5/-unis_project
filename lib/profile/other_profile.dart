@@ -61,13 +61,14 @@ class OthersProfilePage extends StatelessWidget {
             // context를 사용하여 UserProfileViewModel에 접근
             //print("sdfsdfsdfsadfasdfsadfasdf");
             if(count == 0) {
+              count ++;
               print("count: ${count}");
               final nickName = Provider
                   .of<UserProfileViewModel>(context, listen: false)
                   .nickName;
               // 다른 비동기 작업 실행
               await Provider.of<UserProfileOtherViewModel>(context, listen: false)
-                  .fetchUserProfile(nickName, "abc"); // **
+                  .fetchUserProfile(nickName, "별뚜기"); // **
             }
           });
 
@@ -96,18 +97,22 @@ class OthersProfilePage extends StatelessWidget {
             ),
             body:  Consumer<UserProfileOtherViewModel>(
               builder: (context, viewModel, child) {
-                if (viewModel.isLoading && count ==0) { // 처음만 로딩 걸리게. 여기서 isLoading은
-                  //print(viewModel.isLoading);
-                  count ++;
-                  return Center(child: CircularProgressIndicator());
-                }
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      OthersProfileInfoSection(),
-                      StatsSection(),
-                      SatisfactionAndReportSection(),
-                    ],
+                // if (viewModel.isLoading && count ==0) { // 처음만 로딩 걸리게. 여기서 isLoading은
+                //   //print(viewModel.isLoading);
+                //   count ++;
+                //   return Center(child: CircularProgressIndicator());
+                // }
+                return Container(
+                  child: (viewModel.isLoading || count == 0)
+                      ?  Center(child: CircularProgressIndicator())
+                      :SingleChildScrollView(
+                    child:   Column(
+                      children: [
+                        OthersProfileInfoSection(),
+                        StatsSection(),
+                        SatisfactionAndReportSection(),
+                      ],
+                    ),
                   ),
                 );
               },

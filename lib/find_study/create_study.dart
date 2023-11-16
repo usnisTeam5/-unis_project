@@ -68,14 +68,15 @@ class _CreateStudyState extends State<CreateStudy> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
+        leading:
+        IconButton(
+          padding: const EdgeInsets.only(left: 16.0),
           icon: Icon(
-            Icons.keyboard_arrow_left,
-            size: 30,
+            Icons.arrow_back_ios,
+            color: Colors.grey[400],
           ),
-          color: Colors.grey,
           onPressed: () {
-            Navigator.pop(context); // 로그인 화면으로 되돌아가기
+            Navigator.pop(context);
           },
         ),
         actions: [
