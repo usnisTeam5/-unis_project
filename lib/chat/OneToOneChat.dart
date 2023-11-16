@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:unis_project/chat/report.dart';
+import '../image_viewer/image_viewer.dart';
 import '../view_model/user_profile_info_view_model.dart';
 import 'image_picker_popup.dart';
 
@@ -77,20 +78,19 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
             await Future.delayed(const Duration(milliseconds: 500)); // Adjust the delay duration as needed
             await chatModel.getMsg(myNickname, friendNickname);
           }
-        }
+        } //
 
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) async{
             if(count == 0) {
               setState(() {
-                count --;
+                count ++; // 여기서 1로 만들면 아래에서 로딩이 활성화됨.
               });
              // count --;
               //final chatModel = Provider.of<OneToOneChatViewModel>(context, listen: false);
-
-              chatModel.getAllMsg(
+              await chatModel.getAllMsg(
                   myNickname, friendNickname); // 별뚜기는 상대방 닉네임. 아마 별뚜기 될거임.
-
-              startGettingMessages(); // Start the function to get messages in an infinite loop
+              chatModel.loadProfileImage(friendNickname);
+              startGettingMessages(); // getmsg 무한루프 돌림.
 
             }
             _scrollToBottom();
@@ -129,7 +129,7 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
           ),
 
           body:
-          (chatModel.isLoading == true && count == 0) ? Center(child: CircularProgressIndicator(),):
+          (chatModel.isLoading == true && count == 1) ? Center(child: CircularProgressIndicator(),):
           Container(
             color: Colors.grey[200],
             child: Column(
@@ -241,10 +241,19 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                                                 : Colors.black,
                                             fontFamily: 'Round',),)
                                             : message.type == "img"
-                                            ? Image.memory(
-                                          base64Decode(message.image),
-                                          width: width*0.8,
-                                          fit: BoxFit.cover,
+                                            ? GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).push(MaterialPageRoute(
+                                              builder: (context) => PhotoView(
+                                                photoData: base64Decode(message.image),
+                                              ),
+                                            ));
+                                          },
+                                          child: Image.memory(
+                                            base64Decode(message.image),
+                                            width: MediaQuery.of(context).size.width * 0.8,
+                                            fit: BoxFit.cover,
+                                          ),
                                         )
                                             : SizedBox(),
                                       ),

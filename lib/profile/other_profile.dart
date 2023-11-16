@@ -130,7 +130,7 @@ class OthersProfileInfoSection extends StatefulWidget {
 
 class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
 
-  Uint8List? _image;//이미지를 담을 변수 선언
+  Uint8List _image = Uint8List(0);//이미지를 담을 변수 선언
   int buildCount = 0;
 
   @override
@@ -141,6 +141,7 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
     // }
     final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen: true);
     final viewModel2 = Provider.of<UserProfileOtherViewModel>(context, listen: false);
+
     _image = viewModel2.profileImage;
     //print("\ntqt@@@@@@@@@@@@@qt${_image!.path}\n");
 
@@ -158,17 +159,23 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
         children: [
           Row(
             children: [
-              CircleAvatar(
-                radius: 50.0,
-                //backgroundImage:
-                backgroundImage: MemoryImage(_image!),
+              Container(
+                width: 100.0, // 이미지의 크기 조절
+                height: 100.0,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle, // 원형 모양을 만들기 위해 사용
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: MemoryImage(_image),
+                  ),
+                ),
               ),
               SizedBox(width: width * 0.05),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "닉네임 : ${viewModel.nickname}",
+                    "닉네임 : ${viewModel2.nickname}",
                     style:
                     TextStyle(fontFamily: 'Bold', color: Colors.grey[600]),
                   ),
@@ -176,9 +183,9 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                   Container(
                     width: width * 0.5,
                     child: Text(
-                      viewModel.departments.length == 1
-                          ? "학과(학부) : ${viewModel.departments[0]}"
-                          : "학과(학부) : ${viewModel.departments[0]} \n                    ${viewModel.departments[1]}",
+                      viewModel2.departments.length == 1
+                          ? "학과(학부) : ${viewModel2.departments[0]}"
+                          : "학과(학부) : ${viewModel2.departments[0]} \n                    ${viewModel2.departments[1]}",
                       style: TextStyle(
                           fontFamily: 'Bold', color: Colors.grey[600]),
                       overflow: TextOverflow.ellipsis,
