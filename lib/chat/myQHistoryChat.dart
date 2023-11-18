@@ -1,3 +1,6 @@
+/*
+내 문답(질답완료 상태)
+ */
 import 'dart:convert';
 import 'dart:math';
 import 'dart:io';

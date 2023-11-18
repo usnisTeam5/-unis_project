@@ -1,3 +1,6 @@
+/*
+스터디 단체 채팅방
+ */
 import 'dart:convert';
 import 'dart:math';
 import 'dart:io';
@@ -53,7 +56,7 @@ class _StudyChatScreenState extends State<StudyChatScreen> {
 
 
 
-  void _onImagePicked(XFile? imagePath) {
+  void _onImagePicked(File? imagePath) {
     setState(() {
       _messages.add(Message(
         imagePath: imagePath!.path,

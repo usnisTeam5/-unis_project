@@ -28,42 +28,17 @@ class OneToOneChatViewModel extends ChangeNotifier {
   bool _isLoading = false;
   List<MsgDto> messages = [];
 
-  // MsgDto? _chatMsg = MsgDto.defaultValues(); // 이건 왜 필요함? 다 필요 없어보임.
-  // SendMsgDto? _chatSendMsg= SendMsgDto.defaultValues();
-  //ChatMemberDto? _chatMember = ChatMemberDto.defaultValues();
-
-  // MsgDto? get chatMsg => _chatMsg ;
-  // SendMsgDto? get chatSendMsg => _chatSendMsg ;
-  // ChatMemberDto? get chatMember => _chatMember ;
-  //
-  //
-  // String get nickname => _chatMsg!.nickname ?? "";
-  // String get profileImage => _chatMsg!.profileImage ?? 'image/unis.png';
-  // String get type => _chatMsg!.type ?? "";
-  // String get msg => _chatMsg!.msg ?? "";
-  // String get image => _chatMsg!.image ?? "";
-  // String get time => _chatMsg!.time ?? "";
-  //
-  // String get sender => _chatSendMsg!.sender ?? "";
-  // String get receiver => _chatSendMsg!.receiver ?? '';
-  // String get sendtype => _chatSendMsg!.type ?? "";
-  // String get sendmsg => _chatSendMsg!.msg ?? "";
-  // String get img => _chatSendMsg!.img ?? "";
-  // String get sendtime => _chatSendMsg!.time ?? "";
-
-  // String get nickname1 => _chatMember!.nickname1 ?? "";
-  // String get nickname2 => _chatMember!.nickname2 ?? '';
 
   bool get isLoading => _isLoading;
 
   Future<void> loadProfileImage(String nickname) async { // 상대방 이미지를 가져옴
     try {
-      _isLoading = true;
-      notifyListeners(); // Notify listeners to show a loading indicator
+      //_isLoading = true;
+      //notifyListeners(); // Notify listeners to show a loading indicator
       // Fetch the profile image
       _friendProfileImage = await OneToOneChatModel.getProfileImage(nickname);
       // If successful, notify listeners to update the UI
-      notifyListeners();
+      //notifyListeners();
     } catch (e) {
       // Handle any errors here
       notifyListeners();
@@ -100,7 +75,7 @@ class OneToOneChatViewModel extends ChangeNotifier {
       //print("sendMsgview $img");
       await OneToOneChatModel.sendMsg(sender, receiver, type, msg, img, time);
         //await getMsg(sender, receiver);
-        notifyListeners();
+       // notifyListeners();
     } catch (e) {
       print('Error sending message: $e');
     }
@@ -109,14 +84,12 @@ class OneToOneChatViewModel extends ChangeNotifier {
 
   Future<void> getMsg(String myNickname, String friendNickname) async {
     try {
-        //print("objecsdfsdfsdft");
-        //await Future.delayed(Duration(milliseconds: 500));
-        //notifyListeners();
         List<MsgDto> temp = await OneToOneChatModel.getMsg(
             myNickname, friendNickname);
-        // print("getMsg ${temp[0]}");
         if(temp.isNotEmpty) {
           messages.addAll(temp); // message에  추가함.
+          //print(messages);
+          //print("Messages list hashCode: ${messages.hashCode}");
           notifyListeners();
         }
       //}

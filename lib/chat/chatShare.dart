@@ -1,3 +1,6 @@
+/*
+팝업
+ */
 import 'package:flutter/material.dart';
 
 class ChatShare extends StatefulWidget {
