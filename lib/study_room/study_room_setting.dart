@@ -201,7 +201,7 @@ class _StudyRoomSettingState extends State<StudyRoomSetting> {
                             ),
                             Spacer(),
                             Icon(
-                              Icons.arrow_forward_ios_rounded,
+                              Icons.arrow_forward_ios,
                               size: 25,
                               color: Colors.grey[400],
                             ),

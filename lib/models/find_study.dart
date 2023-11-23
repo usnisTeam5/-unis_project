@@ -2,7 +2,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'url.dart';
 
-class StudyInfoDto { // 스터디 찾기 들어갔을 때 필요
+class StudyInfoDto {
+  // 스터디 찾기 들어갔을 때 필요
   int roomKey; // 스터디 고유키
   String roomName; // 스터디 제목
   String course; // 스터디 과목
@@ -49,9 +50,10 @@ class StudyInfoDto { // 스터디 찾기 들어갔을 때 필요
       studyIntroduction: json['studyIntroduction'],
     );
   }
+
   Map<String, dynamic> toJson() {
     return {
-      'roomKey' : roomKey,
+      'roomKey': roomKey,
       'roomName': roomName,
       'course': course,
       'maxNum': maxNum,
@@ -82,6 +84,7 @@ class RoomStatusDto {
       isOpen: json['isOpen'],
     );
   }
+
   Map<String, dynamic> toJson() {
     return {
       'isAll': isAll,
@@ -89,10 +92,10 @@ class RoomStatusDto {
       'isOpen': isOpen,
     };
   }
-
 }
 
-class StudyJoinDto { // 가입신청
+class StudyJoinDto {
+  // 가입신청
   int roomKey;
   String code;
 
@@ -109,7 +112,8 @@ class StudyJoinDto { // 가입신청
   }
 }
 
-class StudyMakeDto { //  스터디 생성에서 넘기는 정보.
+class StudyMakeDto {
+  //  스터디 생성에서 넘기는 정보.
   String roomName; // 스터디 이름
   String? code; // 비밀번호(공개방이면 null 값)
   String course; // 과목
@@ -167,46 +171,39 @@ class StudyMakeDto { //  스터디 생성에서 넘기는 정보.
   }
 }
 
-// class MyStudyInfoDto {
-//   int roomKey;
-//   String roomName;
-//   String course;
-//   int maxNum;
-//   int curNum;
-//   String startDate;
-//   String studyIntroduction;
-//
-//   MyStudyInfoDto({
-//     required this.roomKey,
-//     required this.roomName,
-//     required this.course,
-//     required this.maxNum,
-//     required this.curNum,
-//     required this.startDate,
-//     required this.studyIntroduction,
-//   });
-//
-//   factory MyStudyInfoDto.fromJson(Map<String, dynamic> json) {
-//     return MyStudyInfoDto(
-//       roomKey: json['roomKey'],
-//       roomName: json['roomName'],
-//       course: json['course'],
-//       maxNum: json['maxNum'],
-//       curNum: json['curNum'],
-//       startDate: json['startDate'],
-//       studyIntroduction: json['studyIntroduction'],
-//     );
-//   }
-// }
+class UserInfoMinimumDto { // 가입 스터디 입장 했을 때
+  String nickname;
+  String image;
 
+  UserInfoMinimumDto({
+    required this.nickname,
+    required this.image,
+  });
 
+  UserInfoMinimumDto.defaultValues()
+      : nickname = 'kakak',
+        image = 'image/unis.png';
+
+  factory UserInfoMinimumDto.fromJson(Map<String, dynamic> json) {
+    return UserInfoMinimumDto(
+      nickname: json['nickname'],
+      image: json['image'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'nickname': nickname,
+      'image': image,
+    };
+  }
+}
 
 // API 요청 및 응답 처리 메서드
 
-
 class StudyService {
-
-  Future<List<StudyInfoDto>> getStudyRoomList(String nickname, RoomStatusDto roomStatus) async {
+  Future<List<StudyInfoDto>> getStudyRoomList(
+      String nickname, RoomStatusDto roomStatus) async { // 스터디 찾기
 
     // StreamedRequest 객체를 생성하고, 메서드와 URI를 지정합니다.
     final request = http.StreamedRequest(
@@ -229,15 +226,16 @@ class StudyService {
     print(response.body);
     // *********************************
     if (response.statusCode == 200) {
-      final List<dynamic> studyInfoJsonList = jsonDecode(utf8.decode(response.bodyBytes));
+      final List<dynamic> studyInfoJsonList =
+          jsonDecode(utf8.decode(response.bodyBytes));
       print("스터디 찾기 모델 $studyInfoJsonList");
-      return studyInfoJsonList.map((json) => StudyInfoDto.fromJson(json)).toList();
+      return studyInfoJsonList
+          .map((json) => StudyInfoDto.fromJson(json))
+          .toList();
     } else {
       throw Exception('Failed to load study rooms');
     }
   }
-
-
 
   Future<String> joinStudy(String nickname, StudyJoinDto joinInfo) async { // 스터디 가입
     final response = await http.post(
@@ -253,25 +251,21 @@ class StudyService {
     }
   }
 
-
-
   static Future<bool> makeStudyRoom(StudyMakeDto info) async { // 스터디 생성
     try {
       final response = await http.post(
         Uri.parse('$BASE_URL/study/make'),
         headers: {'Content-Type': 'application/json'},
 
-        body: jsonEncode(info.toJson()), // StudyMakeDto 객체를 JSON 문자열로 변환하여 요청 본문에 추가
+        body: jsonEncode(info.toJson()),
       );
 
       if (response.statusCode == 200) {
         final String result = response.body;
         return result == 'ok'; // API에서 'ok'을 리턴하면 스터디 생성 성공
-
       } else if (response.statusCode == 400) {
         final String result = response.body;
         return result == 'false'; // API에서 'false'를 리턴하면 중복된 방 이름이 있는 경우
-
       } else {
         throw Exception('Failed to make study: ${response.body}');
       }
@@ -280,9 +274,15 @@ class StudyService {
     }
   }
 
+  Future<List<UserInfoMinimumDto>> enterStudy(int roomKey, String nickname) async { // 가입한 스터디 입장 했을 때
+    final response = await http.get(
+        Uri.parse('$BASE_URL/study/enter?roomKey=$roomKey&nickname=$nickname'));
 
-
-
-
-// 다른 API들도 위와 같은 방식으로 구현
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      return data.map((json) => UserInfoMinimumDto.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load study friend list: ${response.body}');
+    }
+  }
 }

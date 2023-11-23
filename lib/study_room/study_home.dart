@@ -13,19 +13,16 @@ class FriendsList extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Round',
       ),
-      home: Home(),
+      home: StudyHome(),
     );
   }
 }
 
-class Home extends StatelessWidget {
+class StudyHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = min(MediaQuery.of(context).size.width,500.0);
-    double tabBarHeight = MediaQuery
-        .of(context)
-        .size
-        .height * 0.08;
+    double tabBarHeight = MediaQuery.of(context).size.height * 0.08;
 
     return Scaffold(
       appBar: AppBar(
@@ -34,12 +31,12 @@ class Home extends StatelessWidget {
 
           color: Colors.grey,
           onPressed: () {
-            Navigator.pop(context); // 로그인 화면으로 되돌아가기
+            Navigator.pop(context);
           },
         ),
-        actions: [ // `actions` 속성을 사용하여 IconButton을 추가합니다.
+        actions: [
           IconButton(
-            icon: Icon(Icons.settings, size: 30,),
+            icon: Icon(Icons.settings, size: 28,),
             color: Colors.grey,
             onPressed: () {
               Navigator.push(
@@ -55,7 +52,7 @@ class Home extends StatelessWidget {
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         centerTitle: true,
-        // Title을 중앙에 배치
+
         title: GradientText(
             width: width, text: '스터디 제목', tSize: 0.06, tStyle: 'Bold'),
         bottom: PreferredSize(
@@ -65,14 +62,14 @@ class Home extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: MainGradient(),
             ),
-            height: 2.0, // Set the thickness of the undedsrline
+            height: 2.0,
           ),
         ),
       ),
-      body: Column( // Scaffold의 body를 Column으로 변경합니다.
+      body: Column(
         children: [
-          GestureDetector( // GestureDetector 위젯을 추가합니다.
-            onTap: () { // onTap 속성에 팝업을 띄우는 로직을 추가합니다.
+          GestureDetector(
+            onTap: () {
               showDialog(
                 context: context,
                 builder: (context) {
@@ -82,7 +79,7 @@ class Home extends StatelessWidget {
                     actions: [
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context).pop(); // 팝업을 닫습니다.
+                          Navigator.of(context).pop();
                         },
                         child: Text('닫기'),
                       ),
@@ -92,12 +89,9 @@ class Home extends StatelessWidget {
               );
             },
             child: Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(16.0),
-              color: Colors.grey[200], // 배경색을 밝은 회색으로 변경합니다.
+              color: Colors.grey[200],
               child: Text(
                 '공지: 이것은 공지입니다!',
                 style: TextStyle(
@@ -109,7 +103,7 @@ class Home extends StatelessWidget {
               ),
             ),
           ),
-          Expanded( // ListView를 Expanded 위젯으로 감싸서 남은 공간을 모두 차지하게 합니다.
+          Expanded(
             child: buildListView(),
           ),
         ],
@@ -117,11 +111,12 @@ class Home extends StatelessWidget {
     );
   }
 }
+
   ListView buildListView() {
     return ListView.builder(
       itemCount: 5,
       itemBuilder: (context, index) {
-        return GestureDetector(  // GestureDetector를 추가
+        return GestureDetector(
           onTap: () {
             Navigator.push(
               context,

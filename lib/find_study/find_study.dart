@@ -43,9 +43,9 @@ class FindStudyScreen extends StatefulWidget {
 class _FindStudyScreenState extends State<FindStudyScreen> with SingleTickerProviderStateMixin {
   int count = 0;
 
-  bool isAll = true;  //스터디찾기에서 전체가 켜져있는지.
-  bool isSeatLeft = false;  //스터디찾기에서 잔여석이 켜져있는지.
-  bool isOpen = false;  //스터디찾기에서 공개가 켜져있는지.
+  bool isAll = true;  //스터디찾기에서 전체가 켜져있는지
+  bool isSeatLeft = false;  //스터디찾기에서 잔여석이 켜져있는지
+  bool isOpen = false;  //스터디찾기에서 공개가 켜져있는지
 
   void selectCategory (bool _isAll, bool _isSeatLeft, bool _isOpen){
     setState(() {
