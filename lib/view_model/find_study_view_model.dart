@@ -44,8 +44,8 @@ class StudyViewModel with ChangeNotifier {
 
   String _resultMessage = '';
   String get resultMessage => _resultMessage;
-  List<StudyInfoDto> _studyRooms = [];
-  List<StudyInfoDto> get studyRooms => _studyRooms;
+  List<StudyInfoDto> _studyRoomlist = [];
+  List<StudyInfoDto> get studyRoomlist => _studyRoomlist;
 
   final StudyService _studyService = StudyService();
 
@@ -82,7 +82,7 @@ class StudyViewModel with ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      _studyRooms = await _studyService.getStudyRoomList(nickname, roomStatus);
+      _studyRoomlist = await _studyService.getStudyRoomList(nickname, roomStatus);
       _resultMessage = '스터디룸 목록 로드 성공.';
 
       _isLoading = false;
@@ -91,7 +91,7 @@ class StudyViewModel with ChangeNotifier {
     } catch (e) {
       print("getStudyRoomList viewmodel $e");
       _resultMessage = '스터디룸 목록 로드 실패.';
-      _studyRooms = [];
+      _studyRoomlist = [];
       _isLoading = false;
       notifyListeners();
     }

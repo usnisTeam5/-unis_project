@@ -28,7 +28,7 @@ class StudyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final mystudy = Provider.of<MyStudyInfoViewModel>(context, listen: true);
 
-    print("스터디 스크린");
+    print("내 스터디");
     final width = min(MediaQuery.of(context).size.width, 500.0);
     final height = MediaQuery.of(context).size.height;
 
@@ -41,8 +41,7 @@ class StudyScreen extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (count == 0) {
         count++; // 여기서 1로 만들면 아래에서 로딩이 활성화됨.
-        final nickname =
-            Provider.of<UserProfileViewModel>(context, listen: false).nickName;
+        final nickname = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
         await mystudy.getMyStudyRoomList(nickname);
         //mystudylist = mystudy.MyStudyInfoList;
         //print(mystudylist[0].startDate);
