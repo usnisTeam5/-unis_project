@@ -6,6 +6,7 @@ import '../models/find_study.dart';
 class StudyViewModel with ChangeNotifier {
   StudyMakeDto? _studyMakeDto;
   StudyInfoDto? _studyInfoDto;
+  RoomStatusDto roomStatus = RoomStatusDto(isAll: true, isSeatLeft: false, isOpen: false);
 
   // 생성자
   StudyViewModel({StudyMakeDto? studyMakeDto, StudyInfoDto? studyInfoDto})
@@ -80,6 +81,7 @@ class StudyViewModel with ChangeNotifier {
   Future<void> getStudyRoomList(String nickname, RoomStatusDto roomStatus) async { // 스터디 찾기
     try {
       _isLoading = true;
+      this.roomStatus = roomStatus;
       notifyListeners();
 
       _studyRoomlist = await _studyService.getStudyRoomList(nickname, roomStatus);

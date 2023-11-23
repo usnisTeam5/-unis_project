@@ -10,6 +10,9 @@ import '../view_model/find_study_view_model.dart';
 import '../models/find_study.dart';
 import '../view_model/user_profile_info_view_model.dart';
 
+
+
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -30,47 +33,27 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
+
 class FindStudyScreen extends StatefulWidget {
   @override
   _FindStudyScreenState createState() => _FindStudyScreenState();
 }
 
-class _FindStudyScreenState extends State<FindStudyScreen>
-    with SingleTickerProviderStateMixin {
+class _FindStudyScreenState extends State<FindStudyScreen> with SingleTickerProviderStateMixin {
   int count = 0;
 
-  TabController? _tabController;
-  final List<String> _tabLabels = ['전체', '잔여석', '공개'];
+  bool isAll = true;  //스터디찾기에서 전체가 켜져있는지.
+  bool isSeatLeft = false;  //스터디찾기에서 잔여석이 켜져있는지.
+  bool isOpen = false;  //스터디찾기에서 공개가 켜져있는지.
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController =
-        TabController(length: 3, vsync: this); // 3 탭을 위한 컨트롤러를 초기화합니다.
+  void selectCategory (bool _isAll, bool _isSeatLeft, bool _isOpen){
+    setState(() {
+      isAll = _isAll;
+      isSeatLeft = _isSeatLeft;
+      isOpen = _isOpen;
+    });
   }
-
-  @override
-  void dispose() {
-    _tabController?.dispose(); // 컨트롤러를 해제합니다.
-    super.dispose();
-  }
-
-  final List<Study> studies = [
-    Study(
-        title: '공부할 사람fsdfs',
-        subject: '컴퓨터 그래픽스 &&,,,,,&&&',
-        description:
-            '스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용 스터디 내용',
-        members: '3/5 명',
-        startDate: '2023-01-01'),
-    Study(
-        title: '스터디 제목 2',
-        subject: '과목명 2',
-        description: '스터디 설명 2',
-        members: '4/5 명',
-        startDate: '2023-01-02'),
-    // ... more studies
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -111,21 +94,13 @@ class _FindStudyScreenState extends State<FindStudyScreen>
               width: width, text: '스터디 찾기', tSize: 0.06, tStyle: 'Bold'),
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(30.0),
-            child: CustomTabBar(),
+            child: CustomTabBar(onEvent: selectCategory),
           ),
         ),
       ),
       body: Stack(
         children: [
-          TabBarView(
-            controller: _tabController,
-            children: [
-              // 각 탭에 대한 내용을 여기에 추가합니다.
-              _buildTabContent('전체'),
-              _buildTabContent('잔여석'),
-              _buildTabContent('공개'),
-            ],
-          ),
+          _buildTabContent(RoomStatusDto(isAll : isAll, isSeatLeft: isSeatLeft, isOpen : isOpen)),
           Positioned(
             bottom: 20,
             right: 20,
@@ -161,26 +136,32 @@ class _FindStudyScreenState extends State<FindStudyScreen>
               ),
             ),
           ),
+
         ],
       ),
     );
   }
 
-  Widget _buildTabContent(String tabLabel) {
+  Widget _buildTabContent(RoomStatusDto roomStatus) {
+
     return ChangeNotifierProvider(
       create: (_) => StudyViewModel(),
       builder: (context, child) {
-        final info = Provider.of<StudyViewModel>(context, listen: false);
+
+        final info = Provider.of<StudyViewModel>(context, listen: true);
 
         final width = min(MediaQuery.of(context).size.width, 500.0);
         final height = MediaQuery.of(context).size.height;
 
         WidgetsBinding.instance.addPostFrameCallback((_) async {
+          final nickname = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
           if (count == 0) {
             count++; // 여기서 1로 만들면 아래에서 로딩이 활성화됨.
-            final nickname = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
-            final roomStatus = Provider.of<StudyViewModel>(context, listen: false).infoIsOpen;
-            await info.getStudyRoomList(nickname, roomStatus as RoomStatusDto);
+            await info.getStudyRoomList(nickname, roomStatus);
+          }
+          if(count != 0 &&(info.roomStatus.isAll != isAll || info.roomStatus.isOpen != isOpen || info.roomStatus.isSeatLeft != isSeatLeft)){
+            print("isAll: $isAll, isOpen: $isOpen, isSeatLeft : $isSeatLeft");
+            await info.getStudyRoomList(nickname, roomStatus);
           }
         });
 
@@ -195,13 +176,6 @@ class _FindStudyScreenState extends State<FindStudyScreen>
                   itemBuilder: (context, index) {
                     final study = info.studyRoomlist[index];
                     return GestureDetector(
-                      // onTap: () {
-                      //   // 스터디방 눌렀을 때
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(builder: (context) => JoinStudy()),
-                      //   );
-                      // },
                       onTap: () {
                         _joinStudyDialog(context); // 스터디 가입 팝업
                       },
@@ -298,12 +272,17 @@ class _FindStudyScreenState extends State<FindStudyScreen>
                   },
                 ),
               );
-      },
+        },
     );
   }
 }
 
 class CustomTabBar extends StatefulWidget {
+
+  final Function(bool, bool, bool) onEvent;
+
+  CustomTabBar({required this.onEvent});
+
   @override
   _CustomTabBarState createState() => _CustomTabBarState();
 }
@@ -319,6 +298,11 @@ class _CustomTabBarState extends State<CustomTabBar> {
       _isTab2Selected = false;
       _isTab3Selected = false;
     });
+    widget.onEvent(
+        _isTab1Selected,
+        _isTab2Selected,
+        _isTab3Selected
+    );
   }
 
   void _toggleTab2() {
@@ -333,6 +317,11 @@ class _CustomTabBarState extends State<CustomTabBar> {
         _isTab2Selected = false;
       }
     });
+    widget.onEvent(
+        _isTab1Selected,
+        _isTab2Selected,
+        _isTab3Selected
+    );
   }
 
   void _toggleTab3() {
@@ -347,6 +336,11 @@ class _CustomTabBarState extends State<CustomTabBar> {
         _isTab3Selected = false;
       }
     });
+    widget.onEvent(
+        _isTab1Selected,
+        _isTab2Selected,
+        _isTab3Selected
+    );
   }
 
   @override
@@ -405,18 +399,5 @@ void _joinStudyDialog(BuildContext context) {
   );
 }
 
-class Study {
-  final String title;
-  final String subject;
-  final String description;
-  final String members;
-  final String startDate;
 
-  Study({
-    required this.title,
-    required this.subject,
-    required this.description,
-    required this.members,
-    required this.startDate,
-  });
-}
+

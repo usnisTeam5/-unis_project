@@ -64,7 +64,7 @@ class StudyInfoDto { // 스터디 찾기 들어갔을 때 필요
   }
 }
 
-class RoomStatusDto { // 전체, 잔여석, 공개여부
+class RoomStatusDto {
   bool isAll;
   bool isSeatLeft;
   bool isOpen;
@@ -74,6 +74,22 @@ class RoomStatusDto { // 전체, 잔여석, 공개여부
     required this.isSeatLeft,
     required this.isOpen,
   });
+
+  factory RoomStatusDto.fromJson(Map<String, dynamic> json) {
+    return RoomStatusDto(
+      isAll: json['isAll'],
+      isSeatLeft: json['isSeatLeft'],
+      isOpen: json['isOpen'],
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'isAll': isAll,
+      'isSeatLeft': isSeatLeft,
+      'isOpen': isOpen,
+    };
+  }
+
 }
 
 class StudyJoinDto { // 가입신청
@@ -190,17 +206,34 @@ class StudyMakeDto { //  스터디 생성에서 넘기는 정보.
 
 class StudyService {
 
-  Future<List<StudyInfoDto>> getStudyRoomList( // 스터디 찾기에서 목록 얻어오기
-      String nickname, RoomStatusDto roomStatus) async {
-    final response = await http.get(
+  Future<List<StudyInfoDto>> getStudyRoomList(String nickname, RoomStatusDto roomStatus) async {
+
+    // StreamedRequest 객체를 생성하고, 메서드와 URI를 지정합니다.
+    final request = http.StreamedRequest(
+      'GET',
       Uri.parse('$BASE_URL/study/$nickname'),
     );
 
+    // 필요한 헤더를 추가합니다.
+    request.headers['Content-Type'] = 'application/json';
+
+    // 요청 본문에 데이터를 추가합니다.
+    request.sink.add(utf8.encode(jsonEncode(roomStatus.toJson())));
+    request.sink.close();
+
+    // 요청을 보냅니다.
+    final streamedResponse = await request.send();
+
+    // 스트림 응답을 Response 객체로 변환합니다.
+    final response = await http.Response.fromStream(streamedResponse);
+    print(response.body);
+    // *********************************
     if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body) as List<dynamic>;
-      return jsonData.map((data) => StudyInfoDto.fromJson(data)).toList();
+      final List<dynamic> studyInfoJsonList = jsonDecode(utf8.decode(response.bodyBytes));
+      print("스터디 찾기 모델 $studyInfoJsonList");
+      return studyInfoJsonList.map((json) => StudyInfoDto.fromJson(json)).toList();
     } else {
-      throw Exception('Failed to load study rooms: ${response.body}');
+      throw Exception('Failed to load study rooms');
     }
   }
 
