@@ -45,7 +45,7 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
   final TextEditingController _messageController = TextEditingController();
   List<MsgDto> _messages = [];
 
-  bool hasUserSentMessage = false;
+  bool hasUserSentMessage = false; // 질문 올렸는지 확인함
   String nickname = '';
 
   void _sendImage(String base64Image) {
@@ -64,13 +64,13 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
     _scrollToBottom();
   }
 
-  void _sendMsg(String Text) {
+  void _sendMsg(String text) {
     //  이미지 보낼 때 사용
     setState(() {
       _messages.add(MsgDto(
         nickname: nickname,
         type: "text",
-        msg: Text,
+        msg: text,
         image: "",
         time: (DateTime.now()).toString(),
       ));
@@ -103,9 +103,12 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
         .of(context)
         .size
         .height, 700.0);
+
     nickname = Provider
         .of<UserProfileViewModel>(context, listen: false)
         .nickName;
+
+
     return Builder(
         builder: (context) {
           return Scaffold(
@@ -132,8 +135,8 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
+                              Navigator.of(context).pop(); // Alert 창을 끔
+                              Navigator.of(context).pop(); // 밖으로 나감
                             },
                             child: Text('예'),
                           ),
@@ -168,7 +171,7 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
                         context: context,
                         builder: (BuildContext context) {
                           return PostSettings(
-                              hasUserSentMessage: hasUserSentMessage);
+                              msg : _messages );
                         },
                       );
                     }
@@ -203,22 +206,22 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
                       controller: _scrollController,
                       itemCount: _messages.length,
                       itemBuilder: (context, index) {
-                        MsgDto message = _messages[index];
-                        DateTime _time = DateTime.parse(message.time);
+                        MsgDto message = _messages[index]; // 내가 입력한거
+                        DateTime _time = DateTime.parse(message.time); // 시간 data time으로 표기
                         final byteImage = base64Decode(message.image);
-                        final time = "${_time.hour}:${_time.minute.toString()
+                        final time = "${_time.hour}:${_time.minute.toString() // 파싱
                             .padLeft(2, '0')}";
 
-                        String next_time ="";
-                        if(_messages.length > index+1) {
-                          DateTime _next_time = DateTime.parse(_messages[index+1].time);
+                        String next_time =""; // 다음 시간
+                        if(_messages.length > index+1) { //  (다음 메시지) 가 있으면
+                          DateTime _next_time = DateTime.parse(_messages[index+1].time); //다음시간 정함
 
                           next_time= "${_next_time.hour}:${_next_time.minute
                               .toString()
                               .padLeft(2, '0')}";
                         }
 
-                        final bool shouldDisplayTime = (index == _messages.length - 1 || next_time != time);
+                        final bool shouldDisplayTime = (index == _messages.length - 1 || next_time != time); // 시간이 다르거나 마지막이면 표기
 
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -351,7 +354,8 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
                                   child: Icon(Icons.send, color: Colors.grey,),
                                 ),
                                 onPressed: () {
-                                  _sendMsg(_messageController.text);
+                                  if(_messageController.text != "")
+                                    _sendMsg(_messageController.text);
                                 },
                               ),
                             ],
