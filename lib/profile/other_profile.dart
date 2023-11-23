@@ -68,7 +68,7 @@ class OthersProfilePage extends StatelessWidget {
                   .nickName;
               // 다른 비동기 작업 실행
               await Provider.of<UserProfileOtherViewModel>(context, listen: false)
-                  .fetchUserProfile(nickName, "별뚜기"); // **
+                  .fetchUserProfile(nickName, "abc"); // **
             }
           });
 
@@ -494,13 +494,12 @@ class StatsSection extends StatelessWidget {
     );
   }
 
-  Widget _buildColumn(String title, String value, double width) {
-    return Container(
-      height: 110,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
+  Widget _buildColumn(String title, String number, double width) {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: null,
+          child:  Text(
             title,
             style: TextStyle(
               color: Colors.grey[600],
@@ -508,22 +507,20 @@ class StatsSection extends StatelessWidget {
               fontSize: width * 0.05,
             ),
           ),
-          SizedBox(height: 10.0),
-          GestureDetector(
-            onTap: () {
-              // 숫자를 클릭했을 때의 행동을 여기에 구현
-            },
-            child: Text(
-              value,
-              style: TextStyle(
-                color: Color(0xFF678DBE),
-                fontFamily: 'ExtraBold',
-                fontSize: width * 0.10,
-              ),
+        ),
+        SizedBox(height: 10.0),
+        GestureDetector(
+          onTap: null,
+          child: Text(
+            number,
+            style: TextStyle(
+              color: Color(0xFF678DBE),
+              fontFamily: 'ExtraBold',
+              fontSize: width * 0.10,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

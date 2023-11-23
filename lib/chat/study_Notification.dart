@@ -1,3 +1,6 @@
+/*
+스터디에서 알람 설정
+ */
 import 'package:flutter/material.dart';
 
 void main() {

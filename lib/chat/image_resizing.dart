@@ -1,3 +1,6 @@
+/*
+이미지 사이즈를 줄인다.
+ */
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';

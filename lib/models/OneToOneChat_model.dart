@@ -3,10 +3,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
-import 'url.dart';
-
 import 'dart:io';
 import 'dart:ui';
+
+import 'url.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -39,12 +39,12 @@ class MsgDto { // 보낼 때 받을 때 사용함
 
   factory MsgDto.fromJson(Map<String, dynamic> json) {
     return MsgDto(
-      nickname: json['nickname'],
+      nickname: json['nickname'] ?? '',
       //profileImage: json['profileImage'],
-      type: json['type'],
-      msg: json['msg'],
-      image: json['image'],
-      time: _formatTime(json['time']),
+      type: json['type'] ?? '',
+      msg: json['msg'] ?? '',
+      image: json['image'] ?? '',
+      time: _formatTime(json['time']) ?? '',
     );
   }
 
@@ -195,7 +195,7 @@ class OneToOneChatModel {
       );
       //print(response.body);
       if (response.statusCode == 200) {
-        await Future.delayed(const Duration(milliseconds: 300));
+        //await Future.delayed(const Duration(milliseconds: 300));
         final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
         print("getMsewrwerwerg ${data}");
         if (data.isEmpty) {
