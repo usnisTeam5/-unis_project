@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:unis_project/view_model/login_result_view_model.dart';
+import 'package:unis_project/view_model/user_profile_info_view_model.dart';
 import '../css/css.dart';
 import 'package:unis_project/find_study/find_study.dart';
 import 'package:unis_project/my_quiz/my_quiz.dart';
@@ -12,6 +13,8 @@ import '../notifier/notifier.dart';
 import 'dart:io';
 import 'dart:math';
 import 'package:provider/provider.dart';
+
+import '../view_model/study_info_view_model.dart';
 
 void main() {
   runApp(MyApp());
@@ -267,12 +270,16 @@ class alram_and_menu extends StatelessWidget {
               return Visibility(
                 visible: currentIndex == 3,
                 child: GestureDetector(
-                  onTap: () {
+                  onTap: () async{
                     // 스터디 찾기를 호출합니다.
-                    Navigator.push(
+                    await Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => FindStudyScreen()),
                     );
+                    final nickname = Provider
+                        .of<UserProfileViewModel>(context, listen: false).nickName;
+                    Provider
+                        .of<MyStudyInfoViewModel>(context, listen: false).getMyStudyRoomList(nickname);
                   },
                   child: Container(
                     margin: const EdgeInsets.only(top: 10),

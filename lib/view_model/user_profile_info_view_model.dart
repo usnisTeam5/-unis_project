@@ -21,6 +21,11 @@ class UserProfileViewModel with ChangeNotifier {
   bool get isLoading => _isLoading;
   double get review => _profileInfo!.review;
 
+  void incrementStudyCnt() {
+    _profileInfo!.studyCnt++;
+    notifyListeners(); // 변경 사항 알림
+  }
+
   Future<void> fetchUserProfile(String nickName) async { // 유저 프로필 정보 가져옴. 실패시에 모델에서 오류 던진 것 받아서 뷰로 던짐
     try {
       _isLoading = true;
