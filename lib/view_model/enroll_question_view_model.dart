@@ -25,8 +25,10 @@ class QaViewModel with ChangeNotifier {
     } catch (e) {
       // Error handling
       print('Error loading user courses: $e');
+    }finally{
+      setLoading(false);
     }
-    setLoading(false);
+
   }
 
   Future<void> enrollQuestion(QaDto question) async { // 등록함
@@ -41,15 +43,18 @@ class QaViewModel with ChangeNotifier {
     setLoading(false);
   }
 
-  Future<void> deleteQa(int qaKey) async { // 삭제함
+  Future<String> deleteQa(int qaKey) async { // 삭제함
     setLoading(true);
     try {
-      await QaService.deleteQa(qaKey);
+      String ans = await QaService.deleteQa(qaKey);
+      setLoading(false);
+      return ans; // no or ok;
       // 추가적인 성공 처리 (예: 사용자에게 알림)
     } catch (e) {
       // Error handling
       print('Error deleting QA: $e');
+      setLoading(false);
+      return "no";
     }
-    setLoading(false);
   }
 }

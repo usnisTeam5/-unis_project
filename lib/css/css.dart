@@ -24,13 +24,12 @@ import 'package:flutter/material.dart';
 //                 .fetchUserProfile(nickName, "별뚜기");
 //           });
 
-// Consumer<UserProfileOtherViewModel>( // consumer 사용법.
-//               builder: (context, viewModel, child) {
-//                 if (viewModel.isLoading && count ==0) { // 처음만 로딩 걸리게. 여기서 isLoading은
-//                   //print(viewModel.isLoading);
-//                   count ++;
-//                   return Center(child: CircularProgressIndicator());
-//                 }
+//
+//                 (chatModel.isLoading == true || count == 0)
+//               ? Center(
+//             child: CircularProgressIndicator(),
+//           )
+//               : Container(
 //               return SingleChildScrollView(
 //                 child: Column(
 //                   children: [
@@ -46,7 +45,7 @@ import 'package:flutter/material.dart';
 
 
 // body: ChangeNotifierProvider(
-//         create: () => ,
+//         create: (_) => OneToOneChatViewModel(),
 //           builder: (context, child) {
 // cntl + alt + L 자동정렬 , cntl + shift + F 모두찾기 , F 대신 R -> 모두바꾸기
 // final responseData = jsonDecode(utf8.decode(response.bodyBytes)); 이렇게 해야 안깨짐 한글.
@@ -162,6 +161,23 @@ class MyApp extends StatelessWidget {
 }
 이런식으로도 추가 가능
 * */
+
+
+// final List<String> subjects = [
+//   '컴퓨터와 휴먼',
+//   '인공지능과 윤리',
+//   '빅데이터 분석',
+//   '휴먼인터페이스미디어와 마법의 돌과 죄수',
+//   '컴퓨터와 휴먼',
+//   '인공지능과 윤리',
+//   '빅데이터 분석',
+//   '휴먼인터페이스미디어와 마법의 돌과 죄수',
+//   '컴퓨터와 휴먼',
+//   '인공지능과 윤리',
+//   '빅데이터 분석',
+//   '휴먼인터페이스미디어',
+// ];
+
 class GradientText extends StatelessWidget {
   const GradientText({
     super.key,

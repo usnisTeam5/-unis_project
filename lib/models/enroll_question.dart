@@ -1,6 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:unis_project/models/url.dart';
+
 class MsgDto { // 보낼 때 받을 때 사용함
   final String nickname;
   final String type; // img or str
@@ -80,7 +82,6 @@ class QaDto { // 등록하기 누르면 서버에 보낼 정보
 }
 
 class QaService {
-  static const String BASE_URL = 'your_api_base_url_here'; // Replace with your API base URL
 
   static Future<List<String>> getUserCourse(String nickname) async { // 유저 Course 받아옴
     final response = await http.get(
@@ -107,14 +108,14 @@ class QaService {
     print('enrollQuestion Response: ${response.body}'); // Response body 출력
 
     if (response.statusCode != 200) {
+      print("enrollQuestion : ${response.body}");
       throw Exception('Failed to enroll question');
     }
   }
 
   static Future<String> deleteQa(int qaKey) async { // Qa 삭제
     final response = await http.post(
-      Uri.parse('$BASE_URL/user/qa/delete'),
-      body: {'qaKey': qaKey.toString()},
+      Uri.parse('$BASE_URL/user/qa/delete?qaKey=$qaKey'),
     );
 
     print('deleteQa Response: ${response.body}'); // Response body 출력
