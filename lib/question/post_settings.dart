@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:unis_project/models/enroll_question.dart';
 import 'package:unis_project/question/question.dart';
@@ -73,7 +74,7 @@ class _PostSettingsState extends State<PostSettings> {
                 children: [
                   SizedBox(width: 5),
                   Text(
-                    user.point.toString(),
+                      formatNumber(user.point),
                     style: TextStyle(color: Colors.black, fontSize: 14, fontFamily: 'Bold'),
                   ),
                   SizedBox(width: 20), // 추가적인 공간을 위해
@@ -357,4 +358,8 @@ class _PostSettingsState extends State<PostSettings> {
       }
     );
   }
+}
+String formatNumber(int number) {
+  final formatter = NumberFormat('#,###');
+  return formatter.format(number);
 }

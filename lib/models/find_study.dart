@@ -167,42 +167,6 @@ class StudyMakeDto { //  스터디 생성에서 넘기는 정보.
   }
 }
 
-// class MyStudyInfoDto {
-//   int roomKey;
-//   String roomName;
-//   String course;
-//   int maxNum;
-//   int curNum;
-//   String startDate;
-//   String studyIntroduction;
-//
-//   MyStudyInfoDto({
-//     required this.roomKey,
-//     required this.roomName,
-//     required this.course,
-//     required this.maxNum,
-//     required this.curNum,
-//     required this.startDate,
-//     required this.studyIntroduction,
-//   });
-//
-//   factory MyStudyInfoDto.fromJson(Map<String, dynamic> json) {
-//     return MyStudyInfoDto(
-//       roomKey: json['roomKey'],
-//       roomName: json['roomName'],
-//       course: json['course'],
-//       maxNum: json['maxNum'],
-//       curNum: json['curNum'],
-//       startDate: json['startDate'],
-//       studyIntroduction: json['studyIntroduction'],
-//     );
-//   }
-// }
-
-
-
-// API 요청 및 응답 처리 메서드
-
 
 class StudyService {
 

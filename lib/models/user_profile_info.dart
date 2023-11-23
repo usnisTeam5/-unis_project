@@ -27,6 +27,7 @@ class CourseAllDto {
     };
   }
 }
+
 // 학과 DTO
 class DepartmentDto {
   List<String> depts;
@@ -54,7 +55,6 @@ class CourseDto {
   }
 }
 
-
 class UserProfileInfo {
   final String nickName;
   List<String> departments;
@@ -67,9 +67,8 @@ class UserProfileInfo {
   int answer;
   int studyCnt;
   double review;
+
   //static const BASE_URL = "http://3.35.21.123:8080";
-
-
 
   UserProfileInfo({
     required this.nickName,
@@ -97,7 +96,8 @@ class UserProfileInfo {
       currentCourses: List<String>.from(json['currentCourses'] ?? []),
       pastCourses: List<String>.from(json['pastCourses'] ?? []),
       // `profileImage` 처리는 Flutter 앱 내에서 이미지 처리 방식에 따라 달라질 수 있습니다.
-      profileImage: json['profileImage'] ?? File('image/unis.png').readAsBytesSync(),
+      profileImage:
+          json['profileImage'] ?? File('image/unis.png').readAsBytesSync(),
       // 예시로 네트워크 이미지를 사용하였습니다.
       point: json['point'],
       question: json['question'],
@@ -141,10 +141,9 @@ class UserProfileInfo {
           final bytes = base64Decode(data['profileImage']);
 
           data['profileImage'] = bytes; //
-        } else{
+        } else {
           data['profileImage'] = File('image/unis.png').readAsBytesSync();
         }
-
 
         data['nickName'] = nickname; // 서버 응답에 없는 닉네임을 추가
 
@@ -175,12 +174,12 @@ class UserProfileInfo {
     //final headers = {'Content-Type': 'application/json'};
     // 요청 본문에 Base64 인코딩된 이미지 데이터를 담은 JSON 생성
     final body = {'img': base64Image};
-   // print("sdfdf    $body");
+    // print("sdfdf    $body");
     // POST 요청을 전송
     final response = await http.post(
-        url,
+      url,
       headers: {'Content-Type': 'application/json'},
-        body: json.encode(body),
+      body: json.encode(body),
     );
     // 응답 처리
     if (response.statusCode == 200) {
@@ -228,14 +227,14 @@ class UserProfileInfo {
     }
   }
 
-  Future<String> changeCoursePastToNow(String nickname, String courseName) async {
+  Future<String> changeCoursePastToNow(
+      String nickname, String courseName) async {
     // 수강한 과목을 현재 과목으로 변경하는 API 호출
     pastCourses.remove(courseName);
     currentCourses.add(courseName);
     final url = Uri.parse(
         '$BASE_URL/user/profile/PastToNowCourse/$nickname?courseName=$courseName');
     final response = await http.post(url);
-
 
     if (response.statusCode == 200) {
       // 업데이트 성공 시 처리
@@ -248,7 +247,9 @@ class UserProfileInfo {
     }
   }
 
-  Future<String> setDepartment(String nickname, DepartmentDto departmentDto) async { // 학과 선택
+  Future<String> setDepartment(
+      String nickname, DepartmentDto departmentDto) async {
+    // 학과 선택
 
     final response = await http.post(
       Uri.parse('$BASE_URL/user/profile/setDepartment/$nickname'),
@@ -260,11 +261,11 @@ class UserProfileInfo {
 
     if (response.statusCode == 200) {
       departments[0] = departmentDto.depts[0];
-      if(departments.length == 2) departments.removeLast();
-      if(departmentDto.depts.length == 2) departments.add(departmentDto.depts[1]);
+      if (departments.length == 2) departments.removeLast();
+      if (departmentDto.depts.length == 2)
+        departments.add(departmentDto.depts[1]);
       return response.body;
     } else {
-
       throw Exception('Failed to set department : ${response.body}');
     }
   }
@@ -290,6 +291,22 @@ class UserProfileInfo {
       throw Exception('Failed to set course data.');
     }
   }
+
+  Future<void> setPoint(String nickname, int point) async {
+    print("setPoint: ${point}");
+    final response = await http.get(
+      Uri.parse('$BASE_URL/user/profile/point?nickname=$nickname&point=$point')
+    );
+
+    if (response.statusCode == 200) {
+      // 요청 성공 처리
+      print('Point updated successfully');
+    } else {
+      // 요청 실패 처리
+      print('Failed to update point');
+    }
+  }
+
 // // 과목 설정 함수
 //   Future<String> setCourse(String nickname, CourseDto courseDto) async {
 //     final response = await http.post(
@@ -325,9 +342,7 @@ class UserProfileInfo {
 //   }
 }
 
-
 // 학과 설정 함수
-
 
 // UserProfileInfo.defaultValues() :// 디폴트값 넣어놓음.
 //       nickName = "꽃구리",

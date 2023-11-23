@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:unis_project/chat/chat.dart';
 import 'package:unis_project/menu/notice.dart';
 import 'package:unis_project/menu/point_charge.dart';
 import 'package:unis_project/menu/point_withdraw.dart';
 import 'package:unis_project/menu/setting.dart';
+import 'package:unis_project/view_model/user_profile_info_view_model.dart';
 import '../css/css.dart';
 import 'dart:math';
 void main() {
@@ -75,12 +77,12 @@ class Menu extends StatelessWidget {
                     style: TextStyle(color: Colors.blue, fontFamily: 'Bold'),
                   ),
                   trailing: Icon(Icons.navigate_next, color: Colors.blue),
-                  onTap: () {
-                    Navigator.push(
+                  onTap: () async{
+                    await Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => PointChargeScreen()),
                     );
-                    // Navigate to the app settings screen
+                    Provider.of<UserProfileViewModel>(context,listen: false).noti();
                   },
                 ),
                 ListTile(

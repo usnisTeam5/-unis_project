@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 //import 'package:circle_avatar/circle_avatar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:unis_project/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'dart:io';
 import '../menu/point_charge.dart';
@@ -207,7 +208,7 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
                         child: Row(
                           children: [
                             Text(
-                              "보유 포인트 : ${viewModel.point}", style: TextStyle(fontFamily: 'Bold', color: Colors.grey[600],),
+                              "보유 포인트 : ${formatNumber(viewModel.point)}", style: TextStyle(fontFamily: 'Bold', color: Colors.grey[600],),
                             ),
                             SizedBox(width: 3),
                             Padding(
@@ -385,4 +386,10 @@ class _CoursesSectionState extends State<CoursesSection> {
       ),
     );
   }
+}
+
+
+String formatNumber(int number) {
+  final formatter = NumberFormat('#,###');
+  return formatter.format(number);
 }
