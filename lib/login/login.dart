@@ -27,9 +27,9 @@ void main() async{
           ChangeNotifierProvider<UserProfileViewModel>(
             create: (context) => UserProfileViewModel(),
           ),
-          // ChangeNotifierProvider<StudyInfoViewModel>(
-          //   create: (context) => StudyInfoViewModel(),
-          // ),
+          ChangeNotifierProvider<MyStudyInfoViewModel>(
+            create: (context) => MyStudyInfoViewModel(),
+          ),
         ],
         child: const UnisApp()
       ),

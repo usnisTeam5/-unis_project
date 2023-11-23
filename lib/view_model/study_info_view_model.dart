@@ -10,7 +10,7 @@ class MyStudyInfoViewModel with ChangeNotifier {
   bool _isLoading = false;
   // Getters
   bool get isLoading => _isLoading;
-  MyStudyInfo? get studyInfo => _MystudyInfo;
+  MyStudyInfo? get MystudyInfo => _MystudyInfo;
 
 
   int get roomKey => _MystudyInfo?.roomKey ?? 0;
@@ -58,7 +58,7 @@ class MyStudyInfoViewModel with ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      List<MyStudyInfo> MyStudyInfoList = await MyStudyInfoModel.getMyStudyRoomList(nickname);
+      _MyStudyInfoList = await MyStudyInfoModel.getMyStudyRoomList(nickname);
       //_studyCount = MyStudyInfoList.length;
       _isLoading = false;
       notifyListeners();
@@ -68,7 +68,5 @@ class MyStudyInfoViewModel with ChangeNotifier {
       notifyListeners();
     }
   }
-
-
 
 }

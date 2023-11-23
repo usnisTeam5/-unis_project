@@ -68,6 +68,7 @@ class MyStudyInfoModel {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+      print(data);
       final List<MyStudyInfo> MyStudyInfoList =
       data.map((item) => MyStudyInfo.fromJson(item)).toList();
       return MyStudyInfoList;
@@ -75,7 +76,5 @@ class MyStudyInfoModel {
       throw Exception('Failed to load my study info ${response.body}');
     }
   }
-
-
 }
 
