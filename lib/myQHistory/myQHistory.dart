@@ -198,12 +198,12 @@ class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProv
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: '${qa.type} ',
+                        text: '${qa.type}  ',
                         style: TextStyle(color: Color(0xFF3D6094), fontSize: 16 , fontFamily: 'Bold'),
                       ),
                       TextSpan(
                         text: qa.course,
-                        style: TextStyle(color: Colors.black, fontSize: 16, fontFamily: 'Round'),
+                        style: TextStyle(color: Colors.black, fontSize: 16, fontFamily: 'Bold'),
                       ),
                     ],
                   ),

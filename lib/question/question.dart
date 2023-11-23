@@ -5,10 +5,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import '../chat/chat.dart';
 import '../css/css.dart';
 import '../question/post_question.dart';
 import 'dart:math';
+
+import '../models/question_model.dart';
+import '../view_model/question_view_model.dart';
+import '../view_model/user_profile_info_view_model.dart';
 
 void main() {
   runApp(const Question());
@@ -34,8 +39,16 @@ class Question extends StatelessWidget {
   }
 }
 
-class QuestionPage extends StatelessWidget {
+class QuestionPage extends StatefulWidget {
   const QuestionPage({Key? key}) : super(key: key);
+
+  @override
+  _QuestionPageState createState() => _QuestionPageState();
+}
+
+class _QuestionPageState extends State<QuestionPage> {
+
+  int count =0;
 
   @override
   Widget build(BuildContext context) {
@@ -44,64 +57,89 @@ class QuestionPage extends StatelessWidget {
     final height = min(MediaQuery.of(context).size.height,700.0);
 
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        title: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GradientText(
-                  width: width,
-                  text: '  궁금한 게 생겼을 때 질문하세요!',
-                  tStyle: 'ExtraBold',
-                  tSize: 0.045,
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => PostQuestionPage()),
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 6.0),
-                    decoration: BoxDecoration(
-                      gradient: MainGradient(),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Text(
-                      '질문하기',
-                      style: TextStyle(
-                        fontFamily: 'ExtraBold',
-                        color: Colors.white,
-                        fontSize: width *0.04,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
-      body: Container(
-        color: Colors.grey[200],
-        child: ListView.builder(
-          physics: BouncingScrollPhysics(),
-          itemCount: 15,
-          itemBuilder: (context, index) => Padding(
-            padding: EdgeInsets.only(bottom: index == 14 ? 16.0 : 8.0,
-            ),
-            child: QuestionItem(index, '컴퓨터 그래픽스와 휴먼인터페이스와 수치해석'),
+    return ChangeNotifierProvider(
+        create: (_) => QaViewModel(),
+        builder: (context, child) {
 
+          final qaViewModel = Provider.of<QaViewModel>(context, listen: true);
+          final myprofile = Provider.of<UserProfileViewModel>(context, listen: false);
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            if (count == 0) {
+                count++; // 여기서 1로 만들면 아래에서 로딩이 활성화됨.
+              await qaViewModel.fetchQaList(myprofile.nickName);
+            }
+            print("heoo.");
+          });
+
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            title: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GradientText(
+                      width: width,
+                      text: '  궁금한 게 생겼을 때 질문하세요!',
+                      tStyle: 'ExtraBold',
+                      tSize: 0.045,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => PostQuestionPage()),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 6.0),
+                        decoration: BoxDecoration(
+                          gradient: MainGradient(),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Text(
+                          '질문하기',
+                          style: TextStyle(
+                            fontFamily: 'ExtraBold',
+                            color: Colors.white,
+                            fontSize: width *0.04,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
-        ),
-      ),
+          body: (qaViewModel.isLoading == true || count == 0)
+              ? Center(child: CircularProgressIndicator(),) :
+          RefreshIndicator(
+            onRefresh: () async {
+              qaViewModel.fetchQaList(myprofile.nickName);
+            },
+            child: Container(
+              color: Colors.grey[200],
+              child: ListView.builder(
+                physics: BouncingScrollPhysics(),
+                itemCount: qaViewModel.qaList.length,
+                itemBuilder: (context, index) {
+                  final qa = qaViewModel.qaList[index];
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: index == 14 ? 16.0 : 8.0,
+                    ),
+                    child: QuestionItem(index, qa),
+                  );
+                }
+              ),
+            ),
+          ),
+        );
+      }
     );
   }
 
@@ -111,9 +149,8 @@ class QuestionPage extends StatelessWidget {
 
 class QuestionItem extends StatelessWidget {
   final int index;
-  final String subjectName;
-
-  QuestionItem(this.index, this.subjectName);
+  final QaBriefDto qa;
+  const QuestionItem(this.index, this.qa, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -143,10 +180,10 @@ class QuestionItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  '  질문   ',
+                  "  ${qa.type}  ",
                   style: TextStyle(
                     color: Color(0xFF3D6094),
                     fontFamily: 'Bold',
@@ -156,7 +193,7 @@ class QuestionItem extends StatelessWidget {
                 Container(
                   width: width- 210,
                   child: Text(
-                    subjectName,
+                    qa.course,
                     style: TextStyle(
                       color: Colors.grey[700],
                       fontFamily: 'Bold',
@@ -170,7 +207,7 @@ class QuestionItem extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '${(index + 1) * 2000}',
+                  '${qa.point}',
                   style: TextStyle(
                     color: Colors.grey[600],
                     fontFamily: 'Bold',
@@ -189,26 +226,3 @@ class QuestionItem extends StatelessWidget {
     );
   }
 }
-
-
-class DetailPage extends StatelessWidget {
-  final int index;
-
-  DetailPage({required this.index});
-
-  @override
-  Widget build(BuildContext context) {
-    final width = min(MediaQuery.of(context).size.width,500.0);
-    final height = min(MediaQuery.of(context).size.height,700.0);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Detail Page'),
-      ),
-      body: Center(
-        child: Text('Item #$index'),
-      ),
-    );
-  }
-}
-
-
