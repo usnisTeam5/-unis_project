@@ -10,9 +10,6 @@ import '../view_model/find_study_view_model.dart';
 import '../models/find_study.dart';
 import '../view_model/user_profile_info_view_model.dart';
 
-
-
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -33,21 +30,20 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
-
 class FindStudyScreen extends StatefulWidget {
   @override
   _FindStudyScreenState createState() => _FindStudyScreenState();
 }
 
-class _FindStudyScreenState extends State<FindStudyScreen> with SingleTickerProviderStateMixin {
+class _FindStudyScreenState extends State<FindStudyScreen>
+    with SingleTickerProviderStateMixin {
   int count = 0;
 
-  bool isAll = true;  //스터디찾기에서 전체가 켜져있는지
-  bool isSeatLeft = false;  //스터디찾기에서 잔여석이 켜져있는지
-  bool isOpen = false;  //스터디찾기에서 공개가 켜져있는지
+  bool isAll = true; //스터디찾기에서 전체가 켜져있는지
+  bool isSeatLeft = false; //스터디찾기에서 잔여석이 켜져있는지
+  bool isOpen = false; //스터디찾기에서 공개가 켜져있는지
 
-  void selectCategory (bool _isAll, bool _isSeatLeft, bool _isOpen){
+  void selectCategory(bool _isAll, bool _isSeatLeft, bool _isOpen) {
     setState(() {
       isAll = _isAll;
       isSeatLeft = _isSeatLeft;
@@ -100,7 +96,8 @@ class _FindStudyScreenState extends State<FindStudyScreen> with SingleTickerProv
       ),
       body: Stack(
         children: [
-          _buildTabContent(RoomStatusDto(isAll : isAll, isSeatLeft: isSeatLeft, isOpen : isOpen)),
+          _buildTabContent(RoomStatusDto(
+              isAll: isAll, isSeatLeft: isSeatLeft, isOpen: isOpen)),
           Positioned(
             bottom: 20,
             right: 20,
@@ -136,18 +133,15 @@ class _FindStudyScreenState extends State<FindStudyScreen> with SingleTickerProv
               ),
             ),
           ),
-
         ],
       ),
     );
   }
 
   Widget _buildTabContent(RoomStatusDto roomStatus) {
-
     return ChangeNotifierProvider(
       create: (_) => StudyViewModel(),
       builder: (context, child) {
-
         final info = Provider.of<StudyViewModel>(context, listen: true);
 
         final width = min(MediaQuery.of(context).size.width, 500.0);
@@ -156,10 +150,13 @@ class _FindStudyScreenState extends State<FindStudyScreen> with SingleTickerProv
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           final nickname = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
           if (count == 0) {
-            count++; // 여기서 1로 만들면 아래에서 로딩이 활성화됨.
+            count++;
             await info.getStudyRoomList(nickname, roomStatus);
           }
-          if(count != 0 &&(info.roomStatus.isAll != isAll || info.roomStatus.isOpen != isOpen || info.roomStatus.isSeatLeft != isSeatLeft)){
+          if (count != 0 &&
+              (info.roomStatus.isAll != isAll ||
+                  info.roomStatus.isOpen != isOpen ||
+                  info.roomStatus.isSeatLeft != isSeatLeft)) {
             print("isAll: $isAll, isOpen: $isOpen, isSeatLeft : $isSeatLeft");
             await info.getStudyRoomList(nickname, roomStatus);
           }
@@ -214,6 +211,18 @@ class _FindStudyScreenState extends State<FindStudyScreen> with SingleTickerProv
                                           fontSize: width * 0.03),
                                     ),
                                   ),
+                                  SizedBox(
+                                    width: 20, height: 23,
+                                    child: !isOpen ? IconButton(
+                                      icon: Icon(
+                                        Icons.lock,
+                                        size: 20,
+                                      ),
+                                      color: Colors.grey[500],
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {},
+                                    ) : SizedBox.shrink(),  // true이면 표시xx
+                                  ),
                                 ],
                               ),
                               SizedBox(height: 14),
@@ -238,9 +247,10 @@ class _FindStudyScreenState extends State<FindStudyScreen> with SingleTickerProv
                                         color: Colors.grey,
                                       ),
                                       SizedBox(width: 4),
-                                      Text(
-                                          "${study.curNum}/${study.maxNum}명",
-                                          style: TextStyle(fontFamily: 'Round', fontSize: 13)),
+                                      Text("${study.curNum}/${study.maxNum}명",
+                                          style: TextStyle(
+                                              fontFamily: 'Round',
+                                              fontSize: 13)),
                                     ],
                                   ),
                                   Row(
@@ -272,13 +282,12 @@ class _FindStudyScreenState extends State<FindStudyScreen> with SingleTickerProv
                   },
                 ),
               );
-        },
+      },
     );
   }
 }
 
 class CustomTabBar extends StatefulWidget {
-
   final Function(bool, bool, bool) onEvent;
 
   CustomTabBar({required this.onEvent});
@@ -298,11 +307,7 @@ class _CustomTabBarState extends State<CustomTabBar> {
       _isTab2Selected = false;
       _isTab3Selected = false;
     });
-    widget.onEvent(
-        _isTab1Selected,
-        _isTab2Selected,
-        _isTab3Selected
-    );
+    widget.onEvent(_isTab1Selected, _isTab2Selected, _isTab3Selected);
   }
 
   void _toggleTab2() {
@@ -317,11 +322,7 @@ class _CustomTabBarState extends State<CustomTabBar> {
         _isTab2Selected = false;
       }
     });
-    widget.onEvent(
-        _isTab1Selected,
-        _isTab2Selected,
-        _isTab3Selected
-    );
+    widget.onEvent(_isTab1Selected, _isTab2Selected, _isTab3Selected);
   }
 
   void _toggleTab3() {
@@ -336,11 +337,7 @@ class _CustomTabBarState extends State<CustomTabBar> {
         _isTab3Selected = false;
       }
     });
-    widget.onEvent(
-        _isTab1Selected,
-        _isTab2Selected,
-        _isTab3Selected
-    );
+    widget.onEvent(_isTab1Selected, _isTab2Selected, _isTab3Selected);
   }
 
   @override
@@ -398,6 +395,3 @@ void _joinStudyDialog(BuildContext context) {
     },
   );
 }
-
-
-

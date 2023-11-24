@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:unis_project/view_model/user_profile_info_view_model.dart';
 import '../css/css.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
@@ -40,8 +42,8 @@ class _PointChargeScreenState extends State<PointChargeScreen> {
             children: [
               SizedBox(width: 5),
               Text(
-                '1,000,000',
-                style: TextStyle(color: Colors.black, fontSize: 14, fontFamily: 'Bold'),
+                formatNumber(Provider.of<UserProfileViewModel>(context,listen: true).point),
+                style: const TextStyle(color: Colors.black, fontSize: 14, fontFamily: 'Bold'),
               ),
               SizedBox(width: 20), // 추가적인 공간을 위해
               Padding(
@@ -97,8 +99,26 @@ class _PointChargeScreenState extends State<PointChargeScreen> {
                               ),
                               TextButton(
                                 child: Text('확인'),
-                                onPressed: () {
+                                onPressed: () async{
                                   Navigator.of(context).pop();
+                                  final user = Provider.of<UserProfileViewModel>(context,listen: false);
+                                  await user.setPoint(user.nickName, _selectedPoint!);
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: Text("충전이 완료되었습니다."),  // 선택되지 않았을 때의 안내 문구
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text('확인'),
+                                            onPressed: () async{
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                   // 실제 포인트 충전 로직을 여기에 추가할 수 있습니다.
                                 },
                               ),
@@ -115,7 +135,7 @@ class _PointChargeScreenState extends State<PointChargeScreen> {
                             actions: <Widget>[
                               TextButton(
                                 child: Text('확인'),
-                                onPressed: () {
+                                onPressed: () async{
                                   Navigator.of(context).pop();
                                 },
                               ),

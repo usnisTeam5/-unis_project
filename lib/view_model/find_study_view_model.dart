@@ -1,17 +1,26 @@
 import 'package:flutter/foundation.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import '../models/find_study.dart';
 
 
 
 class StudyViewModel with ChangeNotifier {
+  String? _image;
+
   StudyMakeDto? _studyMakeDto;
   StudyInfoDto? _studyInfoDto;
   RoomStatusDto roomStatus = RoomStatusDto(isAll: true, isSeatLeft: false, isOpen: false);
+  UserInfoMinimumDto? _userInfoMinimumDto;
+  StudyJoinDto? _studyJoinDto;
 
-  // 생성자
-  StudyViewModel({StudyMakeDto? studyMakeDto, StudyInfoDto? studyInfoDto})
-      : _studyMakeDto = studyMakeDto ?? StudyMakeDto.defaultValues(),
-        _studyInfoDto = studyInfoDto ?? StudyInfoDto.defaultValues();
+  StudyViewModel({StudyMakeDto? studyMakeDto, StudyInfoDto? studyInfoDto, UserInfoMinimumDto? userInfoMinimumDto}) {
+    _studyMakeDto = studyMakeDto ?? StudyMakeDto.defaultValues();
+    _studyInfoDto = studyInfoDto ?? StudyInfoDto.defaultValues();
+    _userInfoMinimumDto = userInfoMinimumDto ?? UserInfoMinimumDto.defaultValues();
+  }
+
 
   // StudyMakeDto에 대한 게터 메소드, 스터디 생성
   StudyMakeDto? get studyMakeDto => _studyMakeDto;
@@ -40,15 +49,41 @@ class StudyViewModel with ChangeNotifier {
   String get infoStudyIntroduction => _studyInfoDto?.studyIntroduction ?? '';
 
 
+  // UserInfoMinimumDto에 대한 게터 메소드, 가입한 스터디 입장할 때
+  UserInfoMinimumDto? get userInfoMinimumDto => _userInfoMinimumDto;
+
+  String get nickname => _userInfoMinimumDto?.nickname ?? '';
+  String get image => _userInfoMinimumDto?.image ?? '';
+
+
+  // StudyJoinDto 스터디 가입할 때
+  StudyJoinDto? get studyJoinDto => _studyJoinDto;
+
+  int get roomKey => _studyJoinDto?.roomKey ?? 15;
+  String get joinCode => _studyJoinDto!.code;
+
+
+
+
+
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  final StudyService _studyService = StudyService();
 
   String _resultMessage = '';
   String get resultMessage => _resultMessage;
+
   List<StudyInfoDto> _studyRoomlist = [];
   List<StudyInfoDto> get studyRoomlist => _studyRoomlist;
 
-  final StudyService _studyService = StudyService();
+  List<UserInfoMinimumDto> _studyFriendList = [];
+  List<UserInfoMinimumDto> get studyFriendList => _studyFriendList;
+
+
+  String _joinResult = '';
+  String get joinReslt => _joinResult;
+
 
 
 
@@ -100,6 +135,36 @@ class StudyViewModel with ChangeNotifier {
   }
 
 
+
+  Future<void> enterStudy(int roomKey, String nickname) async { // 가입 스터디 입장
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      _studyFriendList = await _studyService.enterStudy(roomKey, nickname);
+      _resultMessage = '스터디 친구 목록 로드 성공.';
+
+      _isLoading = false;
+      notifyListeners();
+
+    } catch (e) {
+      print('Error loading study friends: $e');
+      _resultMessage = '스터디 친구 목록 로드 실패.';
+      _studyFriendList = [];
+
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+
+
+  Future<void> joinStudy(String nickname, StudyJoinDto joinInfo) async { // 스터디 가입
+    _isLoading = true;
+    notifyListeners();
+
+  }
 
 
 

@@ -2,8 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'url.dart';
 
-class StudyInfoDto {
-  // 스터디 찾기 들어갔을 때 필요
+class StudyInfoDto { // 스터디 찾기 들어갔을 때 필요
   int roomKey; // 스터디 고유키
   String roomName; // 스터디 제목
   String course; // 스터디 과목
@@ -66,7 +65,7 @@ class StudyInfoDto {
   }
 }
 
-class RoomStatusDto {
+class RoomStatusDto { // 스터디 상태
   bool isAll;
   bool isSeatLeft;
   bool isOpen;
@@ -94,8 +93,8 @@ class RoomStatusDto {
   }
 }
 
-class StudyJoinDto {
-  // 가입신청
+
+class StudyJoinDto { // 스터디 가입
   int roomKey;
   String code;
 
@@ -112,8 +111,8 @@ class StudyJoinDto {
   }
 }
 
-class StudyMakeDto {
-  //  스터디 생성에서 넘기는 정보.
+
+class StudyMakeDto { //  스터디 생성에서 넘기는 정보.
   String roomName; // 스터디 이름
   String? code; // 비밀번호(공개방이면 null 값)
   String course; // 과목
@@ -171,6 +170,7 @@ class StudyMakeDto {
   }
 }
 
+
 class UserInfoMinimumDto { // 가입 스터디 입장 했을 때
   String nickname;
   String image;
@@ -199,9 +199,12 @@ class UserInfoMinimumDto { // 가입 스터디 입장 했을 때
   }
 }
 
+
 // API 요청 및 응답 처리 메서드
 
+
 class StudyService {
+
   Future<List<StudyInfoDto>> getStudyRoomList(
       String nickname, RoomStatusDto roomStatus) async { // 스터디 찾기
 
@@ -226,35 +229,32 @@ class StudyService {
     print(response.body);
     // *********************************
     if (response.statusCode == 200) {
-      final List<dynamic> studyInfoJsonList =
-          jsonDecode(utf8.decode(response.bodyBytes));
+      final List<dynamic> studyInfoJsonList = jsonDecode(utf8.decode(response.bodyBytes));
       print("스터디 찾기 모델 $studyInfoJsonList");
-      return studyInfoJsonList
-          .map((json) => StudyInfoDto.fromJson(json))
-          .toList();
+      return studyInfoJsonList.map((json) => StudyInfoDto.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load study rooms');
     }
   }
 
+
   Future<String> joinStudy(String nickname, StudyJoinDto joinInfo) async { // 스터디 가입
-    final response = await http.post(
-      Uri.parse('$BASE_URL/studyRoom/join/$nickname'),
+    final response = await http.post(Uri.parse('$BASE_URL/studyRoom/join/$nickname'),
       body: json.encode(joinInfo.toJson()),
       headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode == 200) {
-      return response.body;
+      return response.body; // 'noSheet', 'codeError', 'ok' 중 하나 반환
     } else {
-      throw Exception('Failed to join study');
+      throw Exception('Failed to join study: ${response.body}');
     }
   }
 
+
   static Future<bool> makeStudyRoom(StudyMakeDto info) async { // 스터디 생성
     try {
-      final response = await http.post(
-        Uri.parse('$BASE_URL/study/make'),
+      final response = await http.post(Uri.parse('$BASE_URL/study/make'),
         headers: {'Content-Type': 'application/json'},
 
         body: jsonEncode(info.toJson()),
@@ -274,15 +274,20 @@ class StudyService {
     }
   }
 
+
   Future<List<UserInfoMinimumDto>> enterStudy(int roomKey, String nickname) async { // 가입한 스터디 입장 했을 때
-    final response = await http.get(
-        Uri.parse('$BASE_URL/study/enter?roomKey=$roomKey&nickname=$nickname'));
+    final response = await http.get(Uri.parse('$BASE_URL/study/enter?roomKey=$roomKey&nickname=$nickname'),
+    headers: {'Content-Type': 'application/json'},
+    );
 
     if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body);
-      return data.map((json) => UserInfoMinimumDto.fromJson(json)).toList();
+      List<dynamic> enterStudyList = jsonDecode(utf8.decode(response.bodyBytes));
+      print("가입 스터디 입장. 모델 $enterStudyList");
+      return enterStudyList.map((json) => UserInfoMinimumDto.fromJson(json)).toList();
+
     } else {
       throw Exception('Failed to load study friend list: ${response.body}');
     }
   }
+
 }
