@@ -58,10 +58,6 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
     return ChangeNotifierProvider(
       create: (_) => OneToOneChatViewModel(),
       builder: (context, child) {
-        final myprofile =
-        Provider.of<UserProfileViewModel>(context, listen: false);
-        final chatModel =
-        Provider.of<OneToOneChatViewModel>(context, listen: true);
 
         final width = min(MediaQuery
             .of(context)
@@ -71,6 +67,12 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
             .of(context)
             .size
             .height, 700.0);
+
+        final myprofile =
+        Provider.of<UserProfileViewModel>(context, listen: false);
+        final chatModel =
+        Provider.of<OneToOneChatViewModel>(context, listen: true);
+
 
         final myNickname = myprofile.nickName;
         final friendNickname = widget.friendName;

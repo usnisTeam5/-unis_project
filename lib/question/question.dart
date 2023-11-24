@@ -158,11 +158,14 @@ class QuestionItem extends StatelessWidget {
     final height = min(MediaQuery.of(context).size.height,700.0);
 
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
+      onTap: () async{
+        await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ChatScreen()),
+          MaterialPageRoute(builder: (context) => ChatScreen(qaKey: qa.qaKey)),
         );
+        final qaViewModel = Provider.of<QaViewModel>(context, listen: false);
+        final nickname = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
+        await qaViewModel.fetchQaList(nickname);
       },
       child: Container(
         margin: EdgeInsets.only( // 리스트 마진

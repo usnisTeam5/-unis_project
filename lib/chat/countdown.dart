@@ -29,10 +29,12 @@ class _CountdownState extends State<Countdown> {
       Navigator.pop(context);  // 시간 끝나면 화면 닫음
       return;
     }
-
+    final hours = remaining.inHours;
     final minutes = remaining.inMinutes;
     final seconds = remaining.inSeconds % 60;
-    final formatted = '남은 시간 ${minutes}m ${seconds}s';
+
+    String formatted = '남은 시간 ${minutes}m ${seconds}s';;
+    if(hours != 0) '남은 시간 ${hours}h${minutes}m ${seconds}s';
     setState(() {
       _timeRemaining = formatted;
     });
