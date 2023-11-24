@@ -245,7 +245,9 @@ class StudyService {
     );
 
     if (response.statusCode == 200) {
+      print("스터디 가입 시도. 모델");
       return response.body; // 'noSheet', 'codeError', 'ok' 중 하나 반환
+
     } else {
       throw Exception('Failed to join study: ${response.body}');
     }
