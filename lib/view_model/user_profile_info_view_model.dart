@@ -85,6 +85,7 @@ class UserProfileViewModel with ChangeNotifier {
   Future<void> setCourseAll(CourseAllDto course) async {
     try {
       await _profileInfo!.setCourseAll(_profileInfo!.nickName, course);
+      notifyListeners();
       // 성공적으로 저장한 경우 다른 작업을 수행할 수 있습니다.
     } catch (e) {
       // 저장 실패 시 예외 처리

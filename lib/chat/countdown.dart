@@ -1,6 +1,8 @@
 /*
 남은 시간
  */
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:unis_project/css/css.dart';
 
@@ -15,6 +17,7 @@ class Countdown extends StatefulWidget {
 
 class _CountdownState extends State<Countdown> {
   late String _timeRemaining;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -22,25 +25,33 @@ class _CountdownState extends State<Countdown> {
     _updateTime();
   }
 
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   void _updateTime() {
     final now = DateTime.now();
     final remaining = widget.endTime.difference(now);
     if (remaining.isNegative) {
+      _timer?.cancel();
       Navigator.pop(context);  // 시간 끝나면 화면 닫음
       return;
     }
+
     final hours = remaining.inHours;
-    final minutes = remaining.inMinutes;
+    final minutes = remaining.inMinutes % 60; // 시간을 제외한 순수 분
     final seconds = remaining.inSeconds % 60;
 
-    String formatted = '남은 시간 ${minutes}m ${seconds}s';;
-    if(hours != 0) '남은 시간 ${hours}h${minutes}m ${seconds}s';
+    String formatted = hours != 0 ? '남은 시간 ${hours}h ${minutes}m ${seconds}s' : '남은 시간 ${minutes}m ${seconds}s';
+
     setState(() {
       _timeRemaining = formatted;
     });
-    Future.delayed(Duration(seconds: 1), _updateTime);
-  }
 
+    _timer = Timer(Duration(seconds: 1), _updateTime);
+  }
   @override
   Widget build(BuildContext context) {
     return Text(_timeRemaining,

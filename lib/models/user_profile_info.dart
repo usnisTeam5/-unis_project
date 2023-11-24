@@ -286,6 +286,8 @@ class UserProfileInfo {
     );
 
     if (response.statusCode == 200) {
+      currentCourses = course.currentCourses;
+      pastCourses = course.pastCourses;
       return 'ok';
     } else {
       throw Exception('Failed to set course data.');
@@ -341,17 +343,3 @@ class UserProfileInfo {
 //     }
 //   }
 }
-
-// 학과 설정 함수
-
-// UserProfileInfo.defaultValues() :// 디폴트값 넣어놓음.
-//       nickName = "꽃구리",
-//       departments = ['소프트웨어학부','경영학부'],
-//       introduction = 'Hello! I am a student.',
-//       currentCourses = ['컴퓨터 그래픽스', '휴먼인터페이스'],
-//       pastCourses = ['수치해석'],
-//       profileImage = 'image/unis.png',
-//       point = 100,
-//       question = 10,
-//       answer = 5,
-//       studyCnt = 3;

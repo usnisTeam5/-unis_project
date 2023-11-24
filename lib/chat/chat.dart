@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return MaterialApp(
-      home: ChatScreen(qaKey: -1),
+      home: ChatScreen(qaKey: -1, forAns: false,),
       theme: ThemeData(
         textTheme: TextTheme(
           bodyText2: TextStyle(fontFamily: 'Round'),
@@ -48,12 +48,12 @@ class MyApp extends StatelessWidget {
 
 class ChatScreen extends StatefulWidget {
   final int qaKey; // qaKey 필드 추가
-
+  final bool forAns;
   // 생성자에서 qaKey를 받아 초기화
-  ChatScreen({Key? key, required this.qaKey}) : super(key: key);
+  ChatScreen({Key? key, required this.qaKey, required this.forAns}) : super(key: key);
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _ChatScreenState createState() => _ChatScreenState(forAns);
 }
 
 class _ChatScreenState extends State<ChatScreen> {
@@ -76,8 +76,10 @@ class _ChatScreenState extends State<ChatScreen> {
   int count = 0; // 첫 시도
   bool isReviewed = false;
   List<String> savedMessages = []; // 답변하기 버튼 누륵기 전 저장
-  String status = "진행"; // 미답 진행 완료 셋 중 하나.
-
+  String status = "진행";
+  bool forAns;
+  _ChatScreenState(this.forAns); // 미답 진행 완료 셋 중 하나.
+  int kcount =0;
   @override
   void dispose() {
     _isDisposed = true; // Set the flag to true when disposing the screen
@@ -185,25 +187,36 @@ class _ChatScreenState extends State<ChatScreen> {
             while (!_isDisposed) {
               await Future.delayed(const Duration(
                   milliseconds: 500)); // Adjust the delay duration as needed
-              await chatModel.refreshQaMessages(widget.qaKey, nickname);
+              await chatModel.refreshQaMessages(widget.qaKey, nickname, kcount);
+              kcount =1;
             }
           } //
 
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             if (count == 0) {
               count++; // 여기서 1로 만들면 아래에서 로딩이 활성화됨.
-              await chatModel.fetchQaMessages(widget.qaKey, nickname);
-              await chatModel.loadProfileImage(
-                  chatModel.friendNickname); // 상대방 이름으로 이미지 얻어올 것.
-              _isQuestioner = chatModel.isQuestioner;
               await chatModel.checkIsReview(widget.qaKey);
               await chatModel.fetchQaStatus(widget.qaKey);
-              isReviewed = chatModel.isReviewed;// =  답변이 됨?
-              status = chatModel.qaStatus;// 리뷰를 함? 체크
-              isAnonymity = chatModel.isAnonymity;
-              startGettingMessages(); // getmsg 무한루프 돌림.
-              if(status == '진행') {
-                _time = await chatModel.getAnswerTime(widget.qaKey);
+              if(forAns) {
+                await chatModel.fetchQaMessages(
+                    widget.qaKey, nickname); // 이거 어떻게 처리?
+              }
+              else{
+                await chatModel.fetchAllMsg(
+                    widget.qaKey, nickname); // 이거 어떻게 처리?
+              }
+              await chatModel.loadProfileImage(
+                  chatModel.friendNickname); // 상대방 이름으로 이미지 얻어올 것.
+
+              _isQuestioner = chatModel.isQuestioner;
+              setState(() {
+                isReviewed = chatModel.isReviewed;// =  답변이 됨?
+                status = chatModel.qaStatus;// 리뷰를 함? 체크
+                isAnonymity = chatModel.isAnonymity;
+                _time = chatModel.time;
+              });
+              if(!forAns) {
+                startGettingMessages(); // getmsg 무한루프 돌림.
               }
             }
             _scrollToBottom();
@@ -216,7 +229,7 @@ class _ChatScreenState extends State<ChatScreen> {
               backgroundColor: Colors.white,
               toolbarHeight: 55,
               leadingWidth: 105,
-              leading: (status == '미답' && _isQuestioner) // 미답이고, 질문자이면
+              leading: (status == '미답' && !_isQuestioner) // 미답이고, 질문자이면
                   ? Container(
                 margin: EdgeInsets.all(10),
                 child: TextButton(
@@ -346,6 +359,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                   return PopupReview(qaKey: widget.qaKey); // 리뷰 작성 내부에서 finishQa 실행함.
                                 },
                               );
+                              setState(() {
+                                isReviewed = true;
+                                status = "완료";
+                              });
                             } else { // 여기부터 하면 됨 11-24
                               // '공유' 버튼을 눌렀을 때 chatShare.dart 파일로 이동
                               if(isReviewed == true) {
@@ -411,10 +428,15 @@ class _ChatScreenState extends State<ChatScreen> {
                             );
                           } else {
                             status = '진행';
+                            forAns = false;
                             await chatModel.sendQaMessageList(
                                 widget.qaKey, _messages);
                             await chatModel.solveQa(widget.qaKey);
-                            await chatModel.fetchQaMessages(widget.qaKey, nickname);
+                            await chatModel.fetchAllMsg(widget.qaKey, nickname);
+                            setState(() {
+                              _time = chatModel.time;
+                            });
+                            startGettingMessages();
                             _showAlertDialog(context);
                           }
                         },
@@ -473,7 +495,7 @@ class _ChatScreenState extends State<ChatScreen> {
               color: Colors.grey[200],
               child: Column(
                 children: [
-                  ((status == '미답' && !_isQuestioner) || (status == '진행'))  // 미답인 상태에서 답변자거나 진행중일 때, 보여줌.
+                  (status != "완료" && !(_isQuestioner && status == '미답'))  // 미답인 상태에서 답변자거나 진행중일 때, 보여줌.
                       ? Container( // 시간 표기
                     padding:EdgeInsets.all(8),
                     color : Colors.transparent,
@@ -487,7 +509,10 @@ class _ChatScreenState extends State<ChatScreen> {
                           color : Colors.white,
                           borderRadius : BorderRadius.circular(30),
                         ),
-                        child : Countdown(endTime : _time, ),
+                        child :
+                        Countdown(endTime :
+                        _time
+                          , ),
                       ),
                     ),
                   ) : Container(),
@@ -530,10 +555,17 @@ class _ChatScreenState extends State<ChatScreen> {
                               if (message.nickname != nickname && shouldDisplayHeader) // 내 메시지가 아닌 상대방 메시지 인데, header를 보여줄 때
                                 Column( // 상대방 프로필 표시
                                   children: [
-                                    CircleAvatar(
-                                      backgroundImage: MemoryImage(chatModel
-                                          .friendProfileImage), // ** 추가
-                                      radius: 15,
+                                    Container(
+                                      width: 30.0, // 이미지의 크기 조절
+                                      height: 30.0,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle, // 원형 모양을 만들기 위해 사용
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: MemoryImage(chatModel
+                                              .friendProfileImage), // ** 추가
+                                        ),
+                                      ),
                                     ),
                                     SizedBox(height: 2),
                                   ],
@@ -733,7 +765,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     Uint8List imageBytes = await pickedFile!
                                         .readAsBytes();
                                     DateTime time = DateTime.now();
-                                    if (_isQuestioner || isAnswerd) { // 답변하기를 한 후에 답변자 -> 이미지 바로 전송하면 됨
+                                    if (!(forAns)) { // 답변하기를 한 후에 답변자 -> 이미지 바로 전송하면 됨
                                       // 질문자 -> 무조건 바로 전송. 답변자와 같음. 구분 x
                                       await chatModel.fetchQaStatus(widget.qaKey);
                                       status = chatModel.qaStatus;
@@ -796,8 +828,9 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                           onPressed: () async{
                             if (_messageController.text.isNotEmpty) {
-                              if (_isQuestioner || isAnswerd) { // 답변하기를 한 후에 답변자 -> 이미지 바로 전송하면 됨
+                              if (!(forAns)) { // 답변하기를 한 후에 답변자 -> 이미지 바로 전송하면 됨
                                 // 질문자 -> 무조건 바로 전송. 답변자와 같음. 구분 x
+                                //print("dasjfasdkfjhsdafjd : $forAns");
                                 DateTime time = DateTime.now();
                                 await chatModel.fetchQaStatus(widget.qaKey);
                                 status = chatModel.qaStatus;
@@ -811,8 +844,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                 }
                               }
                               else { // 답변하기 하기 이전에 답변자  : mssagesToSend에 저장했다가 답변하기 할 때 한꺼번에 보냄
-                                _sendMsg(_messageController.text,chatModel); // 내부적으로 저 경로를 따라서 이미지를 다른곳에 저장 후 그 저장된 경로를 profileImage 에 저장함.
+                                _sendMsg(_messageController.text,chatModel);
+                                // 내부적으로 저 경로를 따라서 이미지를 다른곳에 저장 후 그 저장된 경로를 profileImage 에 저장함.
                               } // 내부적으로 저 경로를 따라서 이미지를 다른곳에 저장 후 그 저장된 경로를 profileImage 에 저장함.
+                              _messageController.text = '';
                             }
                           },
                         )

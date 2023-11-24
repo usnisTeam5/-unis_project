@@ -16,7 +16,7 @@ class QaViewModel extends ChangeNotifier {
   String _friendNickname = "";
   String get friendNickname => _friendNickname;
   bool get isLoading => _isLoading;
-
+  late DateTime time;
   // 이 변수는 API로부터 리뷰 상태가 있는지 여부를 나타냅니다.
   bool _isReviewed = false;
   bool get isReviewed => _isReviewed;
@@ -44,14 +44,17 @@ class QaViewModel extends ChangeNotifier {
     }
   }
 
-  // 특정 QA의 메시지를 가져오는 함수
+  // 특정 QA의 메시지를 가져오는 함수. 이건 처음 질문 들어갈 때 필요함. 나눈 대화 가져오는건 따로 있음.
   Future<void> fetchQaMessages(int qaKey, String nickname) async {
     _isLoading = true;
     notifyListeners();
     try {
+      print("Hello");
       qaMessages = await _qaService.getQuestion(qaKey, nickname);
+      print("뷰모델 fetchQa M : ${qaMessages[0].nickname}");
       questioner = qaMessages[0].nickname;
       isAnonymity = qaMessages[0].isAnonymity;
+
       if(questioner == nickname){
         isQuestioner = true;
         for(int i=0; i <qaMessages.length ; i ++){
@@ -103,6 +106,39 @@ class QaViewModel extends ChangeNotifier {
     }
   }
 
+
+  Future<void> fetchAllMsg(int qaKey, String nickname) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      print("Hello");
+      qaMessages = await _qaService.getAllMsg(qaKey);
+      time =  await _qaService.getRemainingTime(qaKey);
+      print("뷰모델 fetchQa M : ${qaMessages[0].nickname}");
+      questioner = qaMessages[0].nickname;
+      isAnonymity = qaMessages[0].isAnonymity;
+
+      if(questioner == nickname){
+        isQuestioner = true;
+        for(int i=0; i <qaMessages.length ; i ++){
+          if(qaMessages[i].nickname != nickname){
+            _friendNickname = qaMessages[i].nickname; // 상대방 이름
+            break;
+          }
+        }
+      } else {
+        isQuestioner = false;
+        _friendNickname = questioner; // 상대방 이름
+      }
+    } catch (e) {
+      // 에러 처리
+      print(e);
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   // QA 채팅 메시지 전송 함수
   Future<void> sendQaMessage(int qaKey, String nickname, String type, String msg, Uint8List img, String time) async {
 
@@ -113,7 +149,7 @@ class QaViewModel extends ChangeNotifier {
       print(e);
     }
   }
-
+ // 메시지 답변하기 전에 리스트로 보관하던거 한꺼번에 보냄
   Future<void> sendQaMessageList(int qaKey, List<QaMsgDto> messages) async {
 
     //int qaKey,   String nickname,   String type,   String msg,   Uint8List img,   String time,
@@ -132,12 +168,12 @@ class QaViewModel extends ChangeNotifier {
     }
   }
   // QA 채팅 내용 갱신 함수
-  Future<void> refreshQaMessages(int qaKey, String nickname) async {
+  Future<void> refreshQaMessages(int qaKey, String nickname, int k) async {
     try {
 
       List<QaMsgDto> temp= await _qaService.getQaMsgs(qaKey, nickname);
 
-      if(temp.isNotEmpty) {
+      if(temp.isNotEmpty && k == 1) {
         qaMessages.addAll(temp); // message에  추가함.
         //print(messages);
         //print("Messages list hashCode: ${messages.hashCode}");
@@ -153,9 +189,10 @@ class QaViewModel extends ChangeNotifier {
   }
 
   // solver가 답변하기를 선택한 시간을 얻는 함수
-  Future<DateTime> getAnswerTime(int qaKey) async {
+  Future<void> getAnswerTime(int qaKey) async {
     try {
-      return await _qaService.getRemainingTime(qaKey);
+      time =  await _qaService.getRemainingTime(qaKey);
+      notifyListeners();
     } catch (e) {
       // 에러 처리
       rethrow;
@@ -174,7 +211,8 @@ class QaViewModel extends ChangeNotifier {
 
   Future<void> loadProfileImage(String nickname) async { // 상대방 이미지를 가져옴
     try {
-
+      _isLoading = true;
+      notifyListeners(); // Hide loading indicator
       _friendProfileImage = await QaService.getProfileImage(nickname);
 
     } catch (e) {
@@ -182,7 +220,7 @@ class QaViewModel extends ChangeNotifier {
       notifyListeners();
     } finally {
       _isLoading = false;
-      notifyListeners(); // Hide loading indicator
+       notifyListeners(); // Hide loading indicator
     }
   }
 
@@ -203,15 +241,12 @@ class QaViewModel extends ChangeNotifier {
 
   // isReview 상태를 확인하는 함수
   Future<void> checkIsReview(int qaKey) async {
-    setLoading(true);
     try {
       final bool reviewStatus = await _qaService.isReview(qaKey);
       _isReviewed = reviewStatus;
     } catch (e) {
       // 에러 처리
       print('Error checking review status: $e');
-    } finally {
-      setLoading(false);
     }
   }
 

@@ -161,7 +161,7 @@ class QuestionItem extends StatelessWidget {
       onTap: () async{
         await Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ChatScreen(qaKey: qa.qaKey)),
+          MaterialPageRoute(builder: (context) => ChatScreen(qaKey: qa.qaKey, forAns: true,)),
         );
         final qaViewModel = Provider.of<QaViewModel>(context, listen: false);
         final nickname = Provider.of<UserProfileViewModel>(context, listen: false).nickName;

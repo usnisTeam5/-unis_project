@@ -89,11 +89,13 @@ class QaService {
     }
   }
 
-  // 특정 QA를 선택했을 때 해당 QA의 메시지를 가져오는 함수
+  // 특정 QA를 답변하려고 선택했을 때,질문자가 올린 질문의 메시지를 가져오는 함수
   Future<List<QaMsgDto>> getQuestion(int qaKey, String nickname) async {
     final response = await http.get(
         Uri.parse('$BASE_URL/qa/pick?qaKey=$qaKey&nickname=$nickname'));
-    print(response.body); // 응답 내용 출력
+
+    print("getQuestion모델: ${response.body}"); // 응답 내용 출력
+
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(utf8.decode(response.bodyBytes));
       return jsonData.map((json) => QaMsgDto.fromJson(json)).toList();
@@ -115,6 +117,21 @@ class QaService {
     print(response.body); // 응답 내용 출력
   }
 
+
+  // 처음에 모두 가져오는 함수
+  Future<List<QaMsgDto>> getAllMsg(int qaKey) async {
+    final response = await http.get(
+        Uri.parse('$BASE_URL/user/qa?qaKey=$qaKey'));
+
+    print("getQuestion모델: ${response.body}"); // 응답 내용 출력
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = json.decode(utf8.decode(response.bodyBytes));
+      return jsonData.map((json) => QaMsgDto.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load question');
+    }
+  }
   // QA 채팅 메시지를 보내는 함수
   Future<void> sendQaMsg(int qaKey, String nickname, String type, String msg,
       Uint8List img, String time) async {
@@ -159,7 +176,6 @@ class QaService {
       DateTime solverTime = DateTime.fromMillisecondsSinceEpoch(
           epochTimeInSeconds * 1000);
       DateTime endTime = solverTime.add(const Duration(hours: 24));
-      DateTime currentTime = DateTime.now();
 
       return endTime; // 끝나는 시간 반환
     } else {

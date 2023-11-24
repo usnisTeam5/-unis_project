@@ -7,6 +7,7 @@ import 'package:unis_project/chat/myQHistoryChat.dart';
 import 'package:unis_project/view_model/my_qna_view_model.dart';
 import 'package:unis_project/view_model/user_profile_info_view_model.dart';
 
+import '../chat/chat.dart';
 import '../models/my_qna_model.dart';
 void main() => runApp(MyApp());
 
@@ -158,7 +159,7 @@ class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProv
                  child: CircularProgressIndicator(),
               )
               : Expanded(  // <--- 이 줄을 추가
-                    child: buildListView(),
+                    child: buildListView(listViewModel),
               ),
             ],
           ),
@@ -167,7 +168,7 @@ class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProv
     );
   }
 
-  ListView buildListView() {
+  ListView buildListView(MyQnAViewModel listViewModel) {
     print("buildListView: $qaList");
     return ListView.builder(
       physics: BouncingScrollPhysics(),
@@ -176,11 +177,12 @@ class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProv
         final QaListDto qa = qaList[index];
 
         return GestureDetector(
-          onTap: () {
-            Navigator.push(
+          onTap: () async{
+            await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MyQHistoryChatScreen()),
+              MaterialPageRoute(builder: (context) => ChatScreen(qaKey: qa.qaKey,forAns: false,)),
             );
+            _fetchData(listViewModel, Provider.of<UserProfileViewModel>(context,listen: false).nickName);
           },
 
           child: Container(

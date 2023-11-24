@@ -37,11 +37,16 @@ class ImagePickerPopup extends StatelessWidget {
     final pickedFile = await ImagePicker().pickImage(source: source); // 파일을 받아옴
     if (pickedFile != null) {
       File originalImage = File(pickedFile.path);
+      String extension = pickedFile.path.split('.').last.toLowerCase();
 
-      // 이미지 압축
-      //File compressedImage = await compressImage(originalImage);
-
-      onImagePicked(originalImage);
+      // 확장자가 jpg 또는 jpeg인 경우에만 이미지 압축
+      // if (extension == 'jpg' || extension == 'jpeg') {
+      //   File compressedImage = await compressImage(originalImage);
+      //   onImagePicked(compressedImage);
+      // } else {
+      //   // 그렇지 않은 경우 원본 이미지 사용
+        onImagePicked(originalImage);
+      //}
     }
   }
 

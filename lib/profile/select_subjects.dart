@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:unis_project/models/user_profile_info.dart';
 import 'package:unis_project/search_department/search_department.dart';
 import 'package:unis_project/search_subject/search_subject.dart';
 import 'dart:math';
@@ -51,6 +52,7 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
     final double height = MediaQuery.of(context).size.height;
     selectedCurCourses = selectedCurCourses.toSet().toList(); // 중복제거
     selectedCourses = selectedCourses.toSet().toList();
+    final viewModel = Provider.of<UserProfileViewModel>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -100,10 +102,10 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
               TextField(
                 readOnly: true,
                 onTap: () async {
-                  final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => SearchDepartment()));
-                  if (result != null && selectedCurCourses.length < 2) {
+                  final List<String>? result = await Navigator.push(context, MaterialPageRoute(builder: (context) => SearchSubject()));
+                  if (result != null) {
                     setState(() {
-                      selectedCurCourses.add(result);
+                      selectedCurCourses.addAll(result);
                     });
                   }
                 },
@@ -112,7 +114,7 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                 ),
               ),
               Container(
-                height: height * 0.2,  // 높이 설정
+                height: height * 0.25,  // 높이 설정
                 child: ListView(
                   shrinkWrap: true,
                   children: selectedCurCourses.map((department) {
@@ -158,7 +160,7 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                 ),
               ),
               Container(
-                height: height * 0.3,  // 높이 설정
+                height: height * 0.25,  // 높이 설정
                 child: ListView(
                   shrinkWrap: true,
                   children: selectedCourses.map((course) {
@@ -178,79 +180,36 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
               ),
 
               Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    constraints: BoxConstraints(
-                      minWidth: width * 0.2, // Minimum width of the container
-                      minHeight: height * 0.05, // Minimum height of the container
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.0),
-                      gradient: MainGradient(),
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(16.0),
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 12.0),
-                            child: Text(
-                              '이전',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Bold',
-                                fontSize: width * 0.04,
-                              ),
-                            ),
+              Container(
+                margin: EdgeInsets.only(top: 20.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.0),
+                  gradient: MainGradient(),
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16.0),
+                    onTap: () async{
+                      CourseAllDto courses = CourseAllDto(currentCourses: selectedCurCourses, pastCourses: selectedCourses);
+                      await viewModel.setCourseAll(courses);
+                      Navigator.pop(context);
+                    },
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        child: Text(
+                          '확인',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Bold',
+                            fontSize: width * 0.05,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  Container(
-                    constraints: BoxConstraints(
-                      minWidth: width * 0.2, // Minimum width of the container
-                      minHeight: height * 0.05, // Minimum height of the container
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.0),
-                      gradient: MainGradient(),
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(16.0),
-                        onTap: () {
-                          if (selectedCourses.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('수강 과목을 최소 하나 이상 선택해주세요.')),
-                            );
-                          } else {
-                          }
-                        },
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 12.0),
-                            child: Text(
-                              '다음',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Bold',
-                                fontSize: width * 0.04,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
               // SizedBox(height: height * 0.05),
             ],
