@@ -39,9 +39,9 @@ class ImagePickerPopup extends StatelessWidget {
       File originalImage = File(pickedFile.path);
 
       // 이미지 압축
-      File compressedImage = await compressImage(originalImage);
+      //File compressedImage = await compressImage(originalImage);
 
-      onImagePicked(compressedImage);
+      onImagePicked(originalImage);
     }
   }
 
