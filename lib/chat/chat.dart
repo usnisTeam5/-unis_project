@@ -66,18 +66,17 @@ class _ChatScreenState extends State<ChatScreen> {
   String questioner = ''; //질문자 이름
   // chatModel.friendNickname // 상대방 이름
   // 내 이름 == 질문자 -> 내가 질문자 ,  내 이름 != 질문자 -> 내가 답변자
-  bool isAnonymity = false;
+  bool isAnonymity = true;
 
   int myQHistoryChat = 0;
   bool isAnswerd = false; // 답변하기 버튼 클릭 여부
 
-  bool _isQuestioner = true; // true: 내가 질문자, false: 내가 답변자
-  bool isCompleteButton = true; // 완료 버튼
+  bool _isQuestioner = false; // true: 내가 질문자, false: 내가 답변자
   DateTime _time = DateTime.now().add(Duration(minutes: 20)); // 20분 재기
   int count = 0; // 첫 시도
   bool isReviewed = false;
   List<String> savedMessages = []; // 답변하기 버튼 누륵기 전 저장
-  String status = "미답"; // 미답 진행 완료 셋 중 하나.
+  String status = "진행"; // 미답 진행 완료 셋 중 하나.
 
   @override
   void dispose() {
@@ -197,8 +196,8 @@ class _ChatScreenState extends State<ChatScreen> {
               await chatModel.loadProfileImage(
                   chatModel.friendNickname); // 상대방 이름으로 이미지 얻어올 것.
               _isQuestioner = chatModel.isQuestioner;
-              chatModel.checkIsReview(widget.qaKey);
-              chatModel.fetchQaStatus(widget.qaKey);
+              await chatModel.checkIsReview(widget.qaKey);
+              await chatModel.fetchQaStatus(widget.qaKey);
               isReviewed = chatModel.isReviewed;// =  답변이 됨?
               status = chatModel.qaStatus;// 리뷰를 함? 체크
               isAnonymity = chatModel.isAnonymity;
@@ -527,8 +526,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             // 세로 방향에서 위젯을 시작 부분에 정렬 (모르겠음)
                             children: [
-                              if (message.nickname != nickname &&
-                                  shouldDisplayHeader) // 내 메시지가 아닌 상대방 메시지 인데, header를 보여줄 때
+                              if (message.nickname != nickname && shouldDisplayHeader) // 내 메시지가 아닌 상대방 메시지 인데, header를 보여줄 때
                                 Column( // 상대방 프로필 표시
                                   children: [
                                     CircleAvatar(
