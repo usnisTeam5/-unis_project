@@ -63,7 +63,7 @@ class StudyInfoDto { // 스터디 찾기 들어갔을 때 필요
       'studyIntroduction': studyIntroduction,
     };
   }
-}
+} //스터디 찾기 들어갔을 때 필요 리스트 표현할 때 원소들
 
 class RoomStatusDto { // 스터디 상태
   bool isAll;
@@ -91,7 +91,7 @@ class RoomStatusDto { // 스터디 상태
       'isOpen': isOpen,
     };
   }
-}
+} // 스터디 상태. 이것도 마찬가지로 스터디 찾기 들어갔을 때 필요
 
 
 class StudyJoinDto { // 스터디 가입
@@ -109,7 +109,7 @@ class StudyJoinDto { // 스터디 가입
       'code': code,
     };
   }
-}
+} // 스터디 가입시 필요 보낼 때 사용
 
 
 class StudyMakeDto { //  스터디 생성에서 넘기는 정보.
@@ -168,7 +168,7 @@ class StudyMakeDto { //  스터디 생성에서 넘기는 정보.
       'isOpen': isOpen,
     };
   }
-}
+} // 스터디 생성할 때 백으로 넘기는 정보
 
 
 class UserInfoMinimumDto { // 가입 스터디 입장 했을 때
@@ -197,8 +197,124 @@ class UserInfoMinimumDto { // 가입 스터디 입장 했을 때
       'image': image,
     };
   }
-}
+} // 내 스터디 입장했을 때, 그룹원 리스트 불러옴.
 
+
+class StudyChangeDto {
+  String roomName;
+  String course;
+  int maxNum;
+  bool isOpen;
+  String code;
+  String studyIntroduction;
+
+  StudyChangeDto({
+    required this.roomName,
+    required this.course,
+    required this.maxNum,
+    required this.isOpen,
+    required this.code,
+    required this.studyIntroduction,
+  });
+
+  factory StudyChangeDto.fromJson(Map<String, dynamic> json) {
+    return StudyChangeDto(
+      roomName: json['roomName'],
+      course: json['course'],
+      maxNum: json['maxNum'],
+      isOpen: json['isOpen'],
+      code: json['code'],
+      studyIntroduction: json['studyIntroduction'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'roomName': roomName,
+      'course': course,
+      'maxNum': maxNum,
+      'isOpen': isOpen,
+      'code': code,
+      'studyIntroduction': studyIntroduction,
+    };
+  }
+} // 스터디 설정하기에서 쓸 DTO
+
+class MsgDto {
+  String nickname;
+  String type; // 메세지 유형이 이미지인지 문자인지
+  String msg;
+  String image; // 이미지 파일을 base64로 인코딩한 문자열
+  String time;
+
+  MsgDto({
+    required this.nickname,
+    required this.type,
+    required this.msg,
+    required this.image,
+    required this.time,
+  });
+
+  factory MsgDto.fromJson(Map<String, dynamic> json) {
+    return MsgDto(
+      nickname: json['nickname'],
+      type: json['type'],
+      msg: json['msg'],
+      image: json['image'],
+      time: json['time'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'nickname': nickname,
+      'type': type,
+      'msg': msg,
+      'image': image,
+      'time': time,
+    };
+  }
+} // 스터디 메시지 받아올 때 쓸 DTO
+
+class StudySendMsgDto {
+  String sender;
+  int roomKey;
+  String type;
+  String msg;
+  String img;
+  String time;
+
+  StudySendMsgDto({
+    required this.sender,
+    required this.roomKey,
+    required this.type,
+    required this.msg,
+    required this.img,
+    required this.time,
+  });
+
+  factory StudySendMsgDto.fromJson(Map<String, dynamic> json) {
+    return StudySendMsgDto(
+      sender: json['sender'],
+      roomKey: json['roomKey'],
+      type: json['type'],
+      msg: json['msg'],
+      img: json['img'],
+      time: json['time'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'sender': sender,
+      'roomKey': roomKey,
+      'type': type,
+      'msg': msg,
+      'img': img,
+      'time': time,
+    };
+  }
+} // 스터디 메시지 보낼 때 쓸 DTO
 
 // API 요청 및 응답 처리 메서드
 
@@ -206,9 +322,7 @@ class UserInfoMinimumDto { // 가입 스터디 입장 했을 때
 class StudyService {
 
   Future<List<StudyInfoDto>> getStudyRoomList(
-      String nickname, RoomStatusDto roomStatus) async { // 스터디 찾기
-
-    // StreamedRequest 객체를 생성하고, 메서드와 URI를 지정합니다.
+      String nickname, RoomStatusDto roomStatus) async { // 스터디 찾기 // StreamedRequest 객체를 생성하고, 메서드와 URI를 지정합니다.
     final request = http.StreamedRequest(
       'GET',
       Uri.parse('$BASE_URL/study/$nickname'),
@@ -290,6 +404,87 @@ class StudyService {
     }
   }
 
+  // 스터디 설정 변경
+  Future<String> changeStudyInfo(int roomKey, StudyChangeDto info) async {
+    final url = Uri.parse('$BASE_URL/study/change/$roomKey');
+    final response = await http.post(url, body: json.encode(info.toJson()), headers: {
+      'Content-Type': 'application/json',
+    });
+
+    if (response.statusCode == 200) {
+      return response.body; // 'ok' 또는 'no'
+    } else {
+      throw Exception('Failed to change study info');
+    }
+  }
+
+  // 그룹장 위임
+  Future<void> commitLeader(int roomKey, String newLeader) async {
+    final url = Uri.parse('$BASE_URL/study/commitLeader/$roomKey?newLeader=$newLeader');
+    final response = await http.post(url);
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to commit leader');
+    }
+  }
+
+  // 그룹 탈퇴
+  Future<void> leaveStudy(int roomKey, String nickname) async {
+    final url = Uri.parse('$BASE_URL/study/out/$roomKey?nickname=$nickname');
+    final response = await http.post(url);
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to leave study');
+    }
+  }
+
+  // 스터디방의 모든 메시지 가져오기
+  Future<List<MsgDto>> getAllMessages(int roomKey, String nickname) async {
+    final url = Uri.parse('$BASE_URL/study/chat?roomKey=$roomKey&nickname=$nickname');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      Iterable l = json.decode(utf8.decode(response.bodyBytes));
+      return List<MsgDto>.from(l.map((model) => MsgDto.fromJson(model)));
+    } else {
+      throw Exception('Failed to get messages');
+    }
+  }
+
+  // 스터디방에서 메시지 보내기
+  Future<void> sendMessage(StudySendMsgDto sendMessage) async {
+    final url = Uri.parse('$BASE_URL/study/chat/sendMsg');
+    final response = await http.post(url, body: json.encode(sendMessage.toJson()), headers: {
+      'Content-Type': 'application/json',
+    });
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to send message');
+    }
+  }
+
+  // 메시지 동기화
+  Future<List<MsgDto>> syncMessages(int roomKey, String nickname) async {
+    final url = Uri.parse('$BASE_URL/study/chat/getMsg?roomKey=$roomKey&nickname=$nickname');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      Iterable l = json.decode(utf8.decode(response.bodyBytes));
+      return List<MsgDto>.from(l.map((model) => MsgDto.fromJson(model)));
+    } else {
+      throw Exception('No new messages');
+    }
+  }
+
+  // 스터디방 채팅에서 나가기
+  Future<void> exitChat(int roomKey, String nickname) async {
+    final url = Uri.parse('$BASE_URL/study/chat/outChat?roomKey=$roomKey&nickname=$nickname');
+    final response = await http.post(url);
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to exit chat');
+    }
+  }
 }
 
 

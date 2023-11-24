@@ -5,7 +5,7 @@ class MyStudyInfoViewModel with ChangeNotifier {
   MyStudyInfo? _MystudyInfo;
   // int _studyCount =0;
   MyStudyInfoViewModel({MyStudyInfo? MystudyInfo})
-      : _MystudyInfo = MystudyInfo ?? MyStudyInfo.defaultValues();
+      : _MystudyInfo = MystudyInfo ?? MyStudyInfo.defaultValues(); // 디폴트 값 넣어놓음
   List<MyStudyInfo> _MyStudyInfoList = [];
   bool _isLoading = false;
   // Getters
