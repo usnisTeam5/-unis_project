@@ -68,7 +68,7 @@ class OthersProfilePage extends StatelessWidget {
                   .nickName;
               // 다른 비동기 작업 실행
               await Provider.of<UserProfileOtherViewModel>(context, listen: false)
-                  .fetchUserProfile(nickName, "abc"); // **
+                  .fetchUserProfile(nickName, "별뚜기"); // **
             }
           });
 

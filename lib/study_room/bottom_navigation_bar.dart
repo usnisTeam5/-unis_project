@@ -5,7 +5,7 @@ import '../chat/chat.dart';
 import '../chat/studychat.dart';
 import '../menu/menu.dart';
 import '../notifier/notifier.dart';
-import 'home.dart';
+import 'study_home.dart';
 import 'dart:math';
 void main() {
   runApp(MyApp());
@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
             builder: (context, currentIndex, _) {
               switch (currentIndex) {
                 case 0:
-                  return Home();  // question.dart 파일의 MyApp 클래스를 여기서 호출
+                  return StudyHome();  // question.dart 파일의 MyApp 클래스를 여기서 호출
                 case 1:
                   return StudyChatScreen();
                 case 2:

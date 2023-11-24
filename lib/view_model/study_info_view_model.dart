@@ -24,35 +24,6 @@ class MyStudyInfoViewModel with ChangeNotifier {
 
 
 
-  //int get studyCount => _studyCount;
-  // Setters
-  // void updateRoomName(String newRoomName) {
-  //   if (_MystudyInfo != null) {
-  //     _MystudyInfo = MyStudyInfo(
-  //       roomKey: _MystudyInfo!.roomKey,
-  //       roomName: newRoomName,
-  //       course: _MystudyInfo!.course,
-  //       maxNum: _MystudyInfo!.maxNum,
-  //       curNum: _MystudyInfo!.curNum,
-  //       startDate: _MystudyInfo!.startDate,
-  //       studyIntroduction: _MystudyInfo!.studyIntroduction,
-  //     );
-  //     notifyListeners();
-  //   }
-  // }
-
-  // Add other setters as needed
-
-  // void fromJson(Map<String, dynamic> json) {
-  //   _MyStudyInfoList = MyStudyInfo.fromJson(json);
-  //   notifyListeners();
-  // }
-  //
-  // Map<String, dynamic> toJson() {
-  //   return _MyStudyInfoList?.toJson() ?? {};
-  // }
-
-
   Future<void> getMyStudyRoomList(String nickname) async {
     try {
       _isLoading = true;
