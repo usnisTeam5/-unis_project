@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:unis_project/chat/OneToOneChat.dart';
 import 'package:unis_project/chat/chat.dart';
 import 'package:unis_project/menu/notice.dart';
 import 'package:unis_project/menu/point_charge.dart';
@@ -67,7 +68,7 @@ class Menu extends StatelessWidget {
                     // Navigate to the customer service screen
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ChatScreen()),
+                      MaterialPageRoute(builder: (context) => OneToOneChatScreen(friendName: 'minho')),
                     );
                   },
                 ),

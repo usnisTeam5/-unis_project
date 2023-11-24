@@ -1,4 +1,21 @@
 import 'package:flutter/material.dart';
+
+
+/*
+위의 모델을 가지고 플러터 provider 뷰 모델을 작성해줘
+isLoading이 들어가야해
+적절한 주석을 넣어야해
+모든 코드 생략하지말고 하나의 파일에 담아서 전부 작성해줘
+ */
+/*
+이 API를 보고 플러터 모델을 짜면 돼.
+../url.dart 파일에 BASE_URL을 가져와서 작성하면 돼!
+pram 어떻게 넘기는지에 대해 주의하고
+jsonDecode(utf8.decode(response.bodyBytes)); 이런식으로 디코드해야해!
+모든 코드 생략하지말고 하나의 파일에 담아서 전부 작성해줘
+print(response.body);를 넣어줘
+적절한 주석을 넣어줘
+*/
 //*********************************************************************
  // File('image/unis.png').readAsBytesSync(),
 //   final bytes = base64Decode(data['profileImage']); // base64 디코드.

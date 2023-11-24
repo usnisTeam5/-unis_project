@@ -293,8 +293,8 @@ class UserProfileInfo {
   }
 
   Future<void> setPoint(String nickname, int point) async {
-    print("setPoint: ${point}");
-    final response = await http.get(
+    print("nickname $nickName, setPoint: ${point}");
+    final response = await http.post(
       Uri.parse('$BASE_URL/user/profile/point?nickname=$nickname&point=$point')
     );
 
