@@ -59,10 +59,6 @@ class StudyViewModel with ChangeNotifier {
   String get joinCode => _studyJoinDto?.code ?? '';
 
 
-
-
-
-
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   final StudyService _studyService = StudyService();
@@ -73,13 +69,23 @@ class StudyViewModel with ChangeNotifier {
   List<StudyInfoDto> _studyRoomlist = [];
   List<StudyInfoDto> get studyRoomlist => _studyRoomlist;
 
-  List<UserInfoMinimumDto> _studyFriendList = [];
+  List<UserInfoMinimumDto> _studyFriendList = []; // 유저 정보 가져옴
   List<UserInfoMinimumDto> get studyFriendList => _studyFriendList;
 
   String _joinResult = '';
   String get joinReslt => _joinResult;
 
 
+
+
+// 메시지 관련해서 저장할 것들!!
+
+  List<MsgDto> messages = [];
+
+  set isLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
 
 
   Future<void> makeStudyRoom(StudyMakeDto info) async { // 스터디 생성
@@ -161,10 +167,9 @@ class StudyViewModel with ChangeNotifier {
     notifyListeners();
 
     StudyJoinDto joinInfo = StudyJoinDto(roomKey: roomKey, code: code);
-    StudyService studyService = StudyService();
 
     try {
-      String response = await studyService.joinStudy(nickname, joinInfo);
+      String response = await _studyService.joinStudy(nickname, joinInfo);
       if (response == 'ok') {
         _resultMessage = '스터디 가입 성공!';
       } else if (response == 'noSheet') {
@@ -182,6 +187,83 @@ class StudyViewModel with ChangeNotifier {
     }
   }
 
+  // 스터디 설정 변경
+  Future<String> changeStudyInfo(int roomKey, StudyChangeDto info) async {
+    isLoading = true;
+    try {
+      final result = await _studyService.changeStudyInfo(roomKey, info);
+      isLoading = false;
+      return result; // 'ok' 또는 'no'
+    } catch (e) {
+      isLoading = false;
+      throw Exception('Failed to change study info: $e');
+    }
+  }
 
+  // 그룹장 위임
+  Future<void> commitLeader(int roomKey, String newLeader) async {
+    isLoading = true;
+    try {
+      await _studyService.commitLeader(roomKey, newLeader);
+      isLoading = false;
+    } catch (e) {
+      isLoading = false;
+      throw Exception('Failed to commit leader: $e');
+    }
+  }
 
+  // 그룹 탈퇴
+  Future<void> leaveStudy(int roomKey, String nickname) async {
+    isLoading = true;
+    try {
+      await _studyService.leaveStudy(roomKey, nickname);
+      isLoading = false;
+    } catch (e) {
+      isLoading = false;
+      throw Exception('Failed to leave study: $e');
+    }
+  }
+
+  // 스터디방의 모든 메시지 가져오기
+  Future<void> getAllMessages(int roomKey, String nickname) async {
+    isLoading = true;
+    try {
+      messages = await _studyService.getAllMessages(roomKey, nickname);
+      isLoading = false;
+    } catch (e) {
+      isLoading = false;
+      throw Exception('Failed to get messages: $e');
+    }
+  }
+
+  // 스터디방에서 메시지 보내기
+  Future<void> sendMessage(StudySendMsgDto sendMessage) async {
+    try {
+      await _studyService.sendMessage(sendMessage);
+    } catch (e) {
+      throw Exception('Failed to send message: $e');
+    }
+  }
+
+  // 메시지 동기화
+  Future<void> syncMessages(int roomKey, String nickname) async {
+    try {
+      List<MsgDto> newMessages = await _studyService.syncMessages(roomKey, nickname);
+      if (newMessages.isNotEmpty) {
+        messages.addAll(newMessages);
+        notifyListeners();
+      }
+    } catch (e) {
+      throw Exception('Failed to sync messages: $e');
+    }
+  }
+
+  // 스터디방 채팅에서 나가기
+  Future<void> exitChat(int roomKey, String nickname) async {
+    try {
+      await _studyService.exitChat(roomKey, nickname);
+    } catch (e) {
+      throw Exception('Failed to exit chat: $e');
+    }
+  }
 }

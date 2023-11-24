@@ -32,12 +32,6 @@ class StudyScreen extends StatelessWidget {
     final width = min(MediaQuery.of(context).size.width, 500.0);
     final height = MediaQuery.of(context).size.height;
 
-    // List<MyStudyInfo> mystudylist = [
-    //   // MyStudyInfo(roomKey: mystudy.roomKey, roomName: mystudy.roomName, course: mystudy.course, studyIntroduction: mystudy.studyIntroduction, curNum: mystudy.curNum, maxNum: mystudy.maxNum, startDate: mystudy.startDate),
-    //   // MyStudyInfo(roomKey: mystudy.roomKey, roomName: mystudy.roomName, course: mystudy.course, studyIntroduction: mystudy.studyIntroduction, curNum: mystudy.curNum, maxNum: mystudy.maxNum, startDate: mystudy.startDate),
-    //   // // ... more mystudylist
-    // ];
-
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (count == 0) {
         count++; // 여기서 1로 만들면 아래에서 로딩이 활성화됨.
@@ -71,7 +65,7 @@ class StudyScreen extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => MyHomePage()),
+                        MaterialPageRoute(builder: (context) => MyHomePage(myStudyInfo: MyStudyInfo,)),
                       );
                     },
                     child: Card(
@@ -171,18 +165,3 @@ class StudyScreen extends StatelessWidget {
   }
 }
 
-// class Study {
-//   final String title;
-//   final String subject;
-//   final String description;
-//   final String members;
-//   final String startDate;
-//
-//   Study({
-//     required this.title,
-//     required this.subject,
-//     required this.description,
-//     required this.members,
-//     required this.startDate,
-//   });
-// }

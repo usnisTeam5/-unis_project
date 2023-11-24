@@ -446,7 +446,6 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                                 Uint8List(0),
                                 time.toString());
                             _messageController.text = '';
-                            _scrollToBottom();
                           }
                         },
                       )

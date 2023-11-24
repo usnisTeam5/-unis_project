@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../css/css.dart';
+import '../models/study_info.dart';
 import '../profile/other_profile.dart';
 import 'dart:math';
 import '../view_model/find_study_view_model.dart';
@@ -10,28 +11,26 @@ import '../view_model/study_info_view_model.dart';
 import '../view_model/user_profile_info_view_model.dart';
 import 'study_room_setting.dart';
 
-void main() => runApp(FriendsList());
-
-class FriendsList extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        fontFamily: 'Round',
-      ),
-      home: StudyHome(),
-    );
-  }
-}
+// void main() => runApp(FriendsList());
+//
+// class FriendsList extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       theme: ThemeData(
+//         fontFamily: 'Round',
+//       ),
+//       home: StudyHome(),
+//     );
+//   }
+// }
 
 class StudyHome extends StatelessWidget {
+  MyStudyInfo myStudyInfo;
 
+  StudyHome({required this.myStudyInfo});
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => StudyViewModel(),
-      builder: (context, child) {
-
         final mystudylist = Provider.of<StudyViewModel>(context, listen: false);
 
         double width = min(MediaQuery.of(context).size.width, 500.0);
@@ -72,7 +71,7 @@ class StudyHome extends StatelessWidget {
             centerTitle: true,
             title: GradientText(
                 width: width,
-                text: '스터디 제목',
+                text: myStudyInfo.roomName,
                 tSize: 0.06,
                 tStyle: 'Bold'),
             bottom: PreferredSize(
@@ -132,8 +131,6 @@ class StudyHome extends StatelessWidget {
             ],
           ),
         );
-      },
-    );
   }
 }
 

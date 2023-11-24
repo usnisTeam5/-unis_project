@@ -391,8 +391,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                       child: TextButton(
-                        onPressed: () {
-                          if (hasUserSentMessage) {
+                        onPressed: () async{
+                          if (!hasUserSentMessage) {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -410,10 +410,11 @@ class _ChatScreenState extends State<ChatScreen> {
                               },
                             );
                           } else {
-                            chatModel.sendQaMessageList(
+                            status = '진행';
+                            await chatModel.sendQaMessageList(
                                 widget.qaKey, _messages);
-                            chatModel.solveQa(widget.qaKey);
-                            chatModel.fetchQaMessages(widget.qaKey, nickname);
+                            await chatModel.solveQa(widget.qaKey);
+                            await chatModel.fetchQaMessages(widget.qaKey, nickname);
                             _showAlertDialog(context);
                           }
                         },
@@ -734,10 +735,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                     DateTime time = DateTime.now();
                                     if (_isQuestioner || isAnswerd) { // 답변하기를 한 후에 답변자 -> 이미지 바로 전송하면 됨
                                       // 질문자 -> 무조건 바로 전송. 답변자와 같음. 구분 x
-                                      chatModel.fetchQaStatus(widget.qaKey);
+                                      await chatModel.fetchQaStatus(widget.qaKey);
                                       status = chatModel.qaStatus;
                                       if(status != '완료') {
-                                        chatModel.sendQaMessage(widget.qaKey,
+                                        await chatModel.sendQaMessage(widget.qaKey,
                                             nickname,
                                             'img',
                                             "",
@@ -793,12 +794,12 @@ class _ChatScreenState extends State<ChatScreen> {
                                   : Colors.black,
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: () async{
                             if (_messageController.text.isNotEmpty) {
                               if (_isQuestioner || isAnswerd) { // 답변하기를 한 후에 답변자 -> 이미지 바로 전송하면 됨
                                 // 질문자 -> 무조건 바로 전송. 답변자와 같음. 구분 x
                                 DateTime time = DateTime.now();
-                                chatModel.fetchQaStatus(widget.qaKey);
+                                await chatModel.fetchQaStatus(widget.qaKey);
                                 status = chatModel.qaStatus;
                                 if (status != '완료') {
                                   chatModel.sendQaMessage(widget.qaKey,

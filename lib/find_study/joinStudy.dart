@@ -87,8 +87,8 @@ class _JoinStudyState extends State<JoinStudy> {
                 // 비밀번호 검증 로직
                 if (_passwordController.text == "올바른 비밀번호") {
                   Navigator.of(context).pop();
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => FriendsList()));
+                  // Navigator.of(context)
+                  //     .push(MaterialPageRoute(builder: (_) => StudyHome()));
                 } else {
                   Navigator.of(context).pop();
                   _showSnackbar(context, '비밀번호가 틀렸습니다. 다시 입력해주세요.');
@@ -133,8 +133,8 @@ class _JoinStudyState extends State<JoinStudy> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => FriendsList()));
+                // Navigator.of(context)
+                //     .push(MaterialPageRoute(builder: (_) => StudyHome(myStudyInfo: null,)));
               },
               child: Text('확인'),
             ),

@@ -261,7 +261,7 @@ class MsgDto {
       type: json['type'],
       msg: json['msg'],
       image: json['image'],
-      time: json['time'],
+      time: _formatTime(json['time']),
     );
   }
 
@@ -273,6 +273,11 @@ class MsgDto {
       'image': image,
       'time': time,
     };
+  }
+  static String _formatTime(String timeStr) {
+    if(timeStr.length < 8) return timeStr;
+    DateTime time = DateTime.parse(timeStr);
+    return "${time.hour}:${time.minute.toString().padLeft(2, '0')}";
   }
 } // 스터디 메시지 받아올 때 쓸 DTO
 
@@ -390,7 +395,7 @@ class StudyService {
     }
   }
 
-
+ // 스터디 입장시
   Future<List<UserInfoMinimumDto>> enterStudy(int roomKey, String nickname) async { // 가입한 스터디 입장 했을 때
     final response = await http.get(Uri.parse('$BASE_URL/study/enter?roomKey=$roomKey&nickname=$nickname'),
     headers: {'Content-Type': 'application/json'},

@@ -1,30 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:unis_project/css/css.dart';
 import 'package:unis_project/study_room/quiz.dart';
 import '../chat/chat.dart';
 import '../chat/studychat.dart';
 import '../menu/menu.dart';
+import '../models/study_info.dart';
 import '../notifier/notifier.dart';
+import '../view_model/find_study_view_model.dart';
 import 'study_home.dart';
 import 'dart:math';
-void main() {
-  runApp(MyApp());
-}
-
-// MyApp 클래스: 앱의 진입점
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-
-      // 앱 전체 테마 설정
-      theme: ThemeData(
-        fontFamily: 'Round', // 글꼴 테마 설정
-      ),
-      home: MyHomePage(), // 홈 화면 설정
-    );
-  }
-}
+// void main() {
+//   runApp(MyApp());
+// }
+//
+// // MyApp 클래스: 앱의 진입점
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//
+//       // 앱 전체 테마 설정
+//       theme: ThemeData(
+//         fontFamily: 'Round', // 글꼴 테마 설정
+//       ),
+//       home: MyHomePage(), // 홈 화면 설정
+//     );
+//   }
+// }
 //func( int a, int b) // func( a : 1 , b : 2)
 // HomeController 클래스: 하단바 상태 관리와 로직 처리
 class HomeController {
@@ -39,6 +42,10 @@ class HomeController {
 }
 
 class MyHomePage extends StatefulWidget {
+  MyStudyInfo myStudyInfo;
+
+  MyHomePage({required this.myStudyInfo});
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -53,72 +60,77 @@ class _MyHomePageState extends State<MyHomePage> {
     double iconSize = width * 0.10; // 아이콘 크기 설정
     double fontSize = width * 0.03;// 텍스트 크기 설정
 
-    return Scaffold(
-      key: scaffoldKey, // key를 Scaffold에 할당합니다
-      endDrawer: Menu(),
-      drawer: Notifier(),
-      body: Stack(
-        children: [
-          ValueListenableBuilder<int>(
+    return ChangeNotifierProvider(
+        create: (_) => StudyViewModel(),
+        builder: (context, child) {
+        return Scaffold(
+          key: scaffoldKey, // key를 Scaffold에 할당합니다
+          endDrawer: Menu(),
+          drawer: Notifier(),
+          body: Stack(
+            children: [
+              ValueListenableBuilder<int>(
+                valueListenable: _controller.currentIndexNotifier,
+                builder: (context, currentIndex, _) {
+                  switch (currentIndex) {
+                    case 0:
+                      return StudyHome(myStudyInfo: widget.myStudyInfo);  // question.dart 파일의 MyApp 클래스를 여기서 호출
+                    case 1:
+                      return StudyChatScreen(myStudyInfo: widget.myStudyInfo);
+                    case 2:
+                      return QuizFolderScreen();
+                    default:
+                      return Center(child: Text('퀴즈!!'));
+                  }
+                },
+              ),
+              alram_and_menu(width: width, scaffoldKey: scaffoldKey ,controller: _controller),
+            ],
+          ),
+          bottomNavigationBar: ValueListenableBuilder<int>(
             valueListenable: _controller.currentIndexNotifier,
             builder: (context, currentIndex, _) {
-              switch (currentIndex) {
-                case 0:
-                  return StudyHome();  // question.dart 파일의 MyApp 클래스를 여기서 호출
-                case 1:
-                  return StudyChatScreen();
-                case 2:
-                  return QuizFolderScreen();
-                default:
-                  return Center(child: Text('퀴즈!!'));
-              }
+              return BottomNavigationBar(
+                currentIndex: currentIndex,
+                onTap: _controller.onItemTapped,
+                selectedLabelStyle: TextStyle(fontFamily: 'Round'),
+                unselectedLabelStyle: TextStyle(fontFamily: 'Round'),
+                // 아이템 선택 시 컨트롤러의 메서드 호출
+                selectedFontSize: fontSize,
+                // 선택된 아이템의 텍스트 크기 설정
+                unselectedFontSize: fontSize,
+                // 선택되지 않은 아이템의 텍스트 크기 설정
+                //selectedItemColor: Colors.blue,
+                // 선택된 아이템의 색상
+                unselectedItemColor: Colors.grey,
+                // 선택되지 않은 아이템의 색상
+                type: BottomNavigationBarType.fixed,
+                // 모든 아이콘 아래에 항상 레이블 표시
+                items: [
+                  BottomNavigationBarItem(
+                    icon: currentIndex == 0
+                        ? GradientIcon(iconData: Icons.home)
+                        : Icon(Icons.home),
+                    label: '홈',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: currentIndex == 1
+                        ? GradientIcon(iconData: Icons.chat_bubble_outline)
+                        : Icon(Icons.chat_bubble_outline_outlined),
+                    label: '채팅',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: currentIndex == 2
+                        ? GradientIcon(iconData: Icons.quiz_outlined)
+                        : Icon(Icons.quiz_outlined),
+                    label: '퀴즈 생성',
+                  ),
+                ],
+              );
             },
           ),
-          alram_and_menu(width: width, scaffoldKey: scaffoldKey ,controller: _controller),
-        ],
-      ),
-      bottomNavigationBar: ValueListenableBuilder<int>(
-        valueListenable: _controller.currentIndexNotifier,
-        builder: (context, currentIndex, _) {
-          return BottomNavigationBar(
-            currentIndex: currentIndex,
-            onTap: _controller.onItemTapped,
-            selectedLabelStyle: TextStyle(fontFamily: 'Round'),
-            unselectedLabelStyle: TextStyle(fontFamily: 'Round'),
-            // 아이템 선택 시 컨트롤러의 메서드 호출
-            selectedFontSize: fontSize,
-            // 선택된 아이템의 텍스트 크기 설정
-            unselectedFontSize: fontSize,
-            // 선택되지 않은 아이템의 텍스트 크기 설정
-            //selectedItemColor: Colors.blue,
-            // 선택된 아이템의 색상
-            unselectedItemColor: Colors.grey,
-            // 선택되지 않은 아이템의 색상
-            type: BottomNavigationBarType.fixed,
-            // 모든 아이콘 아래에 항상 레이블 표시
-            items: [
-              BottomNavigationBarItem(
-                icon: currentIndex == 0
-                    ? GradientIcon(iconData: Icons.home)
-                    : Icon(Icons.home),
-                label: '홈',
-              ),
-              BottomNavigationBarItem(
-                icon: currentIndex == 1
-                    ? GradientIcon(iconData: Icons.chat_bubble_outline)
-                    : Icon(Icons.chat_bubble_outline_outlined),
-                label: '채팅',
-              ),
-              BottomNavigationBarItem(
-                icon: currentIndex == 2
-                    ? GradientIcon(iconData: Icons.quiz_outlined)
-                    : Icon(Icons.quiz_outlined),
-                label: '퀴즈 생성',
-              ),
-            ],
-          );
-        },
-      ),
+        );
+      }
     );
   }
 }
