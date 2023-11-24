@@ -1,13 +1,9 @@
 import 'package:flutter/foundation.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
 import '../models/find_study.dart';
 
 
 
 class StudyViewModel with ChangeNotifier {
-  String? _image;
 
   StudyMakeDto? _studyMakeDto;
   StudyInfoDto? _studyInfoDto;
@@ -60,7 +56,7 @@ class StudyViewModel with ChangeNotifier {
   StudyJoinDto? get studyJoinDto => _studyJoinDto;
 
   int get roomKey => _studyJoinDto?.roomKey ?? 15;
-  String get joinCode => _studyJoinDto!.code;
+  String get joinCode => _studyJoinDto?.code ?? '';
 
 
 
@@ -79,7 +75,6 @@ class StudyViewModel with ChangeNotifier {
 
   List<UserInfoMinimumDto> _studyFriendList = [];
   List<UserInfoMinimumDto> get studyFriendList => _studyFriendList;
-
 
   String _joinResult = '';
   String get joinReslt => _joinResult;
@@ -160,10 +155,31 @@ class StudyViewModel with ChangeNotifier {
 
 
 
-  Future<void> joinStudy(String nickname, StudyJoinDto joinInfo) async { // 스터디 가입
+  Future<void> joinStudy(String nickname, int roomKey, String code) async { // 스터디 가입
     _isLoading = true;
+    _resultMessage = '';
     notifyListeners();
 
+    StudyJoinDto joinInfo = StudyJoinDto(roomKey: roomKey, code: code);
+    StudyService studyService = StudyService();
+
+    try {
+      String response = await studyService.joinStudy(nickname, joinInfo);
+      if (response == 'ok') {
+        _resultMessage = '스터디 가입 성공!';
+      } else if (response == 'noSheet') {
+        _resultMessage = '인원이 모두 찼습니다.';
+      } else if (response == 'codeError') {
+        _resultMessage = '비밀번호가 틀렸습니다.';
+      } else {
+        _resultMessage = '가입 실패: 알 수 없는 오류';
+      }
+    } catch (e) {
+      _resultMessage = '네트워크 오류: $e';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
 
