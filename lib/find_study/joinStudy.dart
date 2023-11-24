@@ -14,7 +14,7 @@ class JoinStudy extends StatefulWidget {
 
 class _JoinStudyState extends State<JoinStudy> {
   final TextEditingController _passwordController = TextEditingController();
-  int? _selectedStudyIndex;
+  int? _selectedStudyIndex = 2;
 
 
 
