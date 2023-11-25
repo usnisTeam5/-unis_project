@@ -1,26 +1,10 @@
 import 'package:flutter/foundation.dart';
 import '../models/find_study.dart';
 
-
-
 class StudyViewModel with ChangeNotifier {
-
-  StudyMakeDto? _studyMakeDto;
-  StudyInfoDto? _studyInfoDto;
-  RoomStatusDto roomStatus = RoomStatusDto(isAll: true, isSeatLeft: false, isOpen: false);
-  UserInfoMinimumDto? _userInfoMinimumDto;
-  StudyJoinDto? _studyJoinDto;
-
-  StudyViewModel({StudyMakeDto? studyMakeDto, StudyInfoDto? studyInfoDto, UserInfoMinimumDto? userInfoMinimumDto}) {
-    _studyMakeDto = studyMakeDto ?? StudyMakeDto.defaultValues();
-    _studyInfoDto = studyInfoDto ?? StudyInfoDto.defaultValues();
-    _userInfoMinimumDto = userInfoMinimumDto ?? UserInfoMinimumDto.defaultValues();
-  }
-
-
-  // StudyMakeDto에 대한 게터 메소드, 스터디 생성
+  StudyMakeDto? _studyMakeDto; // 스터디 만들 때 사용
+  //region StudyMakeDto에 대한 게터 메소드, 스터디 생성
   StudyMakeDto? get studyMakeDto => _studyMakeDto;
-
   String get roomName => _studyMakeDto?.roomName ?? '';
   String get code => _studyMakeDto?.code ?? '';
   String get course => _studyMakeDto?.course ?? '';
@@ -29,11 +13,11 @@ class StudyViewModel with ChangeNotifier {
   String get leader => _studyMakeDto?.leader ?? '';
   String get startDate => _studyMakeDto?.startDate ?? '';
   bool get isOpen => _studyMakeDto?.isOpen ?? false;
+  //endregion
 
-
-  // StudyInfoDto에 대한 게터 메소드, 스터디 찾기
+  StudyInfoDto? _studyInfoDto; // 스터디  찾기 들어갔을 때 필요
+  //region StudyInfoDto에 대한 게터 메소드, 스터디 찾기
   StudyInfoDto? get studyInfoDto => _studyInfoDto;
-
   int get infoRoomKey => _studyInfoDto?.roomKey ?? 0;
   String get infoRoomName => _studyInfoDto?.roomName ?? '';
   String get infoCourse => _studyInfoDto?.course ?? '';
@@ -43,27 +27,29 @@ class StudyViewModel with ChangeNotifier {
   String get infoStartDate => _studyInfoDto?.startDate ?? '';
   bool get infoIsOpen => _studyInfoDto?.isOpen ?? false;
   String get infoStudyIntroduction => _studyInfoDto?.studyIntroduction ?? '';
+  //endregion
 
-
-  // UserInfoMinimumDto에 대한 게터 메소드, 가입한 스터디 입장할 때
+  UserInfoMinimumDto? _userInfoMinimumDto;
+  //region UserInfoMinimumDto에 대한 게터 메소드, 가입한 스터디 입장할 때
   UserInfoMinimumDto? get userInfoMinimumDto => _userInfoMinimumDto;
-
   String get nickname => _userInfoMinimumDto?.nickname ?? '';
   String get image => _userInfoMinimumDto?.image ?? '';
+  //endregion
 
-
-  // StudyJoinDto 스터디 가입할 때
+  StudyJoinDto? _studyJoinDto;
+  //region StudyJoinDto 스터디 가입할 때
   StudyJoinDto? get studyJoinDto => _studyJoinDto;
-
   int get roomKey => _studyJoinDto?.roomKey ?? 15;
   String get joinCode => _studyJoinDto?.code ?? '';
+  //endregion
+
+  RoomStatusDto roomStatus = RoomStatusDto(isAll: true, isSeatLeft: false, isOpen: false);
 
 
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
   final StudyService _studyService = StudyService();
 
   String _resultMessage = '';
+
   String get resultMessage => _resultMessage;
 
   List<StudyInfoDto> _studyRoomlist = [];
@@ -78,7 +64,19 @@ class StudyViewModel with ChangeNotifier {
 
 
 
-// 메시지 관련해서 저장할 것들!!
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  StudyViewModel(
+      {StudyMakeDto? studyMakeDto,
+        StudyInfoDto? studyInfoDto,
+        UserInfoMinimumDto? userInfoMinimumDto}) {
+    _studyMakeDto = studyMakeDto ?? StudyMakeDto.defaultValues();
+    _studyInfoDto = studyInfoDto ?? StudyInfoDto.defaultValues();
+    _userInfoMinimumDto =
+        userInfoMinimumDto ?? UserInfoMinimumDto.defaultValues();
+  }
+
 
   List<MsgDto> messages = [];
 
@@ -87,8 +85,8 @@ class StudyViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-
-  Future<void> makeStudyRoom(StudyMakeDto info) async { // 스터디 생성
+  Future<void> makeStudyRoom(StudyMakeDto info) async {
+    // 스터디 생성
     try {
       _isLoading = true;
       notifyListeners();
@@ -103,7 +101,6 @@ class StudyViewModel with ChangeNotifier {
 
       _isLoading = false;
       notifyListeners();
-
     } catch (e) {
       print("makeStudyRoom viewmodel $e");
       _resultMessage = '스터디 생성 중 오류 발생.';
@@ -112,20 +109,20 @@ class StudyViewModel with ChangeNotifier {
     }
   }
 
-
-
-  Future<void> getStudyRoomList(String nickname, RoomStatusDto roomStatus) async { // 스터디 찾기
+  Future<void> getStudyRoomList(
+      String nickname, RoomStatusDto roomStatus) async {
+    // 스터디 찾기
     try {
       _isLoading = true;
       this.roomStatus = roomStatus;
       notifyListeners();
 
-      _studyRoomlist = await _studyService.getStudyRoomList(nickname, roomStatus);
+      _studyRoomlist =
+          await _studyService.getStudyRoomList(nickname, roomStatus);
       _resultMessage = '스터디룸 목록 로드 성공.';
 
       _isLoading = false;
       notifyListeners();
-
     } catch (e) {
       print("getStudyRoomList viewmodel $e");
       _resultMessage = '스터디룸 목록 로드 실패.';
@@ -135,33 +132,28 @@ class StudyViewModel with ChangeNotifier {
     }
   }
 
-
-
-  Future<void> enterStudy(int roomKey, String nickname) async { // 가입 스터디 입장
+// 가입 스터디 입장
+  Future<void> enterStudy(int roomKey, String nickname) async {
     _isLoading = true;
     notifyListeners();
 
     try {
       _studyFriendList = await _studyService.enterStudy(roomKey, nickname);
       _resultMessage = '스터디 친구 목록 로드 성공.';
-
       _isLoading = false;
       notifyListeners();
-
     } catch (e) {
       print('Error loading study friends: $e');
       _resultMessage = '스터디 친구 목록 로드 실패.';
       _studyFriendList = [];
-
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-
-
-  Future<void> joinStudy(String nickname, int roomKey, String code) async { // 스터디 가입
+  Future<void> joinStudy(String nickname, int roomKey, String code) async {
+    // 스터디 가입
     _isLoading = true;
     _resultMessage = '';
     notifyListeners();
@@ -248,7 +240,8 @@ class StudyViewModel with ChangeNotifier {
   // 메시지 동기화
   Future<void> syncMessages(int roomKey, String nickname) async {
     try {
-      List<MsgDto> newMessages = await _studyService.syncMessages(roomKey, nickname);
+      List<MsgDto> newMessages =
+          await _studyService.syncMessages(roomKey, nickname);
       if (newMessages.isNotEmpty) {
         messages.addAll(newMessages);
         notifyListeners();

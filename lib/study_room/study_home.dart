@@ -31,7 +31,6 @@ class StudyHome extends StatelessWidget {
   StudyHome({required this.myStudyInfo});
   @override
   Widget build(BuildContext context) {
-        final mystudylist = Provider.of<StudyViewModel>(context, listen: false);
 
         double width = min(MediaQuery.of(context).size.width, 500.0);
         double tabBarHeight = MediaQuery.of(context).size.height * 0.08;
@@ -126,7 +125,7 @@ class StudyHome extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: buildListView(context, mystudylist),
+                child: buildListView(context,myStudyInfo),
               ),
             ],
           ),
@@ -134,7 +133,7 @@ class StudyHome extends StatelessWidget {
   }
 }
 
-ChangeNotifierProvider<StudyViewModel> buildListView(BuildContext context, StudyViewModel mystudylist) {
+ChangeNotifierProvider<StudyViewModel> buildListView(BuildContext context, MyStudyInfo myStudyInfo) {
   int count = 0;
 
   return ChangeNotifierProvider(
@@ -144,17 +143,12 @@ ChangeNotifierProvider<StudyViewModel> buildListView(BuildContext context, Study
       print("가입 스터디 입장");
       final mystudylist = Provider.of<StudyViewModel>(context, listen: true);
 
-
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-
         if (count == 0) {
           count++;
-          await mystudylist.enterStudy(mystudylist.roomKey, mystudylist.nickname);
+          await mystudylist.enterStudy(myStudyInfo.roomKey, Provider.of<UserProfileViewModel>(context,listen: false).nickName);
         }
       });
-
-
-
 
       return (mystudylist.isLoading || count == 0)
           ? Center(child: CircularProgressIndicator())

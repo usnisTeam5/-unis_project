@@ -120,9 +120,7 @@ class ProfileSettings extends StatelessWidget {
                               ),
                             ],
                           ),
-                        );
-
-                        // 회원 탈퇴 절차 수행
+                        );// 회원 탈퇴 절차 수행
                         if (confirm) {
                           await viewQuitModel.userQuit(nickname);
                           await viewModel.logout();

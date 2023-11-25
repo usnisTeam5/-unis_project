@@ -37,8 +37,6 @@ class StudyScreen extends StatelessWidget {
         count++; // 여기서 1로 만들면 아래에서 로딩이 활성화됨.
         final nickname = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
         await mystudy.getMyStudyRoomList(nickname);
-        //mystudylist = mystudy.MyStudyInfoList;
-        //print(mystudylist[0].startDate);
       }
     });
 

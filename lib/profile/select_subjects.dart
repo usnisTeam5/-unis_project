@@ -105,6 +105,9 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                   final List<String>? result = await Navigator.push(context, MaterialPageRoute(builder: (context) => SearchSubject()));
                   if (result != null) {
                     setState(() {
+                      for(int i=0;i<result.length;i++){
+                        result.removeWhere((element) => selectedCourses.contains(element));
+                      }
                       selectedCurCourses.addAll(result);
                     });
                   }
@@ -124,6 +127,7 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                         icon: Icon(Icons.close),
                         onPressed: () {
                           setState(() {
+
                             selectedCurCourses.remove(department);
                           });
                         },
@@ -151,6 +155,9 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                   final List<String>? result = await Navigator.push(context, MaterialPageRoute(builder: (context) => SearchSubject()));
                   if (result != null) {
                     setState(() {
+                      for(int i=0;i<result.length;i++){
+                        result.removeWhere((element) => selectedCurCourses.contains(element));
+                      }
                       selectedCourses.addAll(result);
                     });
                   }
@@ -170,6 +177,7 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
                         icon: Icon(Icons.close),
                         onPressed: () {
                           setState(() {
+
                             selectedCourses.remove(course);
                           });
                         },
