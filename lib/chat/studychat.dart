@@ -312,6 +312,8 @@ class _StudyChatScreenState extends State<StudyChatScreen> {
                                           decoration: BoxDecoration(
                                             color: (message.type == 'img')
                                                 ? Colors.grey[200]
+                                                : (message.type == 'share')
+                                                ? Colors.blueAccent
                                                 : (message.nickname ==
                                                         nickname) // 나일 경우
                                                     ? Colors
@@ -320,14 +322,19 @@ class _StudyChatScreenState extends State<StudyChatScreen> {
                                                         .white, // 상대방 메세지는 흰 색
                                             borderRadius:
                                                 BorderRadius.circular(15),
-                                            // image: message.type == 'text'
-                                            //     ? null
-                                            //     : DecorationImage(
-                                            //   fit: BoxFit.cover,
-                                            //   image: MemoryImage(
-                                            //     a, //byteImage[index]
-                                            //   ),
-                                            // ),
+                                            // border: (message.type == 'share')
+                                            //     ? Border.all(color: Colors., width: 2) // 검정 테두리 추가
+                                            //     : null, // 'share'가 아닐 때는 테두리 없음
+                                            boxShadow: (message.type == 'share') // 'share'일 때만 그림자를 추가
+                                                ? [
+                                              BoxShadow(
+                                                color: Colors.black.withOpacity(0.5),
+                                                spreadRadius: 1,
+                                                blurRadius: 5,
+                                                offset: Offset(2, 2),
+                                              ),
+                                            ]
+                                                : [],
                                           ),
                                           child: message.type ==
                                                   "text" // 메세지가 텍스트일 때

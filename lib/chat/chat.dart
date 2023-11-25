@@ -87,6 +87,7 @@ class _ChatScreenState extends State<ChatScreen> {
   bool forAns;
   _ChatScreenState(this.forAns); // 미답 진행 완료 셋 중 하나.
   int kcount =0;
+  bool shareButton = true; // 공유버튼 챗 스터디에서 들어왔을 때 안보이게 하기위해서 필요
   @override
   void dispose() {
     _isDisposed = true; // Set the flag to true when disposing the screen
@@ -188,6 +189,7 @@ class _ChatScreenState extends State<ChatScreen> {
       nickname = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
     }else {
       nickname = widget.nickname!;
+      shareButton = false;
     }
     return ChangeNotifierProvider(
         create: (_) => QaViewModel(),
@@ -361,7 +363,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ),
                     ), // 취소가 있어야 함
-                  if (status != '미답') // '질문자'의 경우 '완료' 버튼
+                  if (status != '미답' && shareButton) // '질문자'의 경우 '완료' 버튼
                     Container(
                         margin: EdgeInsets.all(10),
                         decoration: BoxDecoration(
