@@ -29,11 +29,25 @@ class StudyHome extends StatelessWidget {
   MyStudyInfo myStudyInfo;
 
   StudyHome({required this.myStudyInfo});
+
+
+  int count = 0;
+
   @override
   Widget build(BuildContext context) {
 
         double width = min(MediaQuery.of(context).size.width, 500.0);
         double tabBarHeight = MediaQuery.of(context).size.height * 0.08;
+
+        print("가입 스터디 입장");
+        final mystudylist = Provider.of<StudyViewModel>(context, listen: true);
+
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          if (count == 0) {
+            count++;
+            await mystudylist.enterStudy(myStudyInfo.roomKey, Provider.of<UserProfileViewModel>(context,listen: false).nickName);
+          }
+        });
 
         return Scaffold(
           appBar: AppBar(
@@ -125,7 +139,53 @@ class StudyHome extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: buildListView(context,myStudyInfo),
+                child: (mystudylist.isLoading || count == 0)
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                  itemCount: mystudylist.studyFriendList.length,
+                  itemBuilder: (context, index) {
+                    final userInfo = mystudylist.studyFriendList[index];
+                    return GestureDetector(
+                      onTap: (userInfo.nickname != Provider.of<UserProfileViewModel>(context,listen: false).nickName) ? () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => OthersProfilePage()),
+                        );
+                      } : null,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.grey.shade300,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 40.0, // 이미지의 크기 조절
+                              height: 40.0,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle, // 원형 모양을 만들기 위해 사용
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: MemoryImage(base64Decode(userInfo.image!)),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            Text(
+                              userInfo.nickname, // 닉네임
+                              style: TextStyle(fontSize: 16, color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -133,70 +193,3 @@ class StudyHome extends StatelessWidget {
   }
 }
 
-ChangeNotifierProvider<StudyViewModel> buildListView(BuildContext context, MyStudyInfo myStudyInfo) {
-  int count = 0;
-
-  return ChangeNotifierProvider(
-    create: (_) => StudyViewModel(),
-    builder: (context, child) {
-
-      print("가입 스터디 입장");
-      final mystudylist = Provider.of<StudyViewModel>(context, listen: true);
-
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        if (count == 0) {
-          count++;
-          await mystudylist.enterStudy(myStudyInfo.roomKey, Provider.of<UserProfileViewModel>(context,listen: false).nickName);
-        }
-      });
-
-      return (mystudylist.isLoading || count == 0)
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-        itemCount: mystudylist.studyFriendList.length,
-        itemBuilder: (context, index) {
-          final userInfo = mystudylist.studyFriendList[index];
-          return GestureDetector(
-            onTap: (userInfo.nickname != Provider.of<UserProfileViewModel>(context,listen: false).nickName) ? () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => OthersProfilePage()),
-              );
-            } : null,
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: Colors.grey.shade300,
-                  ),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 40.0, // 이미지의 크기 조절
-                    height: 40.0,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle, // 원형 모양을 만들기 위해 사용
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: MemoryImage(base64Decode(userInfo.image!)),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 20),
-                  Text(
-                    userInfo.nickname, // 닉네임
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      );
-    },
-  );
-}
