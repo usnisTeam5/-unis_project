@@ -180,7 +180,7 @@ class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProv
           onTap: () async{
             await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ChatScreen(qaKey: qa.qaKey,forAns: false,)),
+              MaterialPageRoute(builder: (context) => ChatScreen(qaKey: qa.qaKey,forAns: false, course: qa.course,)),
             );
             _fetchData(listViewModel, Provider.of<UserProfileViewModel>(context,listen: false).nickName);
           },

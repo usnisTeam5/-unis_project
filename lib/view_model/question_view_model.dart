@@ -7,7 +7,7 @@ import '../models/question_model.dart';
 class QaViewModel extends ChangeNotifier {
   final QaService _qaService = QaService();
   bool _isLoading = false;
-  List<QaBriefDto> qaList = []; // 리스트
+  List<QaBriefDto> qaList = []; // 질문  리스트 정보
   List<QaMsgDto> qaMessages = []; // 메시지 내용
   String questioner = ''; // 질문자 이름 ( 나일 수도 있고 상대방일 수도 있음)
   bool isQuestioner = true;
