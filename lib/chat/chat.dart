@@ -4,7 +4,10 @@
 
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import '../models/find_study.dart';
 import '../models/study_info.dart';
+import '../study_room/bottom_navigation_bar.dart';
+import '../view_model/find_study_view_model.dart';
 import '../view_model/study_info_view_model.dart';
 import 'myQHistoryChat.dart';
 import 'package:unis_project/chat/countdown.dart';
@@ -52,8 +55,9 @@ class ChatScreen extends StatefulWidget {
   final int qaKey; // qaKey 필드 추가
   final bool forAns;
   final String course;
+  String? nickname;
   // 생성자에서 qaKey를 받아 초기화
-  ChatScreen({Key? key, required this.qaKey, required this.forAns, required this.course}) : super(key: key);
+  ChatScreen({Key? key, required this.qaKey, required this.forAns, required this.course, this.nickname}) : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState(forAns);
@@ -180,10 +184,11 @@ class _ChatScreenState extends State<ChatScreen> {
         .of(context)
         .size
         .height, 700.0);
-    nickname = Provider
-        .of<UserProfileViewModel>(context, listen: false)
-        .nickName;
-
+    if( widget.nickname == null){
+      nickname = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
+    }else {
+      nickname = widget.nickname!;
+    }
     return ChangeNotifierProvider(
         create: (_) => QaViewModel(),
         builder: (context, child) {
@@ -363,127 +368,148 @@ class _ChatScreenState extends State<ChatScreen> {
                           gradient: MainGradient(),
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        child: TextButton(
-                          onPressed: () {
-                            if (status == '진행') {
-                              // '완료' 버튼을 눌렀을 때 실행할 작업을 여기에 추가
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return PopupReview(qaKey: widget.qaKey); // 리뷰 작성 내부에서 finishQa 실행함.
-                                },
-                              );
-                              setState(() {
-                                isReviewed = true;
-                                status = "완료";
-                              });
-                            } else { // 여기부터 하면 됨 11-24
-                              // '공유' 버튼을 눌렀을 때 chatShare.dart 파일로 이동
-                              if(isReviewed == true) {
-                                showDialog(
+                        child: ChangeNotifierProvider(
+                            create: (_) => StudyViewModel(),
+                            builder: (context, child) {
+                              final studychat = Provider.of<StudyViewModel>(context,listen: false);
+                            return TextButton(
+                              onPressed: () {
+                                if (status == '진행') {
+                                  // '완료' 버튼을 눌렀을 때 실행할 작업을 여기에 추가
+                                  showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
-                                      List<MyStudyInfo> myStudyList = Provider.of<MyStudyInfoViewModel>(context,listen: false).MyStudyInfoList;
-                                      String studyname ='';
-                                      int roomKey = -1;
-                                      for(int i=0; i< myStudyList.length;i++){
-                                        if( myStudyList[i].course == widget.course){
-                                            roomKey = myStudyList[i].roomKey;
-                                            studyname = myStudyList[i].roomName;
-                                            break;
-                                        }
+                                      return PopupReview(qaKey: widget.qaKey); // 리뷰 작성 내부에서 finishQa 실행함.
+                                    },
+                                  );
+                                  setState(() {
+                                    isReviewed = true;
+                                    status = "완료";
+                                  });
+                                } else { // 여기부터 하면 됨 11-24
+                                  // '공유' 버튼을 눌렀을 때 chatShare.dart 파일로 이동
+                                  if(isReviewed == true) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          List<MyStudyInfo> myStudyList = Provider.of<MyStudyInfoViewModel>(context,listen: false).MyStudyInfoList;
+                                          MyStudyInfo myStudyInfo = MyStudyInfo.defaultValues();
+                                          String studyname ='';
+                                          int roomKey = -1;
+                                          for(int i=0; i< myStudyList.length;i++){
+                                            if( myStudyList[i].course == widget.course){
+                                                myStudyInfo = myStudyList[i];
+                                                roomKey = myStudyList[i].roomKey;
+                                                studyname = myStudyList[i].roomName;
+                                                break;
+                                            }
+                                          }
+                                          if (studyname.isEmpty) {
+                                            // 스터디가 없는 경우 경고 메시지를 표시합니다.
+                                            return AlertDialog(
+                                              title: Text(
+                                                "경고",
+                                                style: TextStyle(fontFamily: 'Bold', color: Colors.grey[700]),
+                                              ),
+                                              content: Text(
+                                                "스터디에 먼저 가입해주세요",
+                                                style: TextStyle(fontFamily: 'Round'),
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () => Navigator.of(context).pop(),
+                                                  child: Text(
+                                                    "확인",
+                                                    style: TextStyle(fontFamily: 'Bold'),
+                                                  ),
+                                                ),
+                                              ],
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(20.0),
+                                              ),
+                                            );
+                                          } // 스터디 가입이 아직 안되어있는경우 공유 안된다고 경고띄움
+                                          else {
+                                            return AlertDialog(
+                                              title: Text(
+                                                "채팅을 \"$studyname\" 스터디에 공유합니다",
+                                                style: TextStyle(fontFamily: 'Bold',
+                                                    color: Colors.grey[700]),
+                                              ),
+                                              // content: Text(studyname,
+                                              //   style: TextStyle(
+                                              //       fontFamily: 'Round'),),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.of(context).pop(),
+                                                  child: Text(
+                                                    "취소",
+                                                    style: TextStyle(
+                                                        fontFamily: 'Bold'),
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () async{
+                                                    DateTime time = DateTime.now();
+                                                    await studychat.sendMessage(StudySendMsgDto( // 공유함
+                                                        sender: nickname,
+                                                        roomKey: roomKey,
+                                                        type: 'share',
+                                                        msg: "${widget.qaKey}",
+                                                        img: "${widget.course}",
+                                                        time: time.toString()));
+                                                    Navigator.of(context).pop();
+                                                    Navigator.of(context).pop();
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => MyHomePage(myStudyInfo: myStudyInfo,)),
+                                                    );
+                                                  },
+                                                  // _selectedStudyIndex가 null일 경우 버튼을 비활성화
+                                                  child: Text(
+                                                    "확인",
+                                                    style: TextStyle(
+                                                        fontFamily: 'Bold'),
+                                                  ),
+                                                ),
+                                              ],
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(
+                                                    20.0),
+                                              ),
+                                            );
+                                          }
                                       }
-                                      if (studyname.isEmpty) {
-                                        // 스터디가 없는 경우 경고 메시지를 표시합니다.
-                                        return AlertDialog(
-                                          title: Text(
-                                            "경고",
-                                            style: TextStyle(fontFamily: 'Bold', color: Colors.grey[700]),
-                                          ),
-                                          content: Text(
-                                            "스터디에 먼저 가입해주세요",
-                                            style: TextStyle(fontFamily: 'Round'),
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () => Navigator.of(context).pop(),
-                                              child: Text(
-                                                "확인",
-                                                style: TextStyle(fontFamily: 'Bold'),
-                                              ),
-                                            ),
-                                          ],
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(20.0),
-                                          ),
-                                        );
-                                      } // 스터디 가입이 아직 안되어있는경우 공유 안된다고 경고띄움
-                                      else {
-                                        return AlertDialog(
-                                          title: Text(
-                                            "채팅을 \"$studyname\" 스터디에 공유합니다",
-                                            style: TextStyle(fontFamily: 'Bold',
-                                                color: Colors.grey[700]),
-                                          ),
-                                          // content: Text(studyname,
-                                          //   style: TextStyle(
-                                          //       fontFamily: 'Round'),),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.of(context).pop(),
-                                              child: Text(
-                                                "취소",
-                                                style: TextStyle(
-                                                    fontFamily: 'Bold'),
-                                              ),
-                                            ),
-                                            TextButton(
-                                              onPressed: (){
-
-                                               },
-                                              // _selectedStudyIndex가 null일 경우 버튼을 비활성화
-                                              child: Text(
-                                                "확인",
-                                                style: TextStyle(
-                                                    fontFamily: 'Bold'),
-                                              ),
-                                            ),
-                                          ],
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                20.0),
-                                          ),
-                                        );
-                                      }
-                                  }
-                                );
-                              } // 리뷰했을 때
-                              else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => PopupReview(qaKey: widget.qaKey)),
-                                );
-                              } // 라뷰 안했으면
-                            }
-                          },
-                          style: TextButton.styleFrom(
-                            primary: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                            padding: EdgeInsets.symmetric(
-                                vertical: 6, horizontal: 15),
-                          ),
-                          child: Text(
-                            (status == '진행')
-                                ? '완료'
-                                : (status == '완료' && isReviewed) ? '공유' : '리뷰',
-                            style: const TextStyle(
-                              fontFamily: 'ExtraBold',
-                              color: Colors.white,
-                              fontSize: 15,
-                            ),
-                          ),
+                                    );
+                                  } // 리뷰했을 때
+                                  else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PopupReview(qaKey: widget.qaKey)),
+                                    );
+                                  } // 라뷰 안했으면
+                                }
+                              },
+                              style: TextButton.styleFrom(
+                                primary: Colors.transparent,
+                                shadowColor: Colors.transparent,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 6, horizontal: 15),
+                              ),
+                              child: Text(
+                                (status == '진행')
+                                    ? '완료'
+                                    : (status == '완료' && isReviewed) ? '공유' : '리뷰',
+                                style: const TextStyle(
+                                  fontFamily: 'ExtraBold',
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            );
+                          }
                         )
                     ), // 답변 끝내기(완료)
                 ] else ...[ // '답변자'의 경우 '답변하기' 버튼

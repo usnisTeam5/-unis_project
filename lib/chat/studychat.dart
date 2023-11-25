@@ -19,6 +19,7 @@ import '../models/find_study.dart';
 import '../models/study_info.dart';
 import '../view_model/find_study_view_model.dart';
 import '../view_model/user_profile_info_view_model.dart';
+import 'chat.dart';
 import 'image_picker_popup.dart';
 
 void main() {
@@ -305,7 +306,7 @@ class _StudyChatScreenState extends State<StudyChatScreen> {
                                             //     ? 0
                                             //     : 0,
                                           ),
-                                          padding: message.type == "text"
+                                          padding: message.type == "text" || message.type == "share"
                                               ? const EdgeInsets.all(8.0)
                                               : null,
                                           decoration: BoxDecoration(
@@ -368,7 +369,22 @@ class _StudyChatScreenState extends State<StudyChatScreen> {
                                                         ),
                                                       ),
                                                     )
-                                                  : SizedBox(),
+                                                  : TextButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => ChatScreen(qaKey: int.parse(message.msg), forAns: false, course: message.image, nickname: message.nickname)),
+                                              );
+                                              print("버튼 클릭됨!");
+                                            },
+                                            child: Text(
+                                              "질답을 공유하였습니다.",
+                                              style: TextStyle(
+                                                color: (message.nickname == nickname) ? Colors.white : Colors.black,
+                                                fontFamily: 'Round',
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                         if (message.nickname !=
                                             nickname) // 내 닉네임이 아닌 경우
