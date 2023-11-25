@@ -60,11 +60,13 @@ class StudyScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final MyStudyInfo = mystudy.MyStudyInfoList[index];
                   return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async{
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => MyHomePage(myStudyInfo: MyStudyInfo,)),
                       );
+                      final nickname = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
+                      await mystudy.getMyStudyRoomList(nickname);
                     },
                     child: Card(
                       elevation: 0,

@@ -326,8 +326,9 @@ class StudySendMsgDto {
 
 class StudyService {
 
-  Future<List<StudyInfoDto>> getStudyRoomList(
-      String nickname, RoomStatusDto roomStatus) async { // 스터디 찾기 // StreamedRequest 객체를 생성하고, 메서드와 URI를 지정합니다.
+  Future<List<StudyInfoDto>> getStudyRoomList(String nickname,
+      RoomStatusDto roomStatus) async {
+    // 스터디 찾기 // StreamedRequest 객체를 생성하고, 메서드와 URI를 지정합니다.
     final request = http.StreamedRequest(
       'GET',
       Uri.parse('$BASE_URL/study/$nickname'),
@@ -348,17 +349,21 @@ class StudyService {
     print(response.body);
     // *********************************
     if (response.statusCode == 200) {
-      final List<dynamic> studyInfoJsonList = jsonDecode(utf8.decode(response.bodyBytes));
+      final List<dynamic> studyInfoJsonList = jsonDecode(
+          utf8.decode(response.bodyBytes));
       print("스터디 찾기 모델 $studyInfoJsonList");
-      return studyInfoJsonList.map((json) => StudyInfoDto.fromJson(json)).toList();
+      return studyInfoJsonList.map((json) => StudyInfoDto.fromJson(json))
+          .toList();
     } else {
       throw Exception('Failed to load study rooms');
     }
   }
 
 
-  Future<String> joinStudy(String nickname, StudyJoinDto joinInfo) async { // 스터디 가입
-    final response = await http.post(Uri.parse('$BASE_URL/studyRoom/join/$nickname'),
+  Future<String> joinStudy(String nickname, StudyJoinDto joinInfo) async {
+    // 스터디 가입
+    final response = await http.post(
+      Uri.parse('$BASE_URL/studyRoom/join/$nickname'),
       body: json.encode(joinInfo.toJson()),
       headers: {'Content-Type': 'application/json'},
     );
@@ -373,7 +378,8 @@ class StudyService {
   }
 
 
-  static Future<bool> makeStudyRoom(StudyMakeDto info) async { // 스터디 생성
+  static Future<bool> makeStudyRoom(StudyMakeDto info) async {
+    // 스터디 생성
     try {
       final response = await http.post(Uri.parse('$BASE_URL/study/make'),
         headers: {'Content-Type': 'application/json'},
@@ -395,17 +401,21 @@ class StudyService {
     }
   }
 
- // 스터디 입장시
-  Future<List<UserInfoMinimumDto>> enterStudy(int roomKey, String nickname) async { // 가입한 스터디 입장 했을 때
-    final response = await http.get(Uri.parse('$BASE_URL/study/enter?roomKey=$roomKey&nickname=$nickname'),
-    headers: {'Content-Type': 'application/json'},
+  // 스터디 입장시
+  Future<List<UserInfoMinimumDto>> enterStudy(int roomKey,
+      String nickname) async {
+    // 가입한 스터디 입장 했을 때
+    final response = await http.get(
+      Uri.parse('$BASE_URL/study/enter?roomKey=$roomKey&nickname=$nickname'),
+      headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode == 200) {
-      List<dynamic> enterStudyList = jsonDecode(utf8.decode(response.bodyBytes));
+      List<dynamic> enterStudyList = jsonDecode(
+          utf8.decode(response.bodyBytes));
       print("가입 스터디 입장. 모델 $enterStudyList");
-      return enterStudyList.map((json) => UserInfoMinimumDto.fromJson(json)).toList();
-
+      return enterStudyList.map((json) => UserInfoMinimumDto.fromJson(json))
+          .toList();
     } else {
       throw Exception('Failed to load study friend list: ${response.body}');
     }
@@ -414,7 +424,8 @@ class StudyService {
   // 스터디 설정 변경
   Future<String> changeStudyInfo(int roomKey, StudyChangeDto info) async {
     final url = Uri.parse('$BASE_URL/study/change/$roomKey');
-    final response = await http.post(url, body: json.encode(info.toJson()), headers: {
+    final response = await http.post(
+        url, body: json.encode(info.toJson()), headers: {
       'Content-Type': 'application/json',
     });
 
@@ -427,7 +438,8 @@ class StudyService {
 
   // 그룹장 위임
   Future<void> commitLeader(int roomKey, String newLeader) async {
-    final url = Uri.parse('$BASE_URL/study/commitLeader/$roomKey?newLeader=$newLeader');
+    final url = Uri.parse(
+        '$BASE_URL/study/commitLeader/$roomKey?newLeader=$newLeader');
     final response = await http.post(url);
 
     if (response.statusCode != 200) {
@@ -447,7 +459,8 @@ class StudyService {
 
   // 스터디방의 모든 메시지 가져오기
   Future<List<MsgDto>> getAllMessages(int roomKey, String nickname) async {
-    final url = Uri.parse('$BASE_URL/study/chat?roomKey=$roomKey&nickname=$nickname');
+    final url = Uri.parse(
+        '$BASE_URL/study/chat?roomKey=$roomKey&nickname=$nickname');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -461,7 +474,8 @@ class StudyService {
   // 스터디방에서 메시지 보내기
   Future<void> sendMessage(StudySendMsgDto sendMessage) async {
     final url = Uri.parse('$BASE_URL/study/chat/sendMsg');
-    final response = await http.post(url, body: json.encode(sendMessage.toJson()), headers: {
+    final response = await http.post(
+        url, body: json.encode(sendMessage.toJson()), headers: {
       'Content-Type': 'application/json',
     });
 
@@ -472,7 +486,8 @@ class StudyService {
 
   // 메시지 동기화
   Future<List<MsgDto>> syncMessages(int roomKey, String nickname) async {
-    final url = Uri.parse('$BASE_URL/study/chat/getMsg?roomKey=$roomKey&nickname=$nickname');
+    final url = Uri.parse(
+        '$BASE_URL/study/chat/getMsg?roomKey=$roomKey&nickname=$nickname');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -485,13 +500,52 @@ class StudyService {
 
   // 스터디방 채팅에서 나가기
   Future<void> exitChat(int roomKey, String nickname) async {
-    final url = Uri.parse('$BASE_URL/study/chat/outChat?roomKey=$roomKey&nickname=$nickname');
+    final url = Uri.parse(
+        '$BASE_URL/study/chat/outChat?roomKey=$roomKey&nickname=$nickname');
     final response = await http.post(url);
 
     if (response.statusCode != 200) {
       throw Exception('Failed to exit chat');
     }
   }
+
+// 스터디 방 코드를 가져오는 함수
+  Future<String> getStudyCode(int roomKey) async {
+    final response = await http.get(
+      Uri.parse('$BASE_URL/study/code?roomKey=$roomKey'),
+    );
+    // 요청이 성공했는지 확인
+    if (response.statusCode == 200) {
+      print(response.body); // 응답 바디를 출력
+      // utf8로 디코드하고, json으로 디코드합니다
+
+      //print(a);
+      return response.body;
+    } else {
+      // 서버에서 오류 응답을 받았을 때 처리
+      throw Exception('Failed to load study code');
+    }
+  }
+
+  Future<String> getLeader(int roomKey) async {
+    // GET 요청을 보냅니다.
+    final response = await http.get(
+      Uri.parse('$BASE_URL/study/leader?roomKey=$roomKey'),
+    );
+
+    // 요청이 성공했는지 확인합니다.
+    if (response.statusCode == 200) {
+      print(response.body); // 응답 바디를 출력합니다.
+
+      // utf8로 디코드하고, json으로 디코드합니다.
+      // 여기서는 응답이 단순 문자열로 가정합니다.
+      return response.body;
+    } else {
+      // 서버에서 오류 응답을 받았을 때 처리합니다.
+      throw Exception('Failed to load study leader');
+    }
+  }
+
 }
 
 

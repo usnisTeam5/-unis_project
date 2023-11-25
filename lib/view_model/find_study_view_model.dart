@@ -181,13 +181,12 @@ class StudyViewModel with ChangeNotifier {
 
   // 스터디 설정 변경
   Future<String> changeStudyInfo(int roomKey, StudyChangeDto info) async {
-    isLoading = true;
     try {
       final result = await _studyService.changeStudyInfo(roomKey, info);
-      isLoading = false;
+      notifyListeners();
       return result; // 'ok' 또는 'no'
     } catch (e) {
-      isLoading = false;
+      notifyListeners();
       throw Exception('Failed to change study info: $e');
     }
   }
@@ -255,6 +254,23 @@ class StudyViewModel with ChangeNotifier {
   Future<void> exitChat(int roomKey, String nickname) async {
     try {
       await _studyService.exitChat(roomKey, nickname);
+    } catch (e) {
+      throw Exception('Failed to exit chat: $e');
+    }
+  }
+
+
+  Future<String> getStudyCode(int roomKey) async {
+    try {
+      return await _studyService.getStudyCode(roomKey);
+    } catch (e) {
+      throw Exception('Failed to exit chat: $e');
+    }
+  }
+
+  Future<String> getLeader(int roomKey) async {
+    try {
+      return await _studyService.getLeader(roomKey);
     } catch (e) {
       throw Exception('Failed to exit chat: $e');
     }

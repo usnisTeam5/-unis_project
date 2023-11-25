@@ -7,13 +7,13 @@ import 'package:http/http.dart' as http;
 ///
 
 class MyStudyInfo { // 스터디 탭 클릭 시 받아오는 정보를 가공해서 유저한테 보여줄 정보. = DTO
-  final int roomKey; // 스터디방 고유키
+   int roomKey; // 스터디방 고유키
   String roomName; // 스터디 제목
-  final String course; // 과목명
+   String course; // 과목명
   int maxNum; // 최대인원수
   int curNum; // 현재인원수
   final String startDate; // 스터디 생성일, 2023-11-11 형태로 DB에 저장함. 스터디 생성할 때 DateTime 을 파싱해서 보냄.
-  final String studyIntroduction; // 스터디 소개
+   String studyIntroduction; // 스터디 소개
 
   MyStudyInfo({
     required this.roomKey,

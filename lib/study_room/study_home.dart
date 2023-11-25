@@ -68,12 +68,15 @@ class StudyHome extends StatelessWidget {
                   size: 28,
                 ),
                 color: Colors.grey,
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async{
+                  String code = await mystudylist.getStudyCode(myStudyInfo.roomKey);
+                  String leader = await mystudylist.getLeader(myStudyInfo.roomKey);
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => StudyRoomSetting()),
+                        builder: (context) => StudyRoomSetting(myStudyInfo, code,leader)),
                   );
+                  await mystudylist.enterStudy(myStudyInfo.roomKey, Provider.of<UserProfileViewModel>(context,listen: false).nickName);
                   //Navigator.pop(context);  // 로그인 화면으로 되돌아가기
                 },
               ),
