@@ -122,7 +122,7 @@ class UserProfileInfoForShow {
 
 
   static Future<String> setPick(String nickname, String otherNickname) async {
-    final url = Uri.parse('http://3.35.21.123:8080/user/profile/setPick/$nickname');
+    final url = Uri.parse('$BASE_URL/user/profile/setPick/$nickname');
     final response = await http.post(url,
       body: {'otherNickname': otherNickname},
     );

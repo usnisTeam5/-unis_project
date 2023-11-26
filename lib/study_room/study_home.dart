@@ -152,7 +152,7 @@ class StudyHome extends StatelessWidget {
                       onTap: (userInfo.nickname != Provider.of<UserProfileViewModel>(context,listen: false).nickName) ? () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => OthersProfilePage()),
+                          MaterialPageRoute(builder: (context) => OthersProfilePage(userInfo.nickname)),
                         );
                       } : null,
                       child: Container(

@@ -11,23 +11,23 @@ import 'dart:math';
 import 'package:provider/provider.dart';
 import '../view_model/other_profile_view_model.dart';
 
-void main() {
-  runApp(const OthersProfile());
-}
-
-class OthersProfile extends StatelessWidget {
-  const OthersProfile({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: OthersProfilePage(),
-      theme: ThemeData(
-        fontFamily: 'Round',
-      ),
-    );
-  }
-}
+// void main() {
+//   runApp(const OthersProfile());
+// }
+//
+// class OthersProfile extends StatelessWidget {
+//   const OthersProfile({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: OthersProfilePage(),
+//       theme: ThemeData(
+//         fontFamily: 'Round',
+//       ),
+//     );
+//   }
+// }
 
 // class OthersProfilePage extends StatelessWidget {
 //   @override
@@ -49,6 +49,8 @@ class OthersProfile extends StatelessWidget {
 class OthersProfilePage extends StatelessWidget {
   @override
   int count =0;
+  String friendNickname ='';
+  OthersProfilePage(this.friendNickname);
   Widget build(BuildContext context) {
     final width = min(MediaQuery.of(context).size.width, 500.0);
     //final viewModel = Provider.of<UserProfileOtherViewModel>(context, listen: true);
@@ -68,7 +70,7 @@ class OthersProfilePage extends StatelessWidget {
                   .nickName;
               // 다른 비동기 작업 실행
               await Provider.of<UserProfileOtherViewModel>(context, listen: false)
-                  .fetchUserProfile(nickName, "abc"); // **
+                  .fetchUserProfile(nickName, friendNickname); // **
             }
           });
 

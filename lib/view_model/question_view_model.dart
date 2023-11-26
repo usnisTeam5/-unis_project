@@ -261,6 +261,7 @@ class QaViewModel extends ChangeNotifier {
       // 에러 처리
       print('Error fetching QA status: $e');
     } finally {
+      notifyListeners();
     }
   }
   void addMsg(QaMsgDto temp) async {

@@ -210,6 +210,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   milliseconds: 500)); // Adjust the delay duration as needed
               await chatModel.refreshQaMessages(widget.qaKey, nickname, kcount);
               kcount =1;
+              if(status == '미답') {
+                chatModel.fetchQaStatus(widget.qaKey);
+              }
             }
           } //
 
@@ -388,6 +391,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     isReviewed = true;
                                     status = "완료";
                                   });
+                                  // Provider.of<UserProfileViewModel>(context,listen: false).setPoint(, point);
                                 } else { // 여기부터 하면 됨 11-24
                                   // '공유' 버튼을 눌렀을 때 chatShare.dart 파일로 이동
                                   if(isReviewed == true) {
