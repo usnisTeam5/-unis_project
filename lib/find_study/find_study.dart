@@ -4,10 +4,7 @@ import '../../../css/css.dart';
 import '../chat/OneToOneChat.dart';
 import '../models/study_info.dart';
 import '../study_room/bottom_navigation_bar.dart';
-<<<<<<< HEAD
-=======
 //import '../find_study/joinStudy.dart';
->>>>>>> 5086469a20095f144878051233f3fab55af462ee
 import 'dart:math';
 
 import 'package:provider/provider.dart';
