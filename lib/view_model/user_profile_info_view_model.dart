@@ -124,8 +124,9 @@ class UserProfileViewModel with ChangeNotifier {
 
   Future<void> getPoint(String nickname) async {
     try {
-      await _profileInfo!.getUserPoints(nickName);
-      _profileInfo!.point = point; // 화면에 보여주기 위해서 추가
+      _profileInfo!.point = await _profileInfo!.getUserPoints(nickName);
+      print("point : $point");
+      // _profileInfo!.point = point; // 화면에 보여주기 위해서 추가
       notifyListeners();
     } catch (e) {
       // 에러 처리

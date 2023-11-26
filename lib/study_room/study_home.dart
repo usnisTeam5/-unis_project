@@ -74,7 +74,7 @@ class StudyHome extends StatelessWidget {
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => StudyRoomSetting(myStudyInfo, code,leader)),
+                        builder: (context) => StudyRoomSetting(myStudyInfo, code,leader,mystudylist.studyFriendList)),
                   );
                   await mystudylist.enterStudy(myStudyInfo.roomKey, Provider.of<UserProfileViewModel>(context,listen: false).nickName);
                   //Navigator.pop(context);  // 로그인 화면으로 되돌아가기

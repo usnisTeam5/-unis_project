@@ -340,7 +340,7 @@ class UserProfileInfo {
       // Check if the request was successful
       if (response.statusCode == 200) {
 
-        print(response.body);
+        print("Model: ${response.body}");
 
         return int.parse(response.body);
       } else {
