@@ -123,7 +123,7 @@ class QaService {
     final response = await http.get(
         Uri.parse('$BASE_URL/user/qa?qaKey=$qaKey'));
 
-    print("getQuestion모델: ${response.body}"); // 응답 내용 출력
+    print("getAllQuestion모델: ${response.body}"); // 응답 내용 출력
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = json.decode(utf8.decode(response.bodyBytes));

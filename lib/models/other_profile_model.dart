@@ -136,7 +136,7 @@ class UserProfileInfoForShow {
   }
 
   static Future<String> setFriend(String nickname, String otherNickname) async { // 친구
-    final url = Uri.parse('http://3.35.21.123:8080/user/profile/setFriend/$nickname');
+    final url = Uri.parse('$BASE_URL/user/profile/setFriend/$nickname');
     final response = await http.post(
       url,
       body: {'otherNickname': otherNickname},
@@ -150,7 +150,7 @@ class UserProfileInfoForShow {
   }
 
   static Future<String> setBlock(String nickname, String otherNickname) async { // 차단
-    final url = Uri.parse('http://3.35.21.123:8080/user/profile/setBlock/$nickname');
+    final url = Uri.parse('$BASE_URL/user/profile/setBlock/$nickname');
     final response = await http.post(
       url,
       body: {'otherNickname': otherNickname},

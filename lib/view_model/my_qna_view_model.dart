@@ -25,7 +25,7 @@ class MyQnAViewModel extends ChangeNotifier {
     setLoading(true);
     try {
       askList = await _userService.getAskList(nickname);
-      print("viewModel : ${askList[0].status}");
+      //print("viewModel : ${askList[0].status}");
     } finally {
       setLoading(false);
     }

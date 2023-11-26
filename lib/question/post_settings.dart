@@ -292,7 +292,7 @@ class _PostSettingsState extends State<PostSettings> {
                       );
                       return;
                     }
-
+                    print("isANonymity : $isAnonymousSelected");
                     enrollment.enrollQuestion(QaDto(
                       type : (isQuestionType1Selected) ? '문제' : '조언',
                       course : selectedSubject!,

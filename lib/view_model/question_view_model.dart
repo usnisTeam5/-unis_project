@@ -1,13 +1,15 @@
 import 'dart:convert';
+import 'dart:html';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
 import '../models/question_model.dart';
 
 class QaViewModel extends ChangeNotifier {
   final QaService _qaService = QaService();
   bool _isLoading = false;
-  List<QaBriefDto> qaList = []; // 질문  리스트 정보
+  List<QaBriefDto> qaList = []; // 리스트
   List<QaMsgDto> qaMessages = []; // 메시지 내용
   String questioner = ''; // 질문자 이름 ( 나일 수도 있고 상대방일 수도 있음)
   bool isQuestioner = true;
@@ -22,8 +24,7 @@ class QaViewModel extends ChangeNotifier {
   bool get isReviewed => _isReviewed;
   bool isAnonymity = false;
   // 이 변수는 API로부터 받아온 QA 상태를 저장합니다.
-  String _qaStatus = '';
-  String get qaStatus => _qaStatus;
+  String qaStatus = '진행';
 
   void setLoading(bool loading) {
     _isLoading = loading;
@@ -168,18 +169,20 @@ class QaViewModel extends ChangeNotifier {
     }
   }
   // QA 채팅 내용 갱신 함수
-  Future<void> refreshQaMessages(int qaKey, String nickname, int k) async {
+  Future<void> refreshQaMessages(int qaKey, String nickname, int k, BuildContext context, ) async {
     try {
 
       List<QaMsgDto> temp= await _qaService.getQaMsgs(qaKey, nickname);
-
+      if(qaStatus == '미답' && temp.isNotEmpty && isQuestioner){
+        if(temp[0].nickname != questioner){
+          _friendNickname = temp[0].nickname; // 상대방 이름
+          _friendProfileImage = await QaService.getProfileImage(_friendNickname);
+        }
+      }
       if(temp.isNotEmpty && k == 1) {
         qaMessages.addAll(temp); // message에  추가함.
-        //print(messages);
-        //print("Messages list hashCode: ${messages.hashCode}");
         notifyListeners();
       }
-
     } catch (e) {
       print("GET MSG 에러");
       //_isLoading = false;
@@ -254,14 +257,13 @@ class QaViewModel extends ChangeNotifier {
   Future<void> fetchQaStatus(int qaKey) async {
     try {
       final String status = await _qaService.getQaStatus(qaKey);
-      final temp = _qaStatus;
-      _qaStatus = status;
+      final temp = qaStatus;
+      qaStatus = status;
       if(temp != status) notifyListeners();
     } catch (e) {
       // 에러 처리
       print('Error fetching QA status: $e');
     } finally {
-      notifyListeners();
     }
   }
   void addMsg(QaMsgDto temp) async {

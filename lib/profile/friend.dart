@@ -52,6 +52,7 @@ class MyListScreen extends StatefulWidget {
 class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int count = 0;
+  int tabTemp =0;
   @override
   void initState() {
     super.initState();
@@ -108,6 +109,18 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
               // 다른 비동기 작업 실행
               await friendsViewModel.fetchPicks(myprofile.nickName);
               await friendsViewModel.fetchFriends(myprofile.nickName);
+              await friendsViewModel.fetchBlocks(myprofile.nickName);
+            }
+            if(_tabController.index == 0 && _tabController.index != tabTemp){
+              tabTemp = _tabController.index;
+              await friendsViewModel.fetchPicks(myprofile.nickName);
+            }
+            else if(_tabController.index == 1 && _tabController.index != tabTemp){
+              tabTemp = _tabController.index;
+              await friendsViewModel.fetchFriends(myprofile.nickName);
+            }
+            else if(_tabController.index == 2 && _tabController.index != tabTemp){
+              tabTemp = _tabController.index;
               await friendsViewModel.fetchBlocks(myprofile.nickName);
             }
           });
