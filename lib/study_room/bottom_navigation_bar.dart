@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: (context, child) {
         return Scaffold(
           key: scaffoldKey, // key를 Scaffold에 할당합니다
-          endDrawer: Menu(),
+          endDrawer: Menu(scaffoldKey),
           drawer: Notifier(),
           body: Stack(
             children: [

@@ -263,7 +263,7 @@ class _ChatScreenState extends State<ChatScreen> {
               backgroundColor: Colors.white,
               toolbarHeight: 55,
               leadingWidth: 105,
-              leading: (chatModel.qaStatus == '미답' && !_isQuestioner) // 미답이고, 질문자이면
+              leading: (chatModel.qaStatus == '미답' && !_isQuestioner) // 미답이고, 질문자가 아니// 면
                   ? Container(
                 margin: EdgeInsets.all(10),
                 child: TextButton(

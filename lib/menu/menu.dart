@@ -9,23 +9,26 @@ import 'package:unis_project/menu/setting.dart';
 import 'package:unis_project/view_model/user_profile_info_view_model.dart';
 import '../css/css.dart';
 import 'dart:math';
-void main() {
-  runApp(const MenuApp());
-}
-
-class MenuApp extends StatelessWidget {
-  const MenuApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-
-      home: Menu(),
-    );
-  }
-}
+// void main() {
+//   runApp(const MenuApp());
+// }
+//
+// class MenuApp extends StatelessWidget {
+//   const MenuApp({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//
+//       home: Menu(),
+//     );
+//   }
+// }
 
 class Menu extends StatelessWidget {
+  GlobalKey<ScaffoldState> scaffoldKey;
+  Menu(this.scaffoldKey);
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -45,6 +48,7 @@ class Menu extends StatelessWidget {
                       context,
                       MaterialPageRoute(builder: (context) => NoticeScreen()),
                     );
+                    scaffoldKey.currentState?.closeEndDrawer();
                     // Navigate to the notice screen
                   },
                 ),
@@ -70,6 +74,7 @@ class Menu extends StatelessWidget {
                       context,
                       MaterialPageRoute(builder: (context) => OneToOneChatScreen(friendName: 'minho')),
                     );
+                    scaffoldKey.currentState?.closeEndDrawer();
                   },
                 ),
                 ListTile(
@@ -79,6 +84,7 @@ class Menu extends StatelessWidget {
                   ),
                   trailing: Icon(Icons.navigate_next, color: Colors.blue),
                   onTap: () async{
+                    scaffoldKey.currentState?.closeEndDrawer();
                     await Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => PointChargeScreen()),
@@ -98,6 +104,7 @@ class Menu extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => CoinWithdrawalScreen()),
                     );
                     // Navigate to the app settings screen
+                    scaffoldKey.currentState?.closeEndDrawer();
                   },
                 ),
                 ListTile(
@@ -112,6 +119,7 @@ class Menu extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => SettingsScreen()),
                     );
                     // Navigate to the app settings screen
+                    scaffoldKey.currentState?.closeEndDrawer();
                   },
                 ),
               ],

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../css/css.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../view_model/user_profile_info_view_model.dart';
 
 class CoinWithdrawalScreen extends StatefulWidget {
   @override
@@ -11,7 +14,7 @@ class CoinWithdrawalScreen extends StatefulWidget {
 }
 
 class _CoinWithdrawalScreenState extends State<CoinWithdrawalScreen> {
-  int currentCoin = 10000;
+  int currentCoin = 0;
   int coinWithdraw = 0;
   final TextEditingController nameController = TextEditingController();
   final TextEditingController bankController = TextEditingController();
@@ -51,6 +54,10 @@ class _CoinWithdrawalScreenState extends State<CoinWithdrawalScreen> {
   }
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProfileViewModel>(context, listen: false);
+    user.getPoint(user.nickName);
+    currentCoin = user.point;
+
     final width = min(MediaQuery
         .of(context)
         .size
@@ -93,7 +100,7 @@ class _CoinWithdrawalScreenState extends State<CoinWithdrawalScreen> {
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   children: [
-                    _coinInfoRow("내 코인", currentCoin),
+                    _coinInfoRow("내 코인", user.point),
                     SizedBox(height: 5,),
                     Row(
                       //mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -278,7 +285,25 @@ class _CoinWithdrawalScreenState extends State<CoinWithdrawalScreen> {
                                   child: Text('확인'),
                                   onPressed: () {
                                     // 탈퇴
+                                    user.minusPoint(user.nickName, coinWithdraw);
                                     Navigator.of(context).pop();
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          content: Text("충전이 완료되었습니다."),  // 선택되지 않았을 때의 안내 문구
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: Text('확인'),
+                                              onPressed: () async{
+                                                Navigator.of(context).pop();
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
                                   },
                                 ),
                               ],
