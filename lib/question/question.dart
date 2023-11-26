@@ -120,7 +120,7 @@ class _QuestionPageState extends State<QuestionPage> {
               ? Center(child: CircularProgressIndicator(),) :
           RefreshIndicator(
             onRefresh: () async {
-              qaViewModel.fetchQaList(myprofile.nickName);
+              await qaViewModel.fetchQaList(myprofile.nickName);
             },
             child: Container(
               color: Colors.grey[200],

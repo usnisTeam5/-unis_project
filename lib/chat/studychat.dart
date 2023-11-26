@@ -17,6 +17,7 @@ import 'package:unis_project/chat/report.dart';
 import '../image_viewer/image_viewer.dart';
 import '../models/find_study.dart';
 import '../models/study_info.dart';
+import '../profile/other_profile.dart';
 import '../view_model/find_study_view_model.dart';
 import '../view_model/user_profile_info_view_model.dart';
 import 'chat.dart';
@@ -222,13 +223,21 @@ class _StudyChatScreenState extends State<StudyChatScreen> {
                                 Column(
                                   // 상대방 프로필 표시
                                   children: [
-                                    ClipOval(
-                                      child: Image.memory(
-                                        base64Decode(getProfileImage(message.nickname)),
-                                        width: 30.0,
-                                        height: 30.0,
-                                        fit: BoxFit.cover,
-                                        gaplessPlayback: true,
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => OthersProfilePage(message.nickname)),
+                                        );
+                                      },
+                                      child: ClipOval(
+                                        child: Image.memory(
+                                          base64Decode(getProfileImage(message.nickname)),
+                                          width: 30.0,
+                                          height: 30.0,
+                                          fit: BoxFit.cover,
+                                          gaplessPlayback: true,
+                                        ),
                                       ),
                                     ),
                                     SizedBox(height: 2),

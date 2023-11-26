@@ -109,8 +109,8 @@ class StudyHome extends StatelessWidget {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: Text('공지'),
-                        content: Text('이것은 공지입니다!'),
+                        title: Text('소개'),
+                        content: Text(myStudyInfo.studyIntroduction),
                         actions: [
                           TextButton(
                             onPressed: () {
@@ -131,13 +131,14 @@ class StudyHome extends StatelessWidget {
                   padding: EdgeInsets.all(16.0),
                   color: Colors.grey[200],
                   child: Text(
-                    '공지: 이것은 공지입니다!',
+                    '소개: ${myStudyInfo.studyIntroduction}',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 20,
                       fontFamily: 'Round',
                     ),
                     //textAlign: TextAlign.center,
+                    overflow : TextOverflow.ellipsis,
                   ),
                 ),
               ),
