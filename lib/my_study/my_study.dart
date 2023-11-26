@@ -51,7 +51,21 @@ class StudyScreen extends StatelessWidget {
       ),
       body: (mystudy.isLoading || count == 0)
           ? Center(child: CircularProgressIndicator())
-          : Container(
+          : (mystudy.MyStudyInfoList.length == 0)
+            ? const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('스터디에 가입해주세요!',
+              style: TextStyle(
+                color: Color(0xFF3D6094),
+                fontFamily: 'Bold',
+                fontSize: 25,
+              ),),
+          ],
+        ),
+      )
+            : Container(
               padding: EdgeInsets.only(top: 10.0),
               color: Colors.grey[200],
               child: ListView.builder(

@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 
 import 'package:unis_project/chat/report.dart';
 import '../image_viewer/image_viewer.dart';
+import '../profile/other_profile.dart';
 import '../view_model/user_profile_info_view_model.dart';
 import 'chat.dart';
 import 'image_picker_popup.dart';
@@ -186,11 +187,28 @@ class _OneToOneChatScreenState extends State<OneToOneChatScreen> {
                                 shouldDisplayHeader) // 내 메시지가 아닌 상대방 메시지 인데, header를 보여줄 때
                               Column( // 상대방 프로필 표시
                                 children: [
-                                  CircleAvatar(
-                                    backgroundImage: MemoryImage(chatModel
-                                        .friendProfileImage), // ** 추가
-                                    radius: 15,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => OthersProfilePage(message.nickname)),
+                                      );
+                                    },
+                                    child: ClipOval(
+                                      child: Image.memory(
+                                        chatModel.friendProfileImage,
+                                        width: 30.0,
+                                        height: 30.0,
+                                        fit: BoxFit.cover,
+                                        gaplessPlayback: true,
+                                      ),
+                                    ),
                                   ),
+                                  // CircleAvatar(
+                                  //   backgroundImage: MemoryImage(chatModel
+                                  //       .friendProfileImage), // ** 추가
+                                  //   radius: 15,
+                                  // ),
                                   SizedBox(height: 2),
                                 ],
                               ),

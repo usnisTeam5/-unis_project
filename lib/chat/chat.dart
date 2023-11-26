@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../models/find_study.dart';
 import '../models/study_info.dart';
+import '../profile/other_profile.dart';
 import '../study_room/bottom_navigation_bar.dart';
 import '../view_model/find_study_view_model.dart';
 import '../view_model/study_info_view_model.dart';
@@ -682,15 +683,20 @@ class _ChatScreenState extends State<ChatScreen> {
                               if (message.nickname != nickname && shouldDisplayHeader) // 내 메시지가 아닌 상대방 메시지 인데, header를 보여줄 때
                                 Column( // 상대방 프로필 표시
                                   children: [
-                                    Container(
-                                      width: 30.0, // 이미지의 크기 조절
-                                      height: 30.0,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle, // 원형 모양을 만들기 위해 사용
-                                        image: DecorationImage(
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => OthersProfilePage(message.nickname)),
+                                        );
+                                      },
+                                      child: ClipOval(
+                                        child: Image.memory(
+                                          chatModel.friendProfileImage,
+                                          width: 30.0,
+                                          height: 30.0,
                                           fit: BoxFit.cover,
-                                          image: MemoryImage(chatModel
-                                              .friendProfileImage), // ** 추가
+                                          gaplessPlayback: true,
                                         ),
                                       ),
                                     ),
