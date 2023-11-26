@@ -30,7 +30,7 @@ class StudyApiService {
     }
   }
 
-  // 등록된 파일 목록을 가져오는 메소드
+  // 등록된 유저들을 가져오는 메소드
   Future<List<String>> getEnrollUserList(int roomKey, int folderKey) async {
     final response = await http.get(Uri.parse('$BASE_URL/study/$roomKey/$folderKey'));
 
@@ -43,6 +43,22 @@ class StudyApiService {
     }
   }
 
+// 폴더에서 사용자와 PDF 내용을 삭제하는 함수
+  Future<void> deleteUserInFolder(int roomKey, int folderKey, String nickname) async {
+    final url = Uri.parse('$BASE_URL/study/$roomKey/$folderKey?nickname=$nickname');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    print(response.body); // 서버 응답 로그
+
+    // 응답 처리
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete user from folder');
+    }
+    // 성공적인 경우 특별한 처리가 필요 없을 수 있습니다.
+  }
   // 파일 등록 메소드
   Future<String> enrollFile(int roomKey, int folderKey, String nickname, File file) async {
     var uri = Uri.parse('$BASE_URL/study/enroll/File/$roomKey/$folderKey/$nickname');
@@ -68,6 +84,7 @@ class StudyApiService {
       throw Exception('Failed to enroll file');
     }
   }
+
   // 퀴즈 생성 메소드
   Future<List<QuizDto>> getQuiz(StudyQuizInfoDto info) async {
     // StreamedRequest 객체를 생성하고, 메서드와 URI를 지정합니다.

@@ -1,43 +1,63 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:unis_project/models/study_info.dart';
+import 'package:unis_project/view_model/user_profile_info_view_model.dart';
 import '../css/css.dart';
 import '../file_selector/file_selector.dart';
+import '../models/study_quiz_model.dart';
+import '../view_model/find_study_view_model.dart';
 import '../view_model/study_quiz_view_model.dart';
 import 'quiz_creator.dart';
 import 'dart:math';
 import 'package:flutter/services.dart';
+import 'package:file_picker/file_picker.dart';
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-
-      theme: ThemeData(
-        fontFamily: 'Bold',
-      ),
-      home: QuizFolderScreen(),
+class FileSelector {
+  Future<File?> pickDocument(BuildContext context) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
     );
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      return file;
+    } else {
+      // 사용자가 파일 선택을 취소한 경우
+      return null;
+    }
   }
 }
 
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//
+//       theme: ThemeData(
+//         fontFamily: 'Bold',
+//       ),
+//       home: QuizFolderScreen(),
+//     );
+//   }
+// }
+
 class QuizFolderScreen extends StatefulWidget {
+  MyStudyInfo myStudyInfo;
+  QuizFolderScreen(this.myStudyInfo);
+
   @override
   _QuizScreenState createState() => _QuizScreenState();
 }
 
 class _QuizScreenState extends State<QuizFolderScreen> {
   // 과목 목록
-  final FileSelector fileSelector = FileSelector();
-  final List<String> folders = [
-    '1강',
-    '2강',
-    '3강',
-    '4강',
-  ];
-
+  int count = 0;
   @override
   Widget build(BuildContext context) {
     final width = min(MediaQuery.of(context).size.width,500.0);
@@ -46,6 +66,19 @@ class _QuizScreenState extends State<QuizFolderScreen> {
     return ChangeNotifierProvider(
         create: (_) => StudyQuizViewModel(),
         builder: (context, child) {
+
+          final quizViewModel = Provider.of<StudyQuizViewModel>(context, listen: true);
+          WidgetsBinding.instance.addPostFrameCallback((_) async{ // 나중에 호출됨.
+            // context를 사용하여 UserProfileViewModel에 접근
+            //print("sdfsdfsdfsadfasdfsadfasdf");
+
+            if(count == 0) {
+              count ++;
+              print("count: ${count}");
+              await quizViewModel.getFolderList(widget.myStudyInfo.roomKey); // **
+            }
+          });
+
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -72,6 +105,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                       builder: (BuildContext context) {
                         final TextEditingController _controller = TextEditingController();
                         return AlertDialog(
+
                           title: Text('폴더 추가',style: TextStyle(fontFamily: 'Round'),),
                           content: TextField(
                             controller: _controller,
@@ -89,19 +123,33 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                             ),
                             TextButton(
                               child: Text('추가'),
-                              onPressed: () {
-                                Navigator.of(context).pop(_controller.text);
+                              onPressed: () async{
+                                if(_controller.text.isNotEmpty) {
+                                  await quizViewModel.makeFolder(
+                                      widget.myStudyInfo.roomKey,
+                                      _controller.text);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('폴더가 만들어졌습니다.'),
+                                      duration: Duration(seconds: 2), // 스낵바 표시 시간
+                                    ),
+                                  );
+                                  Navigator.of(context).pop();
+                                }
+                                else{
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('폴더 이름을 입력해 주세요'),
+                                      duration: Duration(seconds: 2), // 스낵바 표시 시간
+                                    ),
+                                  );
+                                }
                               },
                             ),
                           ],
                         );
                       },
                     );
-                    if (folderName != null && folderName.isNotEmpty) {
-                      setState(() {
-                        folders.add(folderName);
-                      });
-                    }
                 },
               ),
             ],
@@ -123,56 +171,66 @@ class _QuizScreenState extends State<QuizFolderScreen> {
               ),
             ),
           ),
-          body: FoldersScreen(folders: folders, fileSelector: fileSelector),
+          body: FoldersScreen(widget.myStudyInfo.roomKey),
         );
       }
     );
   }
 }
 class FoldersScreen extends StatefulWidget {
-  FoldersScreen({
+  int roomkey;
+  FoldersScreen(this.roomkey, {
     Key? key,
-    required this.folders,
-    required this.fileSelector,
   }) : super(key: key);
-
-  final List<String> folders;
-  final FileSelector fileSelector;
 
   @override
   _FoldersScreenState createState() => _FoldersScreenState();
 }
 
 class _FoldersScreenState extends State<FoldersScreen> {
+  List<StudyQuizListDto> folders = [];
+  FileSelector? fileSelector;
 
-  final Map<String, List<String>> folderDocuments = {
-    '1강': ['문서1', '문서2'],
-    '2강': ['문서3'],
-    '3강': [],
-    '4강': ['문서4', '문서5', '문서6'],
-  };
-  void _showDocumentList(BuildContext context, String folder) {
-
+  final Map<String, List<String>> folderDocuments = {};
+  void _showDocumentList(List<String> users, int folderKey, String folderName, StudyQuizViewModel quizViewModel, String leader) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('$folder 문서 목록'),
+          title: Text('$folderName. 문서 등록자'),
           content: Container(
             width: double.maxFinite,
             height: 300,
             child: ListView.builder(
-              itemCount: folderDocuments[folder]?.length ?? 0,
+              itemCount: users.length,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
-                  title: Text(folderDocuments[folder]![index]),
+                  title: Text(users[index]),
                   trailing: IconButton(
                     icon: Icon(Icons.delete),
-                    onPressed: () {
-                      setState(() {
-                        folderDocuments[folder]!.removeAt(index);
-                      });
-                      Navigator.of(context).pop();
+                    onPressed: () async {
+                      String nickname = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
+                      if (nickname == leader || users[index] == nickname) {
+
+                        String deletedUser = users[index]; // 삭제할 사용자 저장
+                        users.removeAt(index);
+                        await quizViewModel.deleteUser(widget.roomkey, folderKey, deletedUser);
+                        Navigator.of(context).pop();
+                        _showDocumentList(users, folderKey, folderName, quizViewModel, leader);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('$deletedUser님의 문서가 삭제되었습니다.'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('방장을 제외한 나머지는 본인 문서만 삭제할 수 있습니다.'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      }
                     },
                   ),
                 );
@@ -186,11 +244,13 @@ class _FoldersScreenState extends State<FoldersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final quizViewModel = Provider.of<StudyQuizViewModel>(context, listen: true);
+    folders = quizViewModel.folderList;
     return SingleChildScrollView(
       child: Column(
         children: [
           SizedBox(height: 20,),
-          ...widget.folders.map((folder) {
+          ...folders.map((folder) {
             return Container(
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 33),
               padding: EdgeInsets.only(left: 30,bottom: 15),
@@ -208,14 +268,14 @@ class _FoldersScreenState extends State<FoldersScreen> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          folder,
+                          folder.folderName,
                           style: TextStyle(
                             fontSize: 24.0,
                             fontFamily: 'Bold',
                             color: Colors.grey[500],
                           ),
                         ),
-                        Text('    5'),
+                        //Text('    5'),
                       ],
                     ),
                     SizedBox(
@@ -225,8 +285,30 @@ class _FoldersScreenState extends State<FoldersScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         OutlinedButton(
-                          onPressed: () {
-                            widget.fileSelector.pickDocument(context);
+                          onPressed: () async{
+
+                            fileSelector ??= FileSelector();
+                            File? file = await fileSelector?.pickDocument(context);
+                            if (file != null) {
+                              await quizViewModel.enrollFile(
+                                  widget.roomkey, folder.folderKey,
+                                  Provider.of<UserProfileViewModel>(context, listen: false).nickName,
+                                  file);
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('문서 등록이 완료되었습니다.'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('파일을 선택해 주세요'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
                           },
                           style: OutlinedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 30),
@@ -249,7 +331,6 @@ class _FoldersScreenState extends State<FoldersScreen> {
                         SizedBox(width: 30,),
                         OutlinedButton(
                           onPressed: () {
-                            // '문서생성' 버튼 클릭 시의 동작
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -289,8 +370,10 @@ class _FoldersScreenState extends State<FoldersScreen> {
                         color: Colors.grey[400],
                         size: 30,
                       ),
-                      onPressed: () {
-                        _showDocumentList(context, folder);
+                      onPressed: () async{
+                        String leader = await Provider.of<StudyViewModel>(context, listen: false).getLeader(widget.roomkey);
+                        List<String> users = await quizViewModel.getEnrollUserList(widget.roomkey, folder.folderKey);
+                        _showDocumentList(users,folder.folderKey,folder.folderName, quizViewModel, leader);
                       },
                     ),
                   ),

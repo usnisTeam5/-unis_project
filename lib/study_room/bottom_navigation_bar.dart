@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     case 1:
                       return StudyChatScreen(myStudyInfo: widget.myStudyInfo);
                     case 2:
-                      return QuizFolderScreen();
+                      return QuizFolderScreen(widget.myStudyInfo);
                     default:
                       return Center(child: Text('퀴즈!!'));
                   }

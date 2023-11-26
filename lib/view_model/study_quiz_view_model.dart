@@ -6,6 +6,7 @@ import '../models/study_quiz_model.dart';
 class StudyQuizViewModel with ChangeNotifier {
   final StudyApiService _apiService = StudyApiService();
   bool _isLoading = false;
+  List<StudyQuizListDto> folderList = [];
 
   // 로딩 상태 getter
   bool get isLoading => _isLoading;
@@ -17,12 +18,12 @@ class StudyQuizViewModel with ChangeNotifier {
   }
 
   // 폴더 목록 가져오기
-  Future<List<StudyQuizListDto>> getFolderList(int roomKey) async {
+  Future<void> getFolderList(int roomKey) async {
     _setLoading(true);
     try {
-      var folders = await _apiService.getFolderList(roomKey);
+      folderList = await _apiService.getFolderList(roomKey);
       _setLoading(false);
-      return folders;
+      return;
     } catch (e) {
       // 에러 처리
       print('Error getting folder list: $e');
@@ -36,6 +37,7 @@ class StudyQuizViewModel with ChangeNotifier {
     _setLoading(true);
     try {
       await _apiService.makeFolder(roomKey, folderName);
+      folderList = await _apiService.getFolderList(roomKey);
       // 추가 작업 (예: 폴더 목록 업데이트)
     } catch (e) {
       // 에러 처리
@@ -58,6 +60,23 @@ class StudyQuizViewModel with ChangeNotifier {
       _setLoading(false);
       throw e;
     }
+  }
+
+  // 등록된 사용자 삭제
+  Future<void> deleteUser(int roomKey, int folderKey, String nickname) async {
+    //_setLoading(true);
+    try {
+      await _apiService.deleteUserInFolder(roomKey, folderKey, nickname);
+
+      //_setLoading(false);
+      return;
+    } catch (e) {
+      // 에러 처리
+      print('Error getting enroll user list: $e');
+      //_setLoading(false);
+      throw e;
+    }
+
   }
 
   // 파일 등록

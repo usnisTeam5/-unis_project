@@ -1,27 +1,69 @@
-class Quiz {
-  final int quizNum;
-  final String quiz;
-  final String answer;
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'url.dart'; // BASE_URL 정의 파일
 
-  Quiz({required this.quizNum, required this.quiz, required this.answer});
+// QuizInfoDto 모델
+class QuizInfoDto {
+  int quizKey;
+  String quizName;
+  int quizNum;
+  int curNum;
 
-  factory Quiz.fromJson(Map<String, dynamic> json) {
-    return Quiz(
+  QuizInfoDto({
+    required this.quizKey,
+    required this.quizName,
+    required this.quizNum,
+    required this.curNum,
+  });
+
+  factory QuizInfoDto.fromJson(Map<String, dynamic> json) {
+    return QuizInfoDto(
+      quizKey: json['quizKey'],
+      quizName: json['quizName'],
       quizNum: json['quizNum'],
-      quiz: json['quiz'],
+      curNum: json['curNum'],
+    );
+  }
+}
+
+// QuizDto 모델
+class QuizDto {
+  int quizNum;
+  String question;
+  String answer;
+
+  QuizDto({
+    required this.quizNum,
+    required this.question,
+    required this.answer,
+  });
+
+  factory QuizDto.fromJson(Map<String, dynamic> json) {
+    return QuizDto(
+      quizNum: json['quizNum'],
+      question: json['question'],
       answer: json['answer'],
     );
   }
+}
+
+// QuizMakeDto 모델
+class QuizMakeDto {
+  String nickname;
+  String quizName;
+  String course;
+
+  QuizMakeDto({
+    required this.nickname,
+    required this.quizName,
+    required this.course,
+  });
 
   Map<String, dynamic> toJson() {
     return {
-      'quizNum': quizNum,
-      'quiz': quiz,
-      'answer': answer,
+      'nickname': nickname,
+      'quizName': quizName,
+      'course': course,
     };
-  }
-
-  static List<Quiz> fromJsonList(List<dynamic> jsonList) {
-    return jsonList.map((json) => Quiz.fromJson(json)).toList();
   }
 }
