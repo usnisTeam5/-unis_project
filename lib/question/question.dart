@@ -117,27 +117,51 @@ class _QuestionPageState extends State<QuestionPage> {
             ),
           ),
           body: (qaViewModel.isLoading == true || count == 0)
-              ? Center(child: CircularProgressIndicator(),) :
-          RefreshIndicator(
-            onRefresh: () async {
-              await qaViewModel.fetchQaList(myprofile.nickName);
-            },
-            child: Container(
+              ? Center(child: CircularProgressIndicator(),)
+              : Container(
               color: Colors.grey[200],
-              child: ListView.builder(
-                physics: BouncingScrollPhysics(),
-                itemCount: qaViewModel.qaList.length,
-                itemBuilder: (context, index) {
-                  final qa = qaViewModel.qaList[index];
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: index == 14 ? 16.0 : 8.0,
-                    ),
-                    child: QuestionItem(index, qa),
-                  );
-                }
+              child: RefreshIndicator(
+                  onRefresh: () async {
+                    await qaViewModel.fetchQaList(myprofile.nickName);
+                  },
+                child: (qaViewModel.qaList.length == 0)
+                    ? LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: SizedBox(
+                        height: constraints.maxHeight,
+                        child: const Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('현재 올라와있는 질문이 없습니다.',
+                                style: TextStyle(
+                                color: Color(0xFF3D6094),
+                                fontFamily: 'Bold',
+                                fontSize: 25,
+                              ),),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                )
+                    : ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: qaViewModel.qaList.length,
+                  itemBuilder: (context, index) {
+                    final qa = qaViewModel.qaList[index];
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: index == 14 ? 16.0 : 8.0,
+                      ),
+                      child: QuestionItem(index, qa),
+                    );
+                  }
+                ),
               ),
             ),
-          ),
         );
       }
     );

@@ -159,7 +159,29 @@ class _QuestionAnswerScreenState extends State<MyQHistory> with SingleTickerProv
                  child: CircularProgressIndicator(),
               )
               : Expanded(  // <--- 이 줄을 추가
-                    child: buildListView(listViewModel),
+                    child: (qaList.length == 0)
+                        ?Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children:
+                        (_selectedIndex == 0) 
+                            ? const [
+                          Text('질문을 올려주세요!', style: TextStyle(
+                            color: Color(0xFF3D6094),
+                            fontFamily: 'Bold',
+                            fontSize: 25,
+                          ),),
+                        ]
+                            : const [
+                          Text('답변을 해주세요!', style: TextStyle(
+                            color: Color(0xFF3D6094),
+                            fontFamily: 'Bold',
+                            fontSize: 25,
+                          ),),
+                        ],
+                      ),
+                    )
+                        :buildListView(listViewModel),
               ),
             ],
           ),
