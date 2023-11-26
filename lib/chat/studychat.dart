@@ -99,12 +99,15 @@ class _StudyChatScreenState extends State<StudyChatScreen> {
 
     String getProfileImage(String friendNickname) {
       int i;
+      bool check = false;
       for (i = 0; i < friends.length; i++) {
         if (friends[i].nickname == friendNickname) {
+          check = true;
           break;
         }
       }
-      return friends[i].image;
+      if(check) return friends[i].image;
+      else return base64Encode(File('image/unis.png').readAsBytesSync());
     }
 
     void startGettingMessages() async {
@@ -219,11 +222,14 @@ class _StudyChatScreenState extends State<StudyChatScreen> {
                                 Column(
                                   // 상대방 프로필 표시
                                   children: [
-                                    CircleAvatar(
-                                      backgroundImage: MemoryImage(base64Decode(
-                                          getProfileImage(message.nickname))),
-                                      // ** 추가
-                                      radius: 15,
+                                    ClipOval(
+                                      child: Image.memory(
+                                        base64Decode(getProfileImage(message.nickname)),
+                                        width: 30.0,
+                                        height: 30.0,
+                                        fit: BoxFit.cover,
+                                        gaplessPlayback: true,
+                                      ),
                                     ),
                                     SizedBox(height: 2),
                                   ],
