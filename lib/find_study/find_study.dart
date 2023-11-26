@@ -4,7 +4,6 @@ import '../../../css/css.dart';
 import '../chat/OneToOneChat.dart';
 import '../models/study_info.dart';
 import '../study_room/bottom_navigation_bar.dart';
-
 import 'dart:math';
 
 import 'package:provider/provider.dart';

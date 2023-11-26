@@ -190,7 +190,9 @@ class _StudyChatScreenState extends State<StudyChatScreen> {
                       itemCount: chatModel.messages.length,
                       itemBuilder: (context, index) {
                         final MsgDto message = chatModel.messages[index];
-                        final byteImage = base64Decode(message.image);
+                        Uint8List byteImage = Uint8List(0);
+                        if(message.type == 'img')
+                          byteImage = base64Decode(message.image);
 
                         bool shouldDisplayHeader = ( // 메세지가 상대방 메세지이면 프로필 보여줌
                             showProfile == 1 &&
@@ -391,7 +393,7 @@ class _StudyChatScreenState extends State<StudyChatScreen> {
                                                         ),
                                                       ),
                                                     )
-                                                  : TextButton(
+                                                  : TextButton( // share 일 때
                                             onPressed: () {
                                               Navigator.push(
                                                 context,

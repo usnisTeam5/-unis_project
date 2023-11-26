@@ -387,7 +387,7 @@ class StudyService {
 
         body: jsonEncode(info.toJson()),
       );
-
+      print(response);
       if (response.statusCode == 200) {
         final String result = response.body;
         return result == 'ok'; // API에서 'ok'을 리턴하면 스터디 생성 성공
@@ -466,9 +466,10 @@ class StudyService {
     final url = Uri.parse(
         '$BASE_URL/study/chat?roomKey=$roomKey&nickname=$nickname');
     final response = await http.get(url);
+    print(response.body);
 
     if (response.statusCode == 200) {
-      Iterable l = json.decode(utf8.decode(response.bodyBytes));
+      List<dynamic> l = json.decode(utf8.decode(response.bodyBytes));
       return List<MsgDto>.from(l.map((model) => MsgDto.fromJson(model)));
     } else {
       throw Exception('Failed to get messages');
