@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:unis_project/find_study/create_study.dart';
 import '../../../css/css.dart';
+import '../chat/OneToOneChat.dart';
+import '../models/study_info.dart';
 import '../study_room/bottom_navigation_bar.dart';
 import '../find_study/joinStudy.dart';
 import 'dart:math';
 
 import 'package:provider/provider.dart';
+import '../study_room/study_home.dart';
 import '../view_model/find_study_view_model.dart';
 import '../models/find_study.dart';
+import '../view_model/study_info_view_model.dart';
 import '../view_model/user_profile_info_view_model.dart';
 
 void main() => runApp(MyApp());
@@ -51,6 +55,94 @@ class _FindStudyScreenState extends State<FindStudyScreen>
     });
   }
 
+  // 스터디 가입 함수
+  void _joinStudy(String code, StudyInfoDto selectedStudy, StudyViewModel viewModel, ) async {
+    //final viewModel = Provider.of<StudyViewModel>(context, listen: false); // find study에 있는 함수들을 호출할 때 사용.
+    final mystudy = Provider.of<MyStudyInfoViewModel>(context, listen: false); // 내가 가입한 스터디 리스트를 갖고있음
+
+    // 유저가 이미 같은 과목의 스터디에 가입했는지 검사
+    List<MyStudyInfo> myStudyList =
+        Provider.of<MyStudyInfoViewModel>(context, listen: false)
+            .MyStudyInfoList;
+    bool alreadyJoined = false;
+
+    for (int i = 0; i < myStudyList.length; i++) {
+      if (myStudyList[i].course == selectedStudy.course) {
+        alreadyJoined = true;
+        break;
+      }
+    }
+
+    if (alreadyJoined) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('해당 과목 스터디에 이미 가입했습니다.')));
+      return;
+    }
+
+    await viewModel.joinStudy(Provider.of<UserProfileViewModel>(context,listen: false).nickName, selectedStudy.roomKey, code);
+
+    // 가입 결과 처리
+    if (viewModel.resultMessage == '스터디 가입 성공!') {
+      print('가입 성공 전 - MyStudyInfoList 상태: ${mystudy.MyStudyInfoList}');
+
+      await mystudy.getMyStudyRoomList(Provider.of<UserProfileViewModel>(context,listen: false).nickName); // 가입한 스터디 목록 갱신
+
+      print('가입 성공 후 - MyStudyInfoList 상태: ${mystudy.MyStudyInfoList}');
+
+
+
+      MyStudyInfo joinedStudyInfo = MyStudyInfo(
+          roomKey: selectedStudy.roomKey,
+          roomName: selectedStudy.roomName,
+          course: selectedStudy.course,
+          maxNum: selectedStudy.maxNum,
+          curNum: selectedStudy.curNum + 1,
+          startDate: selectedStudy.startDate,
+          studyIntroduction: selectedStudy.studyIntroduction);
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('스터디 가입에 성공했습니다.')));
+
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage( myStudyInfo: joinedStudyInfo,)));
+
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(viewModel.resultMessage)));
+    }
+  }
+
+  // 비밀번호 입력 다이얼로그 함수
+  void _showPasswordDialog(StudyInfoDto selectedStudy, StudyViewModel info) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String password = '';
+        return AlertDialog(
+          title: Text('비밀번호를 입력하세요'),
+          content: TextField(
+            onChanged: (value) => password = value,
+            keyboardType: TextInputType.number,
+            obscureText: true,
+            maxLength: 4,
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('확인'),
+              onPressed: () {
+                _joinStudy(password, selectedStudy, info);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final width = min(MediaQuery.of(context).size.width, 500.0);
@@ -66,9 +158,7 @@ class _FindStudyScreenState extends State<FindStudyScreen>
               Icons.arrow_back_ios,
               color: Colors.grey[400],
             ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+            onPressed: () {Navigator.pop(context);},
           ),
           actions: [
             IconButton(
@@ -171,10 +261,110 @@ class _FindStudyScreenState extends State<FindStudyScreen>
                   physics: BouncingScrollPhysics(),
                   itemCount: info.studyRoomlist.length,
                   itemBuilder: (context, index) {
-                    final study = info.studyRoomlist[index];
+                    final selectedStudy = info.studyRoomlist[index];
                     return GestureDetector(
                       onTap: () {
-                        _joinStudyDialog(context); // 스터디 가입 팝업
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    selectedStudy!.roomName,
+                                    style: TextStyle(
+                                        fontFamily: 'Bold', fontSize: 21, color: Colors.grey[600]),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text('그룹장: ${selectedStudy!.leader}',
+                                      style: TextStyle(
+                                          fontFamily: 'Bold',
+                                          fontSize: 15,
+                                          color: Colors.grey[600])),// 그룹장
+                                  SizedBox(height: 8.0),
+                                  Text('시작일: ${selectedStudy!.startDate}',
+                                      style: TextStyle(
+                                          fontFamily: 'Bold',
+                                          fontSize: 15,
+                                          color: Colors.grey[600])), // 시작일
+                                  SizedBox(height: 10.0),
+                                  Divider(
+                                    thickness: 1.3,
+                                  ),
+                                  SizedBox(height: 13.0),
+                                  Text(
+                                    '${selectedStudy!.studyIntroduction}',
+                                    style: TextStyle(
+                                        fontFamily: 'Bold',
+                                        fontSize: 14,
+                                        color: Colors.grey[600],
+                                        height: 1.2),
+                                    maxLines: 20,
+                                    overflow: TextOverflow.ellipsis,
+                                  ), // 소개글
+                                ],
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () async {
+                                    // 스터디 리더의 닉네임을 가져온다
+                                    String leaderNickname = await info.getLeader(selectedStudy.roomKey);
+
+                                    // 리더와 대화
+                                    if (leaderNickname.isNotEmpty) {
+                                      Navigator.push(context, MaterialPageRoute(
+                                          builder: (context) => OneToOneChatScreen(friendName: leaderNickname,)
+                                      ));
+                                    } else {
+                                      // 리더 정보를 가져오지 못한 경우 에러 메시지 표시
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text('스터디 리더 정보를 가져오는 데 실패했습니다.')));
+                                    }
+                                  },
+                                  child: Text('쪽지 보내기',
+                                      style: TextStyle(
+                                          fontFamily: 'Bold',
+                                          fontSize: 14,
+                                          color: Color(0xFF3D6094))),
+                                ), // 쪽지보내기
+                                TextButton(
+                                  onPressed: () {
+                                    if (!(selectedStudy.isOpen)) {
+                                      // 비밀번호가 있는 경우, 팝업을 보여준다
+                                      _showPasswordDialog(selectedStudy,info);
+                                    } else {
+                                      _joinStudy('',selectedStudy,info);
+                                    }
+                                  },
+                                  child: Text('스터디 가입',
+                                      style: TextStyle(
+                                          fontFamily: 'Bold',
+                                          fontSize: 14,
+                                          color: Color(0xFF3D6094))),
+                                ),  // 스터디 가입
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: Text('취소',
+                                      style: TextStyle(
+                                          fontFamily: 'Bold',
+                                          fontSize: 14,
+                                          color: Colors.grey[500])),
+                                ), // 취소 버튼
+                              ],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                            );
+                          }
+                        );
                       },
                       child: Card(
                         elevation: 0,
@@ -193,7 +383,7 @@ class _FindStudyScreenState extends State<FindStudyScreen>
                                 crossAxisAlignment: CrossAxisAlignment.baseline,
                                 textBaseline: TextBaseline.alphabetic,
                                 children: [
-                                  Text(study.roomName, // 스터디명
+                                  Text(selectedStudy.roomName, // 스터디명
                                       style: TextStyle(
                                           color: Colors.grey[600],
                                           fontFamily: 'Bold',
@@ -203,7 +393,7 @@ class _FindStudyScreenState extends State<FindStudyScreen>
                                   ),
                                   Expanded(
                                     child: Text(
-                                      study.course, // 과목명
+                                      selectedStudy.course, // 과목명
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           color: Color(0xFF3D6094),
@@ -213,7 +403,7 @@ class _FindStudyScreenState extends State<FindStudyScreen>
                                   ),
                                   SizedBox(
                                     width: 20, height: 23,
-                                    child: !isOpen ? IconButton(
+                                    child: !selectedStudy.isOpen ? IconButton(
                                       icon: Icon(
                                         Icons.lock,
                                         size: 20,
@@ -227,7 +417,7 @@ class _FindStudyScreenState extends State<FindStudyScreen>
                               ),
                               SizedBox(height: 14),
                               Text(
-                                study.studyIntroduction, // 스터디 소개
+                                selectedStudy.studyIntroduction, // 스터디 소개
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -247,7 +437,7 @@ class _FindStudyScreenState extends State<FindStudyScreen>
                                         color: Colors.grey,
                                       ),
                                       SizedBox(width: 4),
-                                      Text("${study.curNum}/${study.maxNum}명",
+                                      Text("${selectedStudy.curNum}/${selectedStudy.maxNum}명",
                                           style: TextStyle(
                                               fontFamily: 'Round',
                                               fontSize: 13)),
@@ -264,7 +454,7 @@ class _FindStudyScreenState extends State<FindStudyScreen>
                                       ),
                                       SizedBox(width: 4),
                                       Text(
-                                        study.startDate,
+                                        selectedStudy.startDate,
                                         style: TextStyle(
                                             fontFamily: 'Bold',
                                             fontSize: 13,
@@ -386,12 +576,5 @@ class _CustomTabBarState extends State<CustomTabBar> {
   }
 }
 
-void _joinStudyDialog(BuildContext context) {
-  // 스터디 가입 신청
-  showDialog(
-    context: context,
-    builder: (context) {
-      return JoinStudy();
-    },
-  );
-}
+
+

@@ -179,6 +179,11 @@ class StudyViewModel with ChangeNotifier {
     }
   }
 
+  void selectStudy(StudyInfoDto studyInfo) { // 현재 선택된 스터디 정보 넘길 때
+    _studyInfoDto = studyInfo;
+    notifyListeners();
+  }
+
   // 스터디 설정 변경
   Future<String> changeStudyInfo(int roomKey, StudyChangeDto info) async {
     try {

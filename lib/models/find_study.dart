@@ -363,11 +363,12 @@ class StudyService {
   Future<String> joinStudy(String nickname, StudyJoinDto joinInfo) async {
     // 스터디 가입
     final response = await http.post(
-      Uri.parse('$BASE_URL/studyRoom/join/$nickname'),
+      Uri.parse('$BASE_URL/study/join/$nickname'),
       body: json.encode(joinInfo.toJson()),
       headers: {'Content-Type': 'application/json'},
     );
 
+    print(response.body);
     if (response.statusCode == 200) {
       print("스터디 가입 시도. 모델");
       return response.body; // 'noSheet', 'codeError', 'ok' 중 하나 반환

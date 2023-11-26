@@ -103,7 +103,7 @@ class _CreateStudyState extends State<CreateStudy> {
             actions: [
               IconButton(
                 icon: GradientIcon(iconData: Icons.check),
-                onPressed: () {
+                onPressed: () async {
                   DateTime now = DateTime.now();
                   String curDateTime = "${now.year}-${now.month}-${now.day}";
                   print("현재 시간과 날짜: ${curDateTime}");
@@ -177,7 +177,7 @@ class _CreateStudyState extends State<CreateStudy> {
                   print("과목명: ${subject}");
                   print("인원수: ${numPeople}");
 
-                  study.makeStudyRoom(StudyMakeDto(
+                  await study.makeStudyRoom(StudyMakeDto(
                       roomName: titleController.text,
                       code: passwordController.text == '' ? null :  passwordController.text,
                       course: subject!,
