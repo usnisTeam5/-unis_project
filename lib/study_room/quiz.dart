@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../css/css.dart';
 import '../file_selector/file_selector.dart';
+import '../view_model/study_quiz_view_model.dart';
 import 'quiz_creator.dart';
 import 'dart:math';
 import 'package:flutter/services.dart';
@@ -41,84 +43,89 @@ class _QuizScreenState extends State<QuizFolderScreen> {
     final width = min(MediaQuery.of(context).size.width,500.0);
     final height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.keyboard_arrow_left,
-            size: 30,
-          ),
-          color: Colors.grey,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          // `actions` 속성을 사용하여 IconButton을 추가합니다.
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              size: 30,
+    return ChangeNotifierProvider(
+        create: (_) => StudyQuizViewModel(),
+        builder: (context, child) {
+        return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(
+                Icons.keyboard_arrow_left,
+                size: 30,
+              ),
+              color: Colors.grey,
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
-            color: Colors.grey,
-            onPressed: () async {
-                String? folderName = await showDialog<String>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    final TextEditingController _controller = TextEditingController();
-                    return AlertDialog(
-                      title: Text('폴더 추가',style: TextStyle(fontFamily: 'Round'),),
-                      content: TextField(
-                        controller: _controller,
-                        decoration: InputDecoration(
-                          labelText: '폴더 이름',
-                        ),
-                        maxLength: 10,
-                      ),
-                      actions: <Widget>[
-                        TextButton(
-                          child: Text('취소'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        TextButton(
-                          child: Text('추가'),
-                          onPressed: () {
-                            Navigator.of(context).pop(_controller.text);
-                          },
-                        ),
-                      ],
+            actions: [
+              // `actions` 속성을 사용하여 IconButton을 추가합니다.
+              IconButton(
+                icon: Icon(
+                  Icons.add,
+                  size: 30,
+                ),
+                color: Colors.grey,
+                onPressed: () async {
+                    String? folderName = await showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        final TextEditingController _controller = TextEditingController();
+                        return AlertDialog(
+                          title: Text('폴더 추가',style: TextStyle(fontFamily: 'Round'),),
+                          content: TextField(
+                            controller: _controller,
+                            decoration: InputDecoration(
+                              labelText: '폴더 이름',
+                            ),
+                            maxLength: 10,
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              child: Text('취소'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            TextButton(
+                              child: Text('추가'),
+                              onPressed: () {
+                                Navigator.of(context).pop(_controller.text);
+                              },
+                            ),
+                          ],
+                        );
+                      },
                     );
-                  },
-                );
-                if (folderName != null && folderName.isNotEmpty) {
-                  setState(() {
-                    folders.add(folderName);
-                  });
-                }
-            },
-          ),
-        ],
-        elevation: 0,
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        // Title을 중앙에 배치
-        title: GradientText(
-            width: width, text: 'Quiz', tSize: 0.06, tStyle: 'Bold'),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          // Set the height of the underline
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: MainGradient(),
+                    if (folderName != null && folderName.isNotEmpty) {
+                      setState(() {
+                        folders.add(folderName);
+                      });
+                    }
+                },
+              ),
+            ],
+            elevation: 0,
+            backgroundColor: Colors.white,
+            automaticallyImplyLeading: false,
+            centerTitle: true,
+            // Title을 중앙에 배치
+            title: GradientText(
+                width: width, text: 'Quiz', tSize: 0.06, tStyle: 'Bold'),
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(1.0),
+              // Set the height of the underline
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: MainGradient(),
+                ),
+                height: 2.0, // Set the thickness of the undedsrline
+              ),
             ),
-            height: 2.0, // Set the thickness of the undedsrline
           ),
-        ),
-      ),
-      body: FoldersScreen(folders: folders, fileSelector: fileSelector),
+          body: FoldersScreen(folders: folders, fileSelector: fileSelector),
+        );
+      }
     );
   }
 }

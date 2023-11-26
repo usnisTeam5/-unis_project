@@ -304,8 +304,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   fontFamily: 'Bold',
                 ),
               ),
-              actions: [
-                if (_isQuestioner) ...[ // 질문자라면
+              actions: chatModel.isLoading ? <Widget>[] : [
+                if (_isQuestioner || (!_isQuestioner && chatModel.qaStatus == '완료')) ...[ // 질문자라면
                   if (chatModel.qaStatus== '미답') // '질문자'의 경우 Acton에 질문 완료(끝내기) 또는 취소가 있어야함. 여기는 취소
                     Container(
                       margin: EdgeInsets.all(10),
@@ -518,7 +518,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               child: Text(
                                 (chatModel.qaStatus == '진행')
                                     ? '완료'
-                                    : (chatModel.qaStatus == '완료' && isReviewed) ? '공유' : '리뷰',
+                                    : ((chatModel.qaStatus == '완료' && isReviewed) || !_isQuestioner) ? '공유' : '리뷰',
                                 style: const TextStyle(
                                   fontFamily: 'ExtraBold',
                                   color: Colors.white,
@@ -583,36 +583,36 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ),
                     )
-                      : (chatModel.qaStatus == '완료')  // 완료
-                        ? Container(
-                      margin: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        gradient: MainGradient(),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: TextButton(
-                        onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ChatShare()),
-                              );
-                        },
-                        style: TextButton.styleFrom(
-                          primary: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                          padding: EdgeInsets.symmetric(
-                              vertical: 6, horizontal: 15),
-                        ),
-                        child: const Text( '공유',
-                          style: TextStyle(
-                            fontFamily: 'ExtraBold',
-                            color: Colors.white,
-                            fontSize: 15,
-                          ),
-                        ),
-                      )
-                  ) //완료
+                  //     : (chatModel.qaStatus == '완료')  // 완료
+                  //       ? Container(
+                  //     margin: EdgeInsets.all(10),
+                  //     decoration: BoxDecoration(
+                  //       gradient: MainGradient(),
+                  //       borderRadius: BorderRadius.circular(30),
+                  //     ),
+                  //     child: TextButton(
+                  //       onPressed: () {
+                  //             Navigator.push(
+                  //               context,
+                  //               MaterialPageRoute(
+                  //                   builder: (context) => ChatShare()),
+                  //             );
+                  //       },
+                  //       style: TextButton.styleFrom(
+                  //         primary: Colors.transparent,
+                  //         shadowColor: Colors.transparent,
+                  //         padding: EdgeInsets.symmetric(
+                  //             vertical: 6, horizontal: 15),
+                  //       ),
+                  //       child: const Text( '공유',
+                  //         style: TextStyle(
+                  //           fontFamily: 'ExtraBold',
+                  //           color: Colors.white,
+                  //           fontSize: 15,
+                  //         ),
+                  //       ),
+                  //     )
+                  // ) //완료
                         : Container() // 진행중인 상태에는 아무것도 안보임,
                   ],
               ],

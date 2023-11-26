@@ -47,6 +47,7 @@ dependencies:
   http: ^1.1.0
   flutter_secure_storage: ^9.0.0
   path: ^1.8.3
+  http_parser: ^4.0.2
 
   #cunning_document_scanner: ^1.1.4
   #document_scanner_flutter: ^0.2.7
