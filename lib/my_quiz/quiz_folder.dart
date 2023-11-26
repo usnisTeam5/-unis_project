@@ -1,80 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../css/css.dart';
+import '../models/quiz_model.dart';
+import '../view_model/quiz_view_model.dart';
+import '../view_model/user_profile_info_view_model.dart';
 import 'solve.dart';
 import '../my_quiz/edit_quiz.dart';
 import 'dart:math';
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-
-      theme: ThemeData(
-        fontFamily: 'Bold',
-      ),
-      home: QuizFolderScreen(),
-    );
-  }
-}
+// void main() {
+//   runApp(MyApp());
+// }
+//
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//
+//       theme: ThemeData(
+//         fontFamily: 'Bold',
+//       ),
+//       home: QuizFolderScreen(),
+//     );
+//   }
+// }
 
 class QuizFolderScreen extends StatefulWidget {
+  String course = '';
+  QuizFolderScreen(this.course);
+
   @override
   _QuizScreenState createState() => _QuizScreenState();
 }
 
 class _QuizScreenState extends State<QuizFolderScreen> {
   // 과목 목록
-  final List<String> subjects = [
-    '중간고사',
-    'ㄴㅇㄹㄴㅇㄹ',
-    'ㄴㅁㅇㄹㅇㅀ',
-  ];
-
-  void _addNewFolder() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        String? newFolderName;
-        return AlertDialog(
-          title: Text('새 폴더 생성'),
-          content: TextField(
-            onChanged: (value) {
-              newFolderName = value;
-            },
-            decoration: InputDecoration(labelText: '폴더 이름'),
-          ),
-          actions: [
-            TextButton(
-              child: Text('취소'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('추가'),
-              onPressed: () {
-                if (newFolderName != null && newFolderName!.isNotEmpty) {
-                  setState(() {
-                    subjects.add(newFolderName!);
-                  });
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  final List<String> subjects = [];
 
   @override
   Widget build(BuildContext context) {
 
     final width = min(MediaQuery.of(context).size.width,500.0);
     final height = MediaQuery.of(context).size.height;
+    int count = 0;
+
+    final quizViewModel = Provider.of<QuizViewModel>(context, listen: true);
+    final user =  Provider.of<UserProfileViewModel>(context, listen: false);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async{ // 나중에 호출됨.
+      // context를 사용하여 UserProfileViewModel에 접근
+      //print("sdfsdfsdfsadfasdfsadfasdf");
+      if(count == 0) {
+        count ++;
+        print("count: ${count}");
+        await quizViewModel.fetchMyQuiz(user.nickName, widget.course); // **
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -100,6 +80,71 @@ class _QuizScreenState extends State<QuizFolderScreen> {
             height: 2.0,  // Set the thickness of the undedsrline
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.add,
+              size: 30.0,
+            ),
+            color: Color(0xFF3D6094),
+            onPressed: () async {
+              String? folderName = await showDialog<String>(
+                context: context,
+                builder: (BuildContext context) {
+                  final TextEditingController _controller = TextEditingController();
+                  return AlertDialog(
+
+                    title: Text('폴더 추가',style: TextStyle(fontFamily: 'Round'),),
+                    content: TextField(
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        labelText: '폴더 이름',
+                      ),
+                      maxLength: 10,
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text('취소'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: Text('추가'),
+                        onPressed: () async{
+                          if(_controller.text.isNotEmpty) {
+                            await quizViewModel.createQuizFolder(
+                                QuizMakeDto(
+                                  nickname: user.nickName,
+                                  quizName: _controller.text,
+                                  course: widget.course,
+                               ),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('폴더가 만들어졌습니다.'),
+                                duration: Duration(seconds: 2), // 스낵바 표시 시간
+                              ),
+                            );
+                            Navigator.of(context).pop();
+                          }
+                          else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('폴더 이름을 입력해 주세요'),
+                                duration: Duration(seconds: 2), // 스낵바 표시 시간
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },,
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -117,14 +162,6 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min, // Row의 크기를 내부 위젯 크기에 맞춤
                   children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.add,
-                        size: 30.0,
-                      ),
-                      color: Color(0xFF3D6094),
-                      onPressed: _addNewFolder,
-                    ),
                     Icon(
                       Icons.menu_outlined,
                       size: width * 0.06,
@@ -219,14 +256,6 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min, // Row의 크기를 내부 위젯 크기에 맞춤
                   children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.add,
-                        size: 30.0,
-                      ),
-                      color: Color(0xFF3D6094),
-                      onPressed: _addNewFolder,
-                    ),
                     Icon(
                       Icons.menu_outlined,
                       size: width * 0.06,
