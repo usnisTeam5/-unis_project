@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:html';
+//import 'dart:html';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -25,7 +25,7 @@ class QaViewModel extends ChangeNotifier {
   bool isAnonymity = false;
   // 이 변수는 API로부터 받아온 QA 상태를 저장합니다.
   String qaStatus = '진행';
-
+  bool checker = false;
   void setLoading(bool loading) {
     _isLoading = loading;
     notifyListeners();
@@ -174,9 +174,11 @@ class QaViewModel extends ChangeNotifier {
 
       List<QaMsgDto> temp= await _qaService.getQaMsgs(qaKey, nickname);
       if(qaStatus == '미답' && temp.isNotEmpty && isQuestioner){
+
         if(temp[0].nickname != questioner){
-          _friendNickname = temp[0].nickname; // 상대방 이름
-          _friendProfileImage = await QaService.getProfileImage(_friendNickname);
+          checker = true;
+          // _friendNickname = temp[0].nickname; // 상대방 이름
+          // _friendProfileImage = await QaService.getProfileImage(_friendNickname);
         }
       }
       if(temp.isNotEmpty && k == 1) {
