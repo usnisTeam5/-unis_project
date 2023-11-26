@@ -116,22 +116,9 @@ class _ProfileInfoSectionState extends State<ProfileInfoSection>{
     final viewModel = Provider.of<UserProfileViewModel>(context, listen: false);
     _image = viewModel.profileImage;
     _introductionController = TextEditingController(text: viewModel.introduction);
+    viewModel.getPoint(viewModel.nickName);
   }
 
-  // Future<File?> compressImage(String path) async {
-  //   final filePath = path;
-  //   final lastIndex = filePath.lastIndexOf(RegExp(r'.jp'));
-  //   final splitted = filePath.substring(0, lastIndex);
-  //   final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
-  //
-  //   var result = await FlutterImageCompress.compressAndGetFile(
-  //     filePath,
-  //     outPath,
-  //     quality: 88, // 필요에 따라 품질을 조정할 수 있습니다.
-  //   );
-  //
-  //   return result;
-  // }
   Future getImage(ImageSource imageSource) async {
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
     if (pickedFile != null) {

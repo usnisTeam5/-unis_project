@@ -120,6 +120,20 @@ class UserProfileViewModel with ChangeNotifier {
       print(e.toString());
     }
   }
+
+
+  Future<void> getPoint(String nickname) async {
+    try {
+      await _profileInfo!.getUserPoints(nickName);
+      _profileInfo!.point = point; // 화면에 보여주기 위해서 추가
+      notifyListeners();
+    } catch (e) {
+      // 에러 처리
+      print(e.toString());
+    }
+  }
+
+
   // // 과목 설정
   // Future<void> addCourse(CourseDto courseDto) async {
   //   try {

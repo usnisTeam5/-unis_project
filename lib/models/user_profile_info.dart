@@ -327,6 +327,35 @@ class UserProfileInfo {
     // 예를 들어, 응답 데이터를 디코드하고 사용할 수 있습니다.
     // var data = jsonDecode(utf8.decode(response.bodyBytes));
   }
+
+  // Function to get points for a user by nickname
+  Future<int> getUserPoints(String nickname) async {
+    // Construct the URL for the GET request
+    final url = Uri.parse('$BASE_URL/user/getPoint?nickname=$nickname');
+
+    try {
+      // Send the GET request
+      final response = await http.get(url);
+
+      // Check if the request was successful
+      if (response.statusCode == 200) {
+
+        print(response.body);
+
+        return int.parse(response.body);
+      } else {
+        // Handle the case when the server returns a non-200 HTTP status code
+        print('Server error: ${response.statusCode}');
+        throw Exception('Failed to load points');
+      }
+    } catch (e) {
+      // Handle any errors that occur during the HTTP request
+      print('Error occurred: $e');
+      throw Exception('Failed to load points');
+    }
+  }
+
+
 // // 과목 설정 함수
 //   Future<String> setCourse(String nickname, CourseDto courseDto) async {
 //     final response = await http.post(
