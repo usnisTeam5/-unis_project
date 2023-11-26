@@ -4,7 +4,12 @@
 
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'myQHistoryChat.dart';
+import '../models/find_study.dart';
+import '../models/study_info.dart';
+import '../study_room/bottom_navigation_bar.dart';
+import '../view_model/find_study_view_model.dart';
+import '../view_model/study_info_view_model.dart';
+import '../chat/myQHistoryChat.dart';
 import 'package:unis_project/chat/countdown.dart';
 
 import 'dart:convert';
@@ -19,7 +24,7 @@ import 'package:unis_project/chat/popupReview.dart';
 import 'package:unis_project/chat/chatShare.dart';
 import '../image_viewer/image_viewer.dart';
 import '../view_model/user_profile_info_view_model.dart';
-import 'image_picker_popup.dart';
+import '../../chat/image_picker_popup.dart';
 
 import 'package:flutter/scheduler.dart';
 
@@ -27,30 +32,32 @@ import 'package:flutter/scheduler.dart';
 import '../models/question_model.dart';
 import '../view_model/question_view_model.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-
-    return MaterialApp(
-      home: ChatScreen(qaKey: -1, forAns: false,),
-      theme: ThemeData(
-        textTheme: TextTheme(
-          bodyText2: TextStyle(fontFamily: 'Round'),
-        ),
-      ),
-    );
-  }
-}
+// void main() {
+//   runApp(MyApp());
+// }
+//
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//
+//     return MaterialApp(
+//       home: ChatScreen(qaKey: -1, forAns: false,),
+//       theme: ThemeData(
+//         textTheme: TextTheme(
+//           bodyText2: TextStyle(fontFamily: 'Round'),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class ChatScreen extends StatefulWidget {
   final int qaKey; // qaKey 필드 추가
   final bool forAns;
+  final String course;
+  String? nickname;
   // 생성자에서 qaKey를 받아 초기화
-  ChatScreen({Key? key, required this.qaKey, required this.forAns}) : super(key: key);
+  ChatScreen({Key? key, required this.qaKey, required this.forAns, required this.course, this.nickname}) : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState(forAns);
@@ -76,10 +83,10 @@ class _ChatScreenState extends State<ChatScreen> {
   int count = 0; // 첫 시도
   bool isReviewed = false;
   List<String> savedMessages = []; // 답변하기 버튼 누륵기 전 저장
-  String status = "진행";
   bool forAns;
   _ChatScreenState(this.forAns); // 미답 진행 완료 셋 중 하나.
   int kcount =0;
+  bool shareButton = true; // 공유버튼 챗 스터디에서 들어왔을 때 안보이게 하기위해서 필요
   @override
   void dispose() {
     _isDisposed = true; // Set the flag to true when disposing the screen
@@ -105,6 +112,17 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  void _showSnackbarAndClosePopup(BuildContext context) {
+    final snackBar = SnackBar(
+      content: Text(
+        '채팅을 선택한 스터디에 공유하였습니다.',
+        style: TextStyle(fontFamily: 'Bold', color: Colors.grey[700]),
+      ),
+      backgroundColor: Colors.white,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    Navigator.of(context).pop(); // 팝업창을 닫습니다.
+  }
 
   void _sendImage(String base64Image, QaViewModel chatModel) {
     //  이미지 보낼 때
@@ -166,10 +184,12 @@ class _ChatScreenState extends State<ChatScreen> {
         .of(context)
         .size
         .height, 700.0);
-    nickname = Provider
-        .of<UserProfileViewModel>(context, listen: false)
-        .nickName;
-
+    if( widget.nickname == null){
+      nickname = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
+    }else {
+      nickname = widget.nickname!;
+      shareButton = false;
+    }
     return ChangeNotifierProvider(
         create: (_) => QaViewModel(),
         builder: (context, child) {
@@ -187,8 +207,15 @@ class _ChatScreenState extends State<ChatScreen> {
             while (!_isDisposed) {
               await Future.delayed(const Duration(
                   milliseconds: 500)); // Adjust the delay duration as needed
-              await chatModel.refreshQaMessages(widget.qaKey, nickname, kcount);
+              await chatModel.refreshQaMessages(widget.qaKey, nickname, kcount, context);
               kcount =1;
+              if(chatModel.checker) {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ChatScreen(qaKey: widget.qaKey, forAns: false, course: widget.course,)),
+                );
+              }
             }
           } //
 
@@ -209,17 +236,24 @@ class _ChatScreenState extends State<ChatScreen> {
                   chatModel.friendNickname); // 상대방 이름으로 이미지 얻어올 것.
 
               _isQuestioner = chatModel.isQuestioner;
+              //print("isAnonymity : $isAnonymity");
               setState(() {
                 isReviewed = chatModel.isReviewed;// =  답변이 됨?
-                status = chatModel.qaStatus;// 리뷰를 함? 체크
+                //status = chatModel.qaStatus;// 리뷰를 함? 체크
                 isAnonymity = chatModel.isAnonymity;
                 _time = chatModel.time;
               });
+             //print("isAnonymity : $isAnonymity");
               if(!forAns) {
                 startGettingMessages(); // getmsg 무한루프 돌림.
               }
             }
             _scrollToBottom();
+            // if(status != chatModel.qaStatus){
+            //     chatModel.setLoading(true);
+            //     status = chatModel.qaStatus;
+            //     chatModel.setLoading(false);
+            // }
           });
 
           return Scaffold(
@@ -229,7 +263,7 @@ class _ChatScreenState extends State<ChatScreen> {
               backgroundColor: Colors.white,
               toolbarHeight: 55,
               leadingWidth: 105,
-              leading: (status == '미답' && !_isQuestioner) // 미답이고, 질문자이면
+              leading: (chatModel.qaStatus == '미답' && !_isQuestioner) // 미답이고, 질문자이면
                   ? Container(
                 margin: EdgeInsets.all(10),
                 child: TextButton(
@@ -263,7 +297,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ), // 나머지는 그냥 뒤로가기
               title: Text(
-                '과목명',
+                widget.course,
                 style: TextStyle(
                   color: Colors.grey[600],
                   fontFamily: 'Bold',
@@ -271,7 +305,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               actions: [
                 if (_isQuestioner) ...[ // 질문자라면
-                  if (status == '미답') // '질문자'의 경우 Acton에 질문 완료(끝내기) 또는 취소가 있어야함. 여기는 취소
+                  if (chatModel.qaStatus== '미답') // '질문자'의 경우 Acton에 질문 완료(끝내기) 또는 취소가 있어야함. 여기는 취소
                     Container(
                       margin: EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -342,65 +376,160 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ),
                     ), // 취소가 있어야 함
-                  if (status != '미답') // '질문자'의 경우 '완료' 버튼
+                  if (chatModel.qaStatus!= '미답' && shareButton) // '질문자'의 경우 '완료' 버튼
                     Container(
                         margin: EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           gradient: MainGradient(),
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        child: TextButton(
-                          onPressed: () {
-                            if (status == '진행') {
-                              // '완료' 버튼을 눌렀을 때 실행할 작업을 여기에 추가
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return PopupReview(qaKey: widget.qaKey); // 리뷰 작성 내부에서 finishQa 실행함.
-                                },
-                              );
-                              setState(() {
-                                isReviewed = true;
-                                status = "완료";
-                              });
-                            } else { // 여기부터 하면 됨 11-24
-                              // '공유' 버튼을 눌렀을 때 chatShare.dart 파일로 이동
-                              if(isReviewed == true) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ChatShare()),
-                                );
-                              }
-                              else {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => PopupReview(qaKey: widget.qaKey)),
-                                );
-                              } // 라뷰 안했으면
-                            }
-                          },
-                          style: TextButton.styleFrom(
-                            primary: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                            padding: EdgeInsets.symmetric(
-                                vertical: 6, horizontal: 15),
-                          ),
-                          child: Text(
-                            (status == '진행')
-                                ? '완료'
-                                : (status == '완료' && isReviewed) ? '공유' : '리뷰',
-                            style: const TextStyle(
-                              fontFamily: 'ExtraBold',
-                              color: Colors.white,
-                              fontSize: 15,
-                            ),
-                          ),
+                        child: ChangeNotifierProvider(
+                            create: (_) => StudyViewModel(),
+                            builder: (context, child) {
+                              final studychat = Provider.of<StudyViewModel>(context,listen: false);
+                            return TextButton(
+                              onPressed: () {
+                                if (chatModel.qaStatus == '진행') {
+                                  // '완료' 버튼을 눌렀을 때 실행할 작업을 여기에 추가
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return PopupReview(qaKey: widget.qaKey); // 리뷰 작성 내부에서 finishQa 실행함.
+                                    },
+                                  );
+                                  setState(() {
+                                    isReviewed = true;
+                                    chatModel.qaStatus = "완료";
+                                  });
+                                  // Provider.of<UserProfileViewModel>(context,listen: false).setPoint(, point);
+                                } else { // 여기부터 하면 됨 11-24
+                                  // '공유' 버튼을 눌렀을 때 chatShare.dart 파일로 이동
+                                  if(isReviewed == true) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          List<MyStudyInfo> myStudyList = Provider.of<MyStudyInfoViewModel>(context,listen: false).MyStudyInfoList;
+                                          MyStudyInfo myStudyInfo = MyStudyInfo.defaultValues();
+                                          String studyname ='';
+                                          int roomKey = -1;
+                                          for(int i=0; i< myStudyList.length;i++){
+                                            if( myStudyList[i].course == widget.course){
+                                                myStudyInfo = myStudyList[i];
+                                                roomKey = myStudyList[i].roomKey;
+                                                studyname = myStudyList[i].roomName;
+                                                break;
+                                            }
+                                          }
+                                          if (studyname.isEmpty) {
+                                            // 스터디가 없는 경우 경고 메시지를 표시합니다.
+                                            return AlertDialog(
+                                              title: Text(
+                                                "경고",
+                                                style: TextStyle(fontFamily: 'Bold', color: Colors.grey[700]),
+                                              ),
+                                              content: Text(
+                                                "스터디에 먼저 가입해주세요",
+                                                style: TextStyle(fontFamily: 'Round'),
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () => Navigator.of(context).pop(),
+                                                  child: Text(
+                                                    "확인",
+                                                    style: TextStyle(fontFamily: 'Bold'),
+                                                  ),
+                                                ),
+                                              ],
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(20.0),
+                                              ),
+                                            );
+                                          } // 스터디 가입이 아직 안되어있는경우 공유 안된다고 경고띄움
+                                          else {
+                                            return AlertDialog(
+                                              title: Text(
+                                                "채팅을 \"$studyname\" 스터디에 공유합니다",
+                                                style: TextStyle(fontFamily: 'Bold',
+                                                    color: Colors.grey[700]),
+                                              ),
+                                              // content: Text(studyname,
+                                              //   style: TextStyle(
+                                              //       fontFamily: 'Round'),),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.of(context).pop(),
+                                                  child: Text(
+                                                    "취소",
+                                                    style: TextStyle(
+                                                        fontFamily: 'Bold'),
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () async{
+                                                    DateTime time = DateTime.now();
+                                                    await studychat.sendMessage(StudySendMsgDto( // 공유함
+                                                        sender: nickname,
+                                                        roomKey: roomKey,
+                                                        type: 'share',
+                                                        msg: "${widget.qaKey}",
+                                                        img: "${widget.course}",
+                                                        time: time.toString()));
+                                                    Navigator.of(context).pop();
+                                                    Navigator.of(context).pop();
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(builder: (context) => MyHomePage(myStudyInfo: myStudyInfo,)),
+                                                    );
+                                                  },
+                                                  // _selectedStudyIndex가 null일 경우 버튼을 비활성화
+                                                  child: Text(
+                                                    "확인",
+                                                    style: TextStyle(
+                                                        fontFamily: 'Bold'),
+                                                  ),
+                                                ),
+                                              ],
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(
+                                                    20.0),
+                                              ),
+                                            );
+                                          }
+                                      }
+                                    );
+                                  } // 리뷰했을 때
+                                  else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => PopupReview(qaKey: widget.qaKey)),
+                                    );
+                                  } // 라뷰 안했으면
+                                }
+                              },
+                              style: TextButton.styleFrom(
+                                primary: Colors.transparent,
+                                shadowColor: Colors.transparent,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 6, horizontal: 15),
+                              ),
+                              child: Text(
+                                (chatModel.qaStatus == '진행')
+                                    ? '완료'
+                                    : (chatModel.qaStatus == '완료' && isReviewed) ? '공유' : '리뷰',
+                                style: const TextStyle(
+                                  fontFamily: 'ExtraBold',
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            );
+                          }
                         )
                     ), // 답변 끝내기(완료)
                 ] else ...[ // '답변자'의 경우 '답변하기' 버튼
-                  (status == '미답')
+                  (chatModel.qaStatus == '미답')
                       ? Container(
                       margin: EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -427,7 +556,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               },
                             );
                           } else {
-                            status = '진행';
+                            chatModel.qaStatus = '진행';
                             forAns = false;
                             await chatModel.sendQaMessageList(
                                 widget.qaKey, _messages);
@@ -453,7 +582,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ),
                     )
-                      : (status == '완료')  // 완료
+                      : (chatModel.qaStatus == '완료')  // 완료
                         ? Container(
                       margin: EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -495,7 +624,7 @@ class _ChatScreenState extends State<ChatScreen> {
               color: Colors.grey[200],
               child: Column(
                 children: [
-                  (status != "완료" && !(_isQuestioner && status == '미답'))  // 미답인 상태에서 답변자거나 진행중일 때, 보여줌.
+                  (chatModel.qaStatus != "완료" && !(_isQuestioner && chatModel.qaStatus == '미답'))  // 미답인 상태에서 답변자거나 진행중일 때, 보여줌.
                       ? Container( // 시간 표기
                     padding:EdgeInsets.all(8),
                     color : Colors.transparent,
@@ -522,14 +651,12 @@ class _ChatScreenState extends State<ChatScreen> {
                       itemCount: chatModel.qaMessages.length,
                       itemBuilder: (context, index) {
                         final QaMsgDto message = chatModel.qaMessages[index];
-
+                        //message.isAnonymity;
                         final byteImage = base64Decode(message.img);
 
                         bool shouldDisplayHeader = ( // 메세지가 상대방 메세지이면 프로필 보여줌
-                            !isAnonymity && // 익명이 아니야
-                                (index == 0 ||
-                                    chatModel.qaMessages[index - 1].nickname !=
-                                        message.nickname));
+                            !message.isAnonymity && // 익명이 아니야
+                                (index == 0 || chatModel.qaMessages[index - 1].nickname != message.nickname));
 
                         bool shouldDisplayTime = ((index ==
                             chatModel.qaMessages.length - 1 ||
@@ -578,8 +705,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       ? CrossAxisAlignment.end
                                       : CrossAxisAlignment.start,
                                   children: [
-                                    if (message.nickname != nickname &&
-                                        shouldDisplayHeader) // 상대방의 경우
+                                    if (message.nickname != nickname && shouldDisplayHeader) // 상대방의 경우
                                       Padding( // 닉네임을 표기함
                                         padding: const EdgeInsets.only(
                                             left: 12, bottom: 7),
@@ -633,10 +759,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 nickname) // 나일 경우
                                                 ? 0 // 0
                                                 : (shouldDisplayHeader // 내가 아닐 경우
-                                                ? (!isAnonymity
+                                                ? (!message.isAnonymity
                                                 ? 8.0
                                                 : 4.0) // 익명 아닐 때 프로필 위치
-                                                : (isAnonymity
+                                                : (message.isAnonymity
                                                 ? 0
                                                 : 39.0)),
                                             // 익명 일 때 프로필 위치
@@ -756,7 +882,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           icon: Icon(Icons.add_circle_outline_rounded),
                           color: Colors.grey,
                           iconSize: 30,
-                          onPressed: status != "완료" ? () {
+                          onPressed: chatModel.qaStatus != "완료" ? () {
                             showModalBottomSheet(
                               context: context,
                               builder: (context) {
@@ -768,8 +894,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                     if (!(forAns)) { // 답변하기를 한 후에 답변자 -> 이미지 바로 전송하면 됨
                                       // 질문자 -> 무조건 바로 전송. 답변자와 같음. 구분 x
                                       await chatModel.fetchQaStatus(widget.qaKey);
-                                      status = chatModel.qaStatus;
-                                      if(status != '완료') {
+
+                                      if(chatModel.qaStatus != '완료') {
                                         await chatModel.sendQaMessage(widget.qaKey,
                                             nickname,
                                             'img',
@@ -800,7 +926,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             child: TextField(
                               maxLength: 200,
                               controller: _messageController,
-                              enabled: status != "완료",
+                              enabled: chatModel.qaStatus != "완료",
                               decoration: InputDecoration(
                                 hintText: '메시지를 입력하세요',
                                 contentPadding: EdgeInsets.symmetric(
@@ -833,8 +959,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                 //print("dasjfasdkfjhsdafjd : $forAns");
                                 DateTime time = DateTime.now();
                                 await chatModel.fetchQaStatus(widget.qaKey);
-                                status = chatModel.qaStatus;
-                                if (status != '완료') {
+
+                                if (chatModel.qaStatus != '완료') {
                                   chatModel.sendQaMessage(widget.qaKey,
                                       nickname,
                                       'text',

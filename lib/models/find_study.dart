@@ -450,9 +450,12 @@ class StudyService {
 
   // 그룹 탈퇴
   Future<void> leaveStudy(int roomKey, String nickname) async {
-    final url = Uri.parse('$BASE_URL/study/out/$roomKey?nickname=$nickname');
+    final url = Uri.parse('$BASE_URL/study/out/$nickname?roomKey=$roomKey');
+
+    // 여기서는 별도의 헤더 설정이 필요하지 않습니다.
     final response = await http.post(url);
 
+    print("모델: ${response.body}");
     if (response.statusCode != 200) {
       throw Exception('Failed to leave study');
     }

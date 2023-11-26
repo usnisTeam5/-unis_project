@@ -292,13 +292,7 @@ class _PostSettingsState extends State<PostSettings> {
                       );
                       return;
                     }
-                    // int? postPrice; // ??
-                    //   bool isQuestionType1Selected = false; // 질문 등록할 때 확인
-                    //   bool isQuestionType2Selected = false; // 질문 유형 확인
-                    //   bool isAnonymousSelected = false; // 익명 체크
-                    //   bool isWarningSelected = false; //
-                    //   String? selectedSubject;
-                    //   String? selectedFriend;
+                    print("isANonymity : $isAnonymousSelected");
                     enrollment.enrollQuestion(QaDto(
                       type : (isQuestionType1Selected) ? '문제' : '조언',
                       course : selectedSubject!,
@@ -307,6 +301,7 @@ class _PostSettingsState extends State<PostSettings> {
                       isAnonymity:  isAnonymousSelected,
                       msg: widget.msg,
                     ));
+                    user.minusPoint(user.nickName, postPrice!);
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {

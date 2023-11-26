@@ -362,7 +362,19 @@ class _StudyRoomSettingState extends State<StudyRoomSetting> {
                                   TextButton(
                                     child: Text('확인'),
                                     onPressed: () async{
+                                      if(( widget.leader == nickname) && myStudyInfo.curNum != 1) { // 리더일 경우 리더 넘겨야함
+                                        for(int i=0;i<myStudyInfo.curNum;i++) {
+                                          if(mystudylist.studyFriendList[i].nickname != nickname){ // 아무나 찾아서 넘김
+                                            await mystudylist.commitLeader(
+                                              myStudyInfo.roomKey, mystudylist.studyFriendList[i].nickname,
+                                            );
+                                            break;
+                                          }
+                                        }
+                                      }
+
                                       await mystudylist.leaveStudy(myStudyInfo.roomKey, nickname);
+                                      Provider.of<UserProfileViewModel>(context,listen: false).decrementStudyCnt();
                                       Navigator.of(context).pop();
                                       Navigator.of(context).pop();
                                       Navigator.of(context).pop();

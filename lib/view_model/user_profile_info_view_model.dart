@@ -27,6 +27,11 @@ class UserProfileViewModel with ChangeNotifier {
     notifyListeners(); // 변경 사항 알림
   }
 
+  void decrementStudyCnt() {
+    _profileInfo!.studyCnt--;
+    notifyListeners(); // 변경 사항 알림
+  }
+
   void incrementStudyCnt() {
     _profileInfo!.studyCnt++;
     notifyListeners(); // 변경 사항 알림
@@ -105,6 +110,16 @@ class UserProfileViewModel with ChangeNotifier {
     }
   }
 
+  Future<void> minusPoint(String nickname, int point) async {
+    try {
+      await _profileInfo!.minusPoint(nickName, point);
+      _profileInfo!.point -= point; // 화면에 보여주기 위해서 추가
+      notifyListeners();
+    } catch (e) {
+      // 에러 처리
+      print(e.toString());
+    }
+  }
   // // 과목 설정
   // Future<void> addCourse(CourseDto courseDto) async {
   //   try {

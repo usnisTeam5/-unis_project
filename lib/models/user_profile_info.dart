@@ -309,6 +309,24 @@ class UserProfileInfo {
     }
   }
 
+  Future<void> minusPoint(String nickname, int point) async {
+    final url = Uri.parse('$BASE_URL/user/profile/point/minus?nickname=$nickname&point=$point');
+
+    // POST 요청을 보냅니다.
+    final response = await http.post(url);
+
+    // 응답을 콘솔에 출력합니다.
+    print("모델: ${response.body}");
+
+    // 요청이 성공했는지 확인합니다.
+    if (response.statusCode != 200) {
+      throw Exception('Failed to minus points');
+    }
+
+    // 여기에서 추가적인 데이터 처리나 상태 변경이 필요할 수 있습니다.
+    // 예를 들어, 응답 데이터를 디코드하고 사용할 수 있습니다.
+    // var data = jsonDecode(utf8.decode(response.bodyBytes));
+  }
 // // 과목 설정 함수
 //   Future<String> setCourse(String nickname, CourseDto courseDto) async {
 //     final response = await http.post(
@@ -342,4 +360,6 @@ class UserProfileInfo {
 //       throw Exception('Failed to remove course');
 //     }
 //   }
+
+
 }

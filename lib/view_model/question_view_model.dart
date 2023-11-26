@@ -1,6 +1,8 @@
 import 'dart:convert';
+//import 'dart:html';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
 import '../models/question_model.dart';
 
@@ -22,9 +24,8 @@ class QaViewModel extends ChangeNotifier {
   bool get isReviewed => _isReviewed;
   bool isAnonymity = false;
   // 이 변수는 API로부터 받아온 QA 상태를 저장합니다.
-  String _qaStatus = '';
-  String get qaStatus => _qaStatus;
-
+  String qaStatus = '진행';
+  bool checker = false;
   void setLoading(bool loading) {
     _isLoading = loading;
     notifyListeners();
@@ -168,18 +169,22 @@ class QaViewModel extends ChangeNotifier {
     }
   }
   // QA 채팅 내용 갱신 함수
-  Future<void> refreshQaMessages(int qaKey, String nickname, int k) async {
+  Future<void> refreshQaMessages(int qaKey, String nickname, int k, BuildContext context, ) async {
     try {
 
       List<QaMsgDto> temp= await _qaService.getQaMsgs(qaKey, nickname);
+      if(qaStatus == '미답' && temp.isNotEmpty && isQuestioner){
 
+        if(temp[0].nickname != questioner){
+          checker = true;
+          // _friendNickname = temp[0].nickname; // 상대방 이름
+          // _friendProfileImage = await QaService.getProfileImage(_friendNickname);
+        }
+      }
       if(temp.isNotEmpty && k == 1) {
         qaMessages.addAll(temp); // message에  추가함.
-        //print(messages);
-        //print("Messages list hashCode: ${messages.hashCode}");
         notifyListeners();
       }
-
     } catch (e) {
       print("GET MSG 에러");
       //_isLoading = false;
@@ -254,8 +259,8 @@ class QaViewModel extends ChangeNotifier {
   Future<void> fetchQaStatus(int qaKey) async {
     try {
       final String status = await _qaService.getQaStatus(qaKey);
-      final temp = _qaStatus;
-      _qaStatus = status;
+      final temp = qaStatus;
+      qaStatus = status;
       if(temp != status) notifyListeners();
     } catch (e) {
       // 에러 처리
