@@ -191,6 +191,7 @@ class _ChatScreenState extends State<ChatScreen> {
       nickname = widget.nickname!;
       shareButton = false;
     }
+
     return ChangeNotifierProvider(
         create: (_) => QaViewModel(),
         builder: (context, child) {

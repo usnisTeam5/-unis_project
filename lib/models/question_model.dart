@@ -246,4 +246,25 @@ class QaService {
       throw Exception('Failed to load QA status');
     }
   }
+
+  // QA가 현재 관찰되고 있는지 확인하는 메소드
+  Future<bool> isQaWatching(int qaKey) async {
+    // API 엔드포인트 URL을 구성합니다.
+    final url = Uri.parse('$BASE_URL/qa/isWatching?qaKey=$qaKey');
+
+    // HTTP GET 요청을 보냅니다.
+    final response = await http.get(url);
+
+    // 응답을 출력합니다.
+    print(response.body);
+
+    // 응답이 성공적인지 확인합니다.
+    if (response.statusCode == 200) {
+      // 응답 본문을 디코드하여 결과를 반환합니다.
+      return jsonDecode(utf8.decode(response.bodyBytes));
+    } else {
+      // 에러가 발생하면 예외를 발생시킵니다.
+      throw Exception('Failed to load isWatching');
+    }
+  }
 }

@@ -28,14 +28,16 @@ class QuizInfoDto {
 
 // QuizDto 모델(퀴즈를 선택했을 때, 문제 번호, 문제,정답 리스트 반환)
 class QuizDto {
-  int quizNum;
-  String question;
-  String answer;
+  int quizNum; // 문제 번호
+  String question; // 문제 내용
+  String answer; // 정답
+  bool isSolved; //현재 풀고 있는 중인지
 
   QuizDto({
     required this.quizNum, // 문제 번호
     required this.question,
     required this.answer,
+    required this.isSolved,
   });
 
   factory QuizDto.fromJson(Map<String, dynamic> json) {
@@ -43,6 +45,7 @@ class QuizDto {
       quizNum: json['quizNum'],
       question: json['question'],
       answer: json['answer'],
+        isSolved: json['isSolved'],
     );
   }
   Map<String, dynamic> toJson() {
@@ -50,6 +53,7 @@ class QuizDto {
       'quizNum': quizNum,
       'question': question,
       'answer': answer,
+      'isSolved': isSolved
     };
   }
 }
@@ -93,7 +97,7 @@ class QuizService {
   Future<List<QuizInfoDto>> getMyQuiz(String nickname, String course) async {
     final url = Uri.parse('$BASE_URL/user/quiz?nickname=$nickname&course=$course');
     final response = await http.get(url);
-
+    print(response.body);
     if (response.statusCode == 200) {
       Iterable l = json.decode(utf8.decode(response.bodyBytes));
       return List<QuizInfoDto>.from(l.map((model) => QuizInfoDto.fromJson(model)));
@@ -106,10 +110,12 @@ class QuizService {
   Future<List<QuizDto>> getQuiz(int quizKey) async {
     final url = Uri.parse('$BASE_URL/user/quiz/solve?quizKey=$quizKey');
     final response = await http.get(url);
-
+    //print("response : ${response.body}");
     if (response.statusCode == 200) {
       Iterable l = json.decode(utf8.decode(response.bodyBytes));
-      return List<QuizDto>.from(l.map((model) => QuizDto.fromJson(model)));
+      List<QuizDto> temp = List<QuizDto>.from(l.map((model) => QuizDto.fromJson(model)));
+      print(temp);
+      return temp;
     } else {
       throw Exception('Failed to get quiz questions');
     }
@@ -118,8 +124,12 @@ class QuizService {
   // 새로운 퀴즈 폴더 만들기
   Future<void> makeQuizFolder(QuizMakeDto quiz) async {
     final url = Uri.parse('$BASE_URL/user/quiz/makeFolder');
-    final response = await http.post(url, body: json.encode(quiz.toJson()), headers: {'Content-Type': 'application/json'});
-
+    final response = await http.post(
+        url,
+        body: json.encode(quiz.toJson()),
+        headers: {'Content-Type': 'application/json'}
+    );
+    print("makeQuizFolder : ${response.body}");
     if (response.statusCode != 200) {
       throw Exception('Failed to make quiz folder');
     }
@@ -137,6 +147,7 @@ class QuizService {
     }
   }
 
+
   // 퀴즈 종료
   Future<void> finishQuiz(int quizKey, int curNum) async {
     final url = Uri.parse('$BASE_URL/user/quiz/finish/$quizKey');
@@ -144,6 +155,23 @@ class QuizService {
 
     if (response.statusCode != 200) {
       throw Exception('Failed to finish quiz');
+    }
+  }
+
+  // 퀴즈 폴더 삭제 메서드
+  Future<void> deleteQuizFolder(int quizKey) async {
+    // API 엔드포인트 구성
+    final url = Uri.parse('$BASE_URL/user/quiz/delete/$quizKey');
+
+    // HTTP POST 요청 실행
+    final response = await http.post(url);
+
+    // 응답 처리
+    if (response.statusCode == 200) {
+      print('Quiz folder deleted successfully.');
+      print(response.body); // 응답 본문 출력
+    } else {
+      throw Exception('Failed to delete quiz folder.');
     }
   }
 }

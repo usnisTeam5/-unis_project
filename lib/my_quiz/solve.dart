@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:provider/provider.dart';
 import '../css/css.dart';
 import 'package:flutter_flip_card/flutter_flip_card.dart';
 import 'dart:math';
-void main() {
-  runApp(
-    MaterialApp(
 
-      debugShowCheckedModeBanner: false,
-      home: Solve(),
-    ),
-  );
-}
+import '../view_model/quiz_view_model.dart';
+// void main() {
+//   runApp(
+//     MaterialApp(
+//
+//       debugShowCheckedModeBanner: false,
+//       home: Solve(),
+//     ),
+//   );
+// }
 
 class Solve extends StatefulWidget {
-  const Solve({
-    Key? key,
-  }) : super(key: key);
+
+  final int quizKey;
+  final bool isSolved;
+  int quizNum =0;
+  Solve({super.key, required this.quizKey, required this.isSolved, required this.quizNum});
 
   @override
   State<Solve> createState() => _SolveState();
@@ -25,9 +30,9 @@ class Solve extends StatefulWidget {
 class _SolveState extends State<Solve> {
   final CardSwiperController controller = CardSwiperController(); // 컨트롤러
 
-  final cards = candidates.map(ExampleCard.new).toList();
+  List<ExampleCard> cards = [];
   int idx = 1;
-
+  int count = 0;
   @override
   void dispose() {
     controller.dispose();
@@ -39,6 +44,30 @@ class _SolveState extends State<Solve> {
     final  width = min(MediaQuery.of(context).size.width,500.0);
     final height = MediaQuery.of(context).size.height;
 
+    final quizViewModel = Provider.of<QuizViewModel>(context, listen: true);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async{ // 나중에 호출됨.
+      //print("count");
+      if(count == 0) {
+        count ++;
+        print("count: ${count}");
+        quizViewModel.fetchQuiz(widget.quizKey);
+        // 문제 목록을 위한 텍스트 필드 생성
+        //_controllers = quizViewModel.quizQuestions;
+      }
+      for(int i=0;i<widget.quizNum;i++) {
+        if(quizViewModel.quizQuestions[i].isSolved == widget.isSolved){
+          candidates.add(
+              ExampleCandidateModel(
+                problem: quizViewModel.quizQuestions[i].question,
+                answer: quizViewModel.quizQuestions[i].answer,
+              )
+          );
+        }
+      }
+      cards = candidates.map(ExampleCard.new).toList();
+    });
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
@@ -49,15 +78,23 @@ class _SolveState extends State<Solve> {
             gradient: MainGradient(),
           ),
           child: AppBar(
-            leading: IconButton(
-              icon: Icon(
-                Icons.close,
-                size: 30,
-              ),
-              color: Colors.white,
-              onPressed: () {
-                Navigator.pop(context); // 로그인 화면으로 되돌아가기
+            leading: InkWell(
+              onTap: () {
+                Navigator.pop(context); // 현재 스크린을 닫고 이전 스크린으로 돌아가기
               },
+              child: Container(
+                padding: EdgeInsets.all(8.0), // 탭하기 쉽도록 충분한 패딩 제공
+                decoration: BoxDecoration(
+                  // 추가적인 스타일링이 필요하다면 여기에 데코레이션 추가
+                  color: Colors.transparent, // 터치 피드백을 위한 배경색 설정 (옵션)
+                  shape: BoxShape.circle, // 원형으로 클릭 영역을 제한 (옵션)
+                ),
+                child: Icon(
+                  Icons.close,
+                  size: 30,
+                  color: Colors.white,
+                ),
+              ),
             ),
             actions: [
               // `actions` 속성을 사용하여 IconButton을 추가합니다.
@@ -79,13 +116,15 @@ class _SolveState extends State<Solve> {
             centerTitle: true,
             // Title을 중앙에 배치
             title: Text(
-              '${idx}/${candidates.length}',
+              '${idx}/${widget.quizNum}',
               style: TextStyle(color: Colors.white, fontSize: width * 0.06),
             ),
           ),
         ),
       ),
-      body: SafeArea(
+      body: (quizViewModel.isLoading || count == 0)
+          ?  Center(child: CircularProgressIndicator())
+          : SafeArea(
         child: Column(
           children: [
             Flexible(
@@ -119,15 +158,37 @@ class _SolveState extends State<Solve> {
                   FloatingActionButton(
                     // 뒤로가기
                     onPressed: controller.undo,
-                    child: const Icon(Icons.rotate_left),
+                    child: Container(
+                      width: double.infinity,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle, // 원형 모양을 만들기 위해 사용
+                          gradient: MainGradient(),
+                        ),
+                        child: const Icon(Icons.rotate_left)),
                   ),
                   FloatingActionButton(
                     onPressed: controller.swipeLeft,
-                    child: const Icon(Icons.keyboard_arrow_left),
+
+                    child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle, // 원형 모양을 만들기 위해 사용
+                          gradient: MainGradient(),
+                        ),
+                        child: const Icon(Icons.keyboard_arrow_left)),
                   ),
                   FloatingActionButton(
                     onPressed: controller.swipeRight,
-                    child: const Icon(Icons.keyboard_arrow_right),
+                    child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle, // 원형 모양을 만들기 위해 사용
+                          gradient: MainGradient(),
+                        ),
+                        child: const Icon(Icons.keyboard_arrow_right)),
                   ),
                 ],
               ),
@@ -255,13 +316,4 @@ class ExampleCandidateModel {
   });
 }
 
-final List<ExampleCandidateModel> candidates = [
-  ExampleCandidateModel(
-      problem: 'determinant의 기하학적 의미1', answer: '선형 변환에서의 넓이1'),
-  ExampleCandidateModel(
-      problem: 'determinant의 기하학적 의미2', answer: '선형 변환에서의 넓이2'),
-  ExampleCandidateModel(
-      problem: 'determinant의 기하학적 의미3', answer: '선형 변환에서의 넓이3'),
-  ExampleCandidateModel(
-      problem: 'determinant의 기하학적 의미4', answer: '선형 변환에서의 넓이4'),
-];
+List<ExampleCandidateModel> candidates = [];

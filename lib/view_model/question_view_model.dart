@@ -55,7 +55,6 @@ class QaViewModel extends ChangeNotifier {
       print("뷰모델 fetchQa M : ${qaMessages[0].nickname}");
       questioner = qaMessages[0].nickname;
       isAnonymity = qaMessages[0].isAnonymity;
-
       if(questioner == nickname){
         isQuestioner = true;
         for(int i=0; i <qaMessages.length ; i ++){
@@ -268,6 +267,23 @@ class QaViewModel extends ChangeNotifier {
     } finally {
     }
   }
+
+  // 해당 QA가 관찰되고 있는지 확인하는 메서드
+  Future<bool> isQaWatching(int qaKey) async {
+    //setLoading(true);
+    try {
+      bool isWatching = await _qaService.isQaWatching(qaKey);
+      //setLoading(false);
+      return isWatching;
+    } catch (e) {
+      //setLoading(false);
+      print('Error while checking QA watching status: $e');
+      return false; // 오류 발생 시 기본적으로 '관찰되지 않음' 상태 반환
+    }
+  }
+
+
+
   void addMsg(QaMsgDto temp) async {
 
     temp.time = _formatTime(temp.time);

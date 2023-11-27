@@ -33,7 +33,7 @@ class QuizViewModel extends ChangeNotifier {
     }
   }
 
-  // 특정 과목에 대한 퀴즈 리스트 가져오기
+  // 특정 과목에 대한 퀴즈 폴더리스트 가져오기
   Future<void> fetchMyQuiz(String nickname, String course) async {
     setLoading(true);
     try {
@@ -51,32 +51,35 @@ class QuizViewModel extends ChangeNotifier {
     setLoading(true);
     try {
       quizQuestions = await _quizService.getQuiz(quizKey);
+      print("Hello: ${quizQuestions[0].answer}");
     } catch (e) {
       // 에러 처리
       print('Error loading quiz questions: $e');
     } finally {
+      print("Hello");
       setLoading(false);
     }
   }
 
   // 새로운 퀴즈 폴더 만들기
   Future<void> createQuizFolder(QuizMakeDto quiz) async {
-    setLoading(true);
+    //setLoading(true);
     try {
       await _quizService.makeQuizFolder(quiz);
-      folderList = await _quizService.getMyQuiz(quiz.nickname, quiz.course);
+      folderList = await _quizService.getMyQuiz(quiz.nickname, quiz.course); //리스트를 다시 가져옴
       // 성공 처리 (예: 사용자에게 알림)
     } catch (e) {
       // 에러 처리
       print('Error creating quiz folder: $e');
     } finally {
-      setLoading(false);
+      //setLoading(false);
+      notifyListeners();
     }
   }
 
   // 문제 생성 또는 수정
-  Future<void> updateQuiz(int quizKey, List<QuizDto> quiz) async {
-    setLoading(true);
+  Future<void> updateQuiz(int quizKey, List<QuizDto> quiz,) async {
+   // setLoading(true);
     try {
       await _quizService.makeQuiz(quizKey, quiz);
       // 성공 처리 (예: 사용자에게 알림)
@@ -84,7 +87,7 @@ class QuizViewModel extends ChangeNotifier {
       // 에러 처리
       print('Error updating quiz: $e');
     } finally {
-      setLoading(false);
+     // setLoading(false);
     }
   }
 
@@ -99,6 +102,25 @@ class QuizViewModel extends ChangeNotifier {
       print('Error finishing quiz: $e');
     } finally {
       setLoading(false);
+    }
+  }
+
+
+  // 문제 생성 또는 수정 메서드
+  Future<void> deleteFolder(int quizKey) async {
+    //setLoading(true); // 로딩 시작
+    try {
+      await _quizService.deleteQuizFolder(quizKey); // 서비스를 이용하여 API 호출
+      for(int i=0;i< folderList.length;i++) {
+        if(folderList[i].quizKey == quizKey){
+          folderList.removeAt(i);
+        }
+      }
+    } catch (e) {
+      print('Error updating quiz: $e');
+    } finally {
+      //setLoading(false); // 로딩 종료
+      notifyListeners();
     }
   }
 }

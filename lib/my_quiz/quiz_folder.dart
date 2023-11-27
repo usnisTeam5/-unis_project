@@ -33,29 +33,53 @@ class QuizFolderScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizFolderScreen> {
-  // 과목 목록
-  final List<String> subjects = [];
 
+  int count = 0;
   @override
   Widget build(BuildContext context) {
 
     final width = min(MediaQuery.of(context).size.width,500.0);
     final height = MediaQuery.of(context).size.height;
-    int count = 0;
 
     final quizViewModel = Provider.of<QuizViewModel>(context, listen: true);
     final user =  Provider.of<UserProfileViewModel>(context, listen: false);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async{ // 나중에 호출됨.
-      // context를 사용하여 UserProfileViewModel에 접근
-      //print("sdfsdfsdfsadfasdfsadfasdf");
+
       if(count == 0) {
         count ++;
         print("count: ${count}");
-        await quizViewModel.fetchMyQuiz(user.nickName, widget.course); // **
+        quizViewModel.fetchMyQuiz(user.nickName, widget.course); // **
       }
-    });
 
+    });
+// 폴더 삭제 확인 다이얼로그를 표시하는 함수
+    Future<bool> _showDeleteDialog(BuildContext context) async {
+      return await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('폴더 삭제'),
+            content: Text('이 폴더를 정말로 삭제하시겠습니까?'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('취소'),
+                onPressed: () {
+                  Navigator.of(context).pop(false); // 다이얼로그를 닫고 false 반환
+                },
+              ),
+              TextButton(
+                child: Text('확인'),
+                onPressed: () {
+                  Navigator.of(context).pop(true); // 다이얼로그를 닫고 true 반환
+                },
+              ),
+            ],
+          );
+        },
+      ) ?? false;
+    }
+      // showDialog는 null을 반환할 수 있으므로 null 병합 연산자 (??) 사용
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -93,7 +117,6 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                 builder: (BuildContext context) {
                   final TextEditingController _controller = TextEditingController();
                   return AlertDialog(
-
                     title: Text('폴더 추가',style: TextStyle(fontFamily: 'Round'),),
                     content: TextField(
                       controller: _controller,
@@ -142,11 +165,15 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                   );
                 },
               );
-            },,
+            },
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: (quizViewModel.isLoading == true || count == 0)
+          ? Center(
+        child: CircularProgressIndicator(),
+      )
+          : SingleChildScrollView(
         child: Column(
           children: [
             Container(
@@ -175,15 +202,16 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                     thickness: 3.0,
                   ),
                   Column(
-                      children: subjects.map((subject) {
+                      children: quizViewModel.folderList.map((folder) {
                         return GestureDetector(
                           onTap: () {
                             // 화면 전환 로직
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Solve()),
+                                  builder: (context) => Solve(quizKey: folder.quizKey, isSolved: false, quizNum: folder.curNum,)),
                             );
+
                           },
                           child: Container(
                             margin: EdgeInsets.symmetric(vertical: 10.0,horizontal: 30),
@@ -195,39 +223,62 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,  // 아이템을 세로축 왼쪽으로 정렬
                               children: [
-                                Text(
-                                  subject,
-                                  style: TextStyle(
-                                    fontSize: 24.0,
-                                    fontFamily: 'Bold',
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                                SizedBox(height: 20,),
                                 Row(
                                   children: [
                                     Text(
-                                      '12/32',
+                                      folder.quizName,
                                       style: TextStyle(
-                                        fontSize: 14.0,
+                                        fontSize: 24.0,
+                                        fontFamily: 'Bold',
                                         color: Colors.grey[600],
                                       ),
                                     ),
                                     Spacer(flex: 1),  // 사용 가능한 공간을 차지합니다.
                                     GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                            builder: (context) => EditQuizScreen(folderName: subject),
+                                      onTap: () async{
+                                        await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => EditQuizScreen(folder, false),
                                           ),
                                         );
+                                        quizViewModel.fetchMyQuiz(user.nickName, widget.course); // **
                                       },
                                       child: Icon(
                                         Icons.add,
                                         color: Color(0xFF3D6094),
                                         size: 24,
                                       ),
+                                    ),
+                                  ],
+                                ), // 퀴즈 폴더 이름
+                                SizedBox(height: 20,),
+                                Row(
+                                  children: [
+                                    Text(
+                                      '${folder.curNum}/${folder.quizNum}',
+                                      style: TextStyle(
+                                        fontSize: 14.0,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                    Spacer(flex: 1),  // 사용 가능한 공간을 차지합니다.
+                                    // 여기에 쓰레기통 아이콘 추가
+                                    InkWell(
+                                      child: Icon(Icons.delete, color: Colors.grey),
+                                      onTap: () async {
+                                        final shouldDelete = await _showDeleteDialog(context);
+                                        if (shouldDelete) {
+                                          await quizViewModel.deleteFolder(folder.quizKey);
+                                          // SnackBar를 표시합니다.
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text('폴더가 삭제되었습니다.'),
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                        }
+                                      },
                                     ),
                                   ],
                                 ),
@@ -269,14 +320,14 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                     thickness: 3.0,
                   ),
                   Column(
-                    children: subjects.map((subject) {
+                    children: quizViewModel.folderList.map((folder) {
                       return GestureDetector(
                         onTap: () {
                           // 화면 전환 로직
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Solve()),
+                                builder: (context) => Solve(quizKey: folder.quizKey, isSolved: true, quizNum: folder.curNum,)),
                           );
                         },
                         child: Container(
@@ -289,39 +340,61 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,  // 아이템을 세로축 왼쪽으로 정렬
                             children: [
-                              Text(
-                                subject,
-                                style: TextStyle(
-                                  fontSize: 24.0,
-                                  fontFamily: 'Bold',
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                              SizedBox(height: 20,),
                               Row(
                                 children: [
                                   Text(
-                                    '12/32',
+                                    folder.quizName,
                                     style: TextStyle(
-                                      fontSize: 14.0,
+                                      fontSize: 24.0,
+                                      fontFamily: 'Bold',
                                       color: Colors.grey[600],
                                     ),
                                   ),
-                                  Spacer(flex: 1),  // 사용 가능한 공간을 차지합니다.
+                                  Spacer(flex: 1),
                                   GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
+                                    onTap: () async{
+                                      await Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => EditQuizScreen(folderName: subject),
+                                          builder: (context) => EditQuizScreen(folder, true),
                                         ),
                                       );
+                                      quizViewModel.fetchMyQuiz(user.nickName, widget.course); // **
                                     },
                                     child: Icon(
                                       Icons.add,
                                       color: Color(0xFF3D6094),
                                       size: 24,
                                     ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 20,),
+                              Row(
+                                children: [
+                                  Text(
+                                    '${folder.quizNum - folder.curNum}/${folder.quizNum}',
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                  Spacer(flex: 1),  // 사용 가능한 공간을 차지합니다.
+                                  InkWell(
+                                    child: Icon(Icons.delete, color: Colors.grey),
+                                    onTap: () async {
+                                      final shouldDelete = await _showDeleteDialog(context);
+                                      if (shouldDelete) {
+                                        await quizViewModel.deleteFolder(folder.quizKey);
+                                        // SnackBar를 표시합니다.
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text('폴더가 삭제되었습니다.'),
+                                            duration: Duration(seconds: 2),
+                                          ),
+                                        );
+                                      }
+                                    },
                                   ),
                                 ],
                               ),

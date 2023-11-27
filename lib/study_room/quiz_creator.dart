@@ -96,10 +96,10 @@ class _QuizScreenState extends State<QuizCreator> {
           child: InkWell(
             borderRadius: BorderRadius.circular(16.0),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Solve()),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => Solve()),
+              // );
               print('선택된 주제: ${selectedSubject.value}');
               print('선택된 문제 유형: ${selectedQuestionType.value}');
               print('선택된 문제 수: ${selectedQuestionCount.value}');

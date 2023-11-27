@@ -23,21 +23,18 @@ class MyApp extends StatelessWidget {
 }
 
 class QuizScreen extends StatelessWidget {
+  int count = 0;
   @override
   Widget build(BuildContext context) {
 
     final  width = min(MediaQuery.of(context).size.width,500.0);
     final height = MediaQuery.of(context).size.height;
-    int count = 0;
-    return ChangeNotifierProvider(
-        create: (_) => QuizViewModel(),
-        builder: (context, child) {
 
           final quizViewModel = Provider.of<QuizViewModel>(context, listen: true);
           final user =  Provider.of<UserProfileViewModel>(context, listen: false);
+
           WidgetsBinding.instance.addPostFrameCallback((_) async{ // 나중에 호출됨.
-            // context를 사용하여 UserProfileViewModel에 접근
-            //print("sdfsdfsdfsadfasdfsadfasdf");
+
             if(count == 0) {
               count ++;
               print("count: ${count}");
@@ -69,7 +66,6 @@ class QuizScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
-                  // 화면 전환 로직
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -98,7 +94,5 @@ class QuizScreen extends StatelessWidget {
           ),
           backgroundColor: Colors.grey[200],  // 아주 밝은 회색 배경
         );
-      }
-    );
   }
 }

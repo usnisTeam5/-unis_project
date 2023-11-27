@@ -56,7 +56,6 @@ class _QuestionPageState extends State<QuestionPage> {
     final width = min(MediaQuery.of(context).size.width,500.0);
     final height = min(MediaQuery.of(context).size.height,700.0);
 
-
     return ChangeNotifierProvider(
         create: (_) => QaViewModel(),
         builder: (context, child) {
@@ -183,12 +182,22 @@ class QuestionItem extends StatelessWidget {
 
     return GestureDetector(
       onTap: () async{
-        await Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ChatScreen(qaKey: qa.qaKey, forAns: true, course: qa.course,)),
-        );
         final qaViewModel = Provider.of<QaViewModel>(context, listen: false);
         final nickname = Provider.of<UserProfileViewModel>(context, listen: false).nickName;
+        if(await qaViewModel.isQaWatching(qa.qaKey)){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('다른 사용자가 이미 답변하고 있습니다.'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }else {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) =>
+                ChatScreen(qaKey: qa.qaKey, forAns: true, course: qa.course,)),
+          );
+        }
         await qaViewModel.fetchQaList(nickname);
       },
       child: Container(
