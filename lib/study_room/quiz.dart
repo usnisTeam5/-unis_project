@@ -334,7 +334,7 @@ class _FoldersScreenState extends State<FoldersScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => QuizCreator()),
+                                  builder: (context) => QuizCreator(myStudyInfo)),
                             );
                           },
                           style: OutlinedButton.styleFrom(

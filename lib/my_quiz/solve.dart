@@ -91,6 +91,31 @@ class _SolveState extends State<Solve> {
             content: Text('저장하고 나가시겠습니까?'),
             actions: <Widget>[
               TextButton(
+                child: Text('재시작'),
+                onPressed: () async {
+                  await store();
+                  await quizViewModel.fetchMyQuiz(Provider.of<UserProfileViewModel>(context,listen:false).nickName, widget.course);
+                  for(int i=0;i<quizViewModel.folderList.length;i++){
+                    if(quizViewModel.folderList[i].quizKey == widget.quizKey){
+                      widget.quizNum = quizViewModel.folderList[i].quizNum;
+                      if(widget.isSolved){
+                        widget.curNum =  widget.quizNum - quizViewModel.folderList[i].curNum;
+                      } else {
+                        widget.curNum = quizViewModel.folderList[i].curNum;
+                      }
+                    }
+                  }
+
+                  setState(() {
+                    candidates =[];
+                    cards = [];
+                    idx = 1;
+                    count =0;
+                  });
+                  Navigator.pop(context); // Dialog 닫기
+                },
+              ),
+              TextButton(
                 child: Text('저장하고 나가기'),
                 onPressed: () async {
                   await store();
@@ -105,8 +130,9 @@ class _SolveState extends State<Solve> {
       return true;
     }
     WidgetsBinding.instance.addPostFrameCallback((_) async{ // 나중에 호출됨.
-      //print("count");
+      print("count !!!");
       if(count == 0) {
+
         count ++;
         print("count: ${count}");
         await quizViewModel.fetchQuiz(widget.quizKey);
@@ -119,9 +145,8 @@ class _SolveState extends State<Solve> {
           candidates.last.quizNum = i;
         }
       }
-        cards = candidates.map(ExampleCard.new).toList();
-        print("카드 길이 : ${cards.length}");
-        if(cards.length == 0){
+        if(candidates.length == 0){
+          Navigator.of(context).pop();
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -139,8 +164,10 @@ class _SolveState extends State<Solve> {
               );
             },
           );
-          Navigator.of(context).pop();
         }
+
+        cards = candidates.map(ExampleCard.new).toList();
+        print("카드 길이 : ${cards.length}");
       }
     });
 

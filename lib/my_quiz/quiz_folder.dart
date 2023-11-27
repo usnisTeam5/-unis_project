@@ -376,6 +376,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                                         isSolved: true,
                                         quizNum: folder.quizNum, curNum: folder.quizNum - folder.curNum, course:  widget.course)),
                             );
+
                             await quizViewModel.fetchMyQuiz(user.nickName, widget.course);
                           }
                         },

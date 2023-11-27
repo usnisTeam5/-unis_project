@@ -20,6 +20,8 @@ class MyApp extends StatelessWidget {
 }
 
 class QuizCreator extends StatefulWidget {
+  QuizCreator(myStudyInfo);
+
   @override
   _QuizScreenState createState() => _QuizScreenState();
 }
@@ -27,7 +29,7 @@ class QuizCreator extends StatefulWidget {
 class _QuizScreenState extends State<QuizCreator> {
   // 과목 목록
   final ValueNotifier<int> selectedQuestionCount = ValueNotifier<int>(1);
-  final ValueNotifier<String> selectedQuestionType = ValueNotifier<String>('다지선다');
+  final ValueNotifier<String> selectedQuestionType = ValueNotifier<String>('개념');
   final ValueNotifier<String> selectedSubject = ValueNotifier<String>('');
 
   @override
@@ -44,7 +46,7 @@ class _QuizScreenState extends State<QuizCreator> {
     '4강',
   ];
   final List<String> kindOfProbs = [
-    '다지선다',
+    //'다지선다',
     '개념',
   ];
   @override
