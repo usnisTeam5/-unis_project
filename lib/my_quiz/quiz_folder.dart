@@ -204,7 +204,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                   Column(
                       children: quizViewModel.folderList.map((folder) {
                         return GestureDetector(
-                          onTap: () {
+                          onTap: () async{
                             // 화면 전환 로직
                             if(folder.curNum == 0 ){
                               showDialog(
@@ -226,7 +226,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                                 },
                               );
                             } else {
-                              Navigator.push(
+                             await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
@@ -235,6 +235,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                                           quizNum: folder.quizNum,curNum: folder.curNum,)),
                               );
                             }
+                            quizViewModel.fetchMyQuiz(user.nickName, widget.course);
                           },
                           child: Container(
                             margin: EdgeInsets.symmetric(vertical: 10.0,horizontal: 30),
@@ -345,7 +346,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                   Column(
                     children: quizViewModel.folderList.map((folder) {
                       return GestureDetector(
-                        onTap: () {
+                        onTap: () async{
                           // 화면 전환 로직
                           if(folder.quizNum - folder.curNum == 0 ){
                             showDialog(
@@ -367,7 +368,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                               },
                             );
                           }else {
-                            Navigator.push(
+                            await Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
@@ -375,6 +376,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                                         isSolved: true,
                                         quizNum: folder.quizNum, curNum: folder.quizNum - folder.curNum)),
                             );
+                            quizViewModel.fetchMyQuiz(user.nickName, widget.course);
                           }
                         },
                         child: Container(

@@ -159,7 +159,7 @@ class _SolveState extends State<Solve> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  FloatingActionButton(
+                  TextButton(
                     // 뒤로가기
                     onPressed: (){
                       controller.undo();
@@ -168,15 +168,16 @@ class _SolveState extends State<Solve> {
                       if(candidates[idx-1].quizNum > 1000) candidates[idx-1].quizNum - 1000;
                     },
                     child: Container(
-                      width: double.infinity,
-                        height: double.infinity,
+                      width: 60,
+                        height: 60,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle, // 원형 모양을 만들기 위해 사용
                           gradient: MainGradient(),
                         ),
-                        child: const Icon(Icons.rotate_left)),
+                        child: const Icon(Icons.rotate_left,color: Colors.white,),
+                    ),
                   ),
-                  FloatingActionButton( // 저장
+                  TextButton( // 저장
                     onPressed: () async{
 
                       for(int i=0;i<candidates.length;i++){
@@ -203,13 +204,13 @@ class _SolveState extends State<Solve> {
 
                     },
                     child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
+                        width: 60,
+                        height: 60,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle, // 원형 모양을 만들기 위해 사용
                           gradient: MainGradient(),
                         ),
-                        child: Center(child: const Text("저장", style: TextStyle(fontFamily: 'Bold'),)),
+                        child: Center(child: const Text("저장", style: TextStyle(fontFamily: 'Bold',color: Colors.white),)),
                     ),
                   ),
                 ],
@@ -222,6 +223,7 @@ class _SolveState extends State<Solve> {
   }
 
   bool _done(){
+    idx = idx + 1;
     print("Heool");
     showDialog(
       context: context,
@@ -231,15 +233,16 @@ class _SolveState extends State<Solve> {
           content: Text('저장하고 처음부터 다시 시작하시겠습니까?'),
           actions: <Widget>[
             TextButton(
-              child: Text('저장하고 재시작'),
+              child: Text('재시작'),
               onPressed: () {
                 // 저장 로직 추가
                 Navigator.of(context).pop(); // Dialog 닫기
+
                 // 처음부터 다시 시작하는 로직 추가
               },
             ),
             TextButton(
-              child: Text('나가기'),
+              child: Text('저장하고 나가기'),
               onPressed: () {
                 Navigator.of(context).pop(); // Dialog 닫기
                 Navigator.of(context).pop(); // 현재 화면 닫기 / 이전 화면으로 돌아가기
@@ -266,9 +269,9 @@ class _SolveState extends State<Solve> {
         candidates[idx-1].isSolved = false;
       }
       setState(() {
-        if(idx != widget.curNum) {
+       // if(idx != widget.curNum) {
           idx = idx + 1;
-        }
+       // }
       });
     }
     return true;
