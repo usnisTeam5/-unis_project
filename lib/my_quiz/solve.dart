@@ -5,6 +5,7 @@ import '../css/css.dart';
 import 'package:flutter_flip_card/flutter_flip_card.dart';
 import 'dart:math';
 
+import '../models/quiz_model.dart';
 import '../view_model/quiz_view_model.dart';
 // void main() {
 //   runApp(
@@ -29,6 +30,7 @@ class Solve extends StatefulWidget {
 
 class _SolveState extends State<Solve> {
   final CardSwiperController controller = CardSwiperController(); // 컨트롤러
+  List<QuizDto> candidates = [];
 
   List<ExampleCard> cards = [];
   int idx = 1;
@@ -57,12 +59,7 @@ class _SolveState extends State<Solve> {
       }
       for(int i=0;i<widget.quizNum;i++) {
         if(quizViewModel.quizQuestions[i].isSolved == widget.isSolved){
-          candidates.add(
-              ExampleCandidateModel(
-                problem: quizViewModel.quizQuestions[i].question,
-                answer: quizViewModel.quizQuestions[i].answer,
-              )
-          );
+          candidates.add(quizViewModel.quizQuestions[i]);
         }
       }
       cards = candidates.map(ExampleCard.new).toList();
@@ -231,7 +228,7 @@ class _SolveState extends State<Solve> {
 }
 
 class ExampleCard extends StatelessWidget {
-  final ExampleCandidateModel candidate;
+  final QuizDto candidate;
 
   const ExampleCard(
     this.candidate, {
@@ -268,7 +265,7 @@ class ExampleCard extends StatelessWidget {
         ),
         alignment: Alignment.center,
         child: Text(
-          candidate.problem,
+          candidate.question,
           style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
@@ -305,15 +302,3 @@ class ExampleCard extends StatelessWidget {
     );
   }
 }
-
-class ExampleCandidateModel {
-  String problem;
-  String answer;
-
-  ExampleCandidateModel({
-    required this.problem,
-    required this.answer,
-  });
-}
-
-List<ExampleCandidateModel> candidates = [];
