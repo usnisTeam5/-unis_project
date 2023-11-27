@@ -53,13 +53,14 @@ class _SolveState extends State<Solve> {
       if(count == 0) {
         count ++;
         print("count: ${count}");
-        quizViewModel.fetchQuiz(widget.quizKey);
+        await quizViewModel.fetchQuiz(widget.quizKey);
         // 문제 목록을 위한 텍스트 필드 생성
         //_controllers = quizViewModel.quizQuestions;
       }
       for(int i=0;i<widget.quizNum;i++) {
         if(quizViewModel.quizQuestions[i].isSolved == widget.isSolved){
           candidates.add(quizViewModel.quizQuestions[i]);
+          candidates.last.quizNum = i;
         }
       }
       cards = candidates.map(ExampleCard.new).toList();
@@ -165,18 +166,6 @@ class _SolveState extends State<Solve> {
                         ),
                         child: const Icon(Icons.rotate_left)),
                   ),
-                  // FloatingActionButton(
-                  //   onPressed: controller.swipeLeft,
-                  //
-                  //   child: Container(
-                  //       width: double.infinity,
-                  //       height: double.infinity,
-                  //       decoration: BoxDecoration(
-                  //         shape: BoxShape.circle, // 원형 모양을 만들기 위해 사용
-                  //         gradient: MainGradient(),
-                  //       ),
-                  //       child: const Icon(Icons.keyboard_arrow_left)),
-                  // ),
                   FloatingActionButton(
                     onPressed: null,
                     child: Container(

@@ -206,12 +206,35 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                         return GestureDetector(
                           onTap: () {
                             // 화면 전환 로직
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Solve(quizKey: folder.quizKey, isSolved: false, quizNum: folder.curNum,)),
-                            );
-
+                            if(folder.curNum == 0 ){
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('알림'),
+                                    content: Text('카드를 먼저 등록해주세요.'),
+                                    actions: <Widget>[
+                                      // 사용자가 확인을 눌렀을 때 Dialog를 닫음
+                                      TextButton(
+                                        child: Text('확인'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop(); // Dialog 닫기
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Solve(quizKey: folder.quizKey,
+                                          isSolved: false,
+                                          quizNum: folder.curNum,)),
+                              );
+                            }
                           },
                           child: Container(
                             margin: EdgeInsets.symmetric(vertical: 10.0,horizontal: 30),
@@ -324,11 +347,35 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                       return GestureDetector(
                         onTap: () {
                           // 화면 전환 로직
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Solve(quizKey: folder.quizKey, isSolved: true, quizNum: folder.curNum,)),
-                          );
+                          if(folder.quizNum - folder.curNum == 0 ){
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('알림'),
+                                  content: Text('카드를 먼저 등록해주세요.'),
+                                  actions: <Widget>[
+                                    // 사용자가 확인을 눌렀을 때 Dialog를 닫음
+                                    TextButton(
+                                      child: Text('확인'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop(); // Dialog 닫기
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      Solve(quizKey: folder.quizKey,
+                                        isSolved: true,
+                                        quizNum: folder.curNum,)),
+                            );
+                          }
                         },
                         child: Container(
                           margin: EdgeInsets.symmetric(vertical: 10.0,horizontal: 30),
