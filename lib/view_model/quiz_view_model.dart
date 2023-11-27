@@ -111,7 +111,7 @@ class QuizViewModel extends ChangeNotifier {
     //setLoading(true); // 로딩 시작
     try {
       await _quizService.deleteQuizFolder(quizKey); // 서비스를 이용하여 API 호출
-      for(int i=0;i< folderList.length;i++) {
+      for(int i= folderList.length -1 ; i >= 0 ;i--) {
         if(folderList[i].quizKey == quizKey){
           folderList.removeAt(i);
         }

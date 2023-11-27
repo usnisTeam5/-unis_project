@@ -137,6 +137,11 @@ class QuizService {
 
   // 문제 생성 또는 수정
   Future<void> makeQuiz(int quizKey, List<QuizDto> quiz) async {
+    for (int i = quiz.length - 1; i >= 0; i--) { // 역순으로 순회하며 삭제
+      if (quiz[i].quizNum > 1000) {
+        quiz.removeAt(i);
+      }
+    }
     final url = Uri.parse('$BASE_URL/user/makeQuiz/$quizKey');
     final response = await http.post(url,
         body: json.encode(List<dynamic>.from(quiz.map((x) => x.toJson()))),

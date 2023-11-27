@@ -232,7 +232,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                                     builder: (context) =>
                                         Solve(quizKey: folder.quizKey,
                                           isSolved: false,
-                                          quizNum: folder.curNum,)),
+                                          quizNum: folder.quizNum,curNum: folder.curNum,)),
                               );
                             }
                           },
@@ -373,7 +373,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                                   builder: (context) =>
                                       Solve(quizKey: folder.quizKey,
                                         isSolved: true,
-                                        quizNum: folder.curNum,)),
+                                        quizNum: folder.quizNum, curNum: folder.quizNum - folder.curNum)),
                             );
                           }
                         },

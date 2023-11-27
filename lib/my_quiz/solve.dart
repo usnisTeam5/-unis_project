@@ -21,8 +21,9 @@ class Solve extends StatefulWidget {
 
   final int quizKey;
   final bool isSolved;
+  int curNum =0;
   int quizNum =0;
-  Solve({super.key, required this.quizKey, required this.isSolved, required this.quizNum});
+  Solve({super.key, required this.quizKey, required this.isSolved, required this.quizNum, required this.curNum});
 
   @override
   State<Solve> createState() => _SolveState();
@@ -30,9 +31,8 @@ class Solve extends StatefulWidget {
 
 class _SolveState extends State<Solve> {
   final CardSwiperController controller = CardSwiperController(); // 컨트롤러
-  List<QuizDto> candidates = [];
-
-  List<ExampleCard> cards = [];
+  List<QuizDto> candidates = []; // 후보군
+  List<ExampleCard> cards = []; // 카드
   int idx = 1;
   int count = 0;
   @override
@@ -56,14 +56,16 @@ class _SolveState extends State<Solve> {
         await quizViewModel.fetchQuiz(widget.quizKey);
         // 문제 목록을 위한 텍스트 필드 생성
         //_controllers = quizViewModel.quizQuestions;
-      }
       for(int i=0;i<widget.quizNum;i++) {
+        print("퀴즈 개수: $i");
         if(quizViewModel.quizQuestions[i].isSolved == widget.isSolved){
           candidates.add(quizViewModel.quizQuestions[i]);
           candidates.last.quizNum = i;
         }
       }
-      cards = candidates.map(ExampleCard.new).toList();
+        cards = candidates.map(ExampleCard.new).toList();
+        print("카드 길이 : ${cards.length}");
+      }
     });
 
     return Scaffold(
@@ -104,6 +106,7 @@ class _SolveState extends State<Solve> {
                 color: Colors.white,
                 onPressed: () {
                   controller.swipeTop();
+                  candidates[idx-1].quizNum += 1000;
                   //여기 만들어야함
                 },
               ),
@@ -115,7 +118,7 @@ class _SolveState extends State<Solve> {
             centerTitle: true,
             // Title을 중앙에 배치
             title: Text(
-              '${idx}/${widget.quizNum}',
+              '${idx}/${widget.curNum}',
               style: TextStyle(color: Colors.white, fontSize: width * 0.06),
             ),
           ),
@@ -136,7 +139,9 @@ class _SolveState extends State<Solve> {
                     cardsCount: cards.length,
                     onSwipe: _onSwipe,
                     onUndo: _onUndo,
-                    numberOfCardsDisplayed: 3,
+                    onEnd: _done,
+                    isLoop: false,
+                    numberOfCardsDisplayed: (candidates.length <=2) ? candidates.length : 3,
                     backCardOffset: const Offset(25, 10),
                     padding: const EdgeInsets.all(40.0),
                     cardBuilder: (
@@ -156,7 +161,12 @@ class _SolveState extends State<Solve> {
                 children: [
                   FloatingActionButton(
                     // 뒤로가기
-                    onPressed: controller.undo,
+                    onPressed: (){
+                      controller.undo();
+                      print("idx : $idx, 문제: ${candidates[idx-1].question}");
+                      candidates[idx-1].isSolved = widget.isSolved;
+                      if(candidates[idx-1].quizNum > 1000) candidates[idx-1].quizNum - 1000;
+                    },
                     child: Container(
                       width: double.infinity,
                         height: double.infinity,
@@ -166,8 +176,32 @@ class _SolveState extends State<Solve> {
                         ),
                         child: const Icon(Icons.rotate_left)),
                   ),
-                  FloatingActionButton(
-                    onPressed: null,
+                  FloatingActionButton( // 저장
+                    onPressed: () async{
+
+                      for(int i=0;i<candidates.length;i++){
+                        if(candidates[i].quizNum < 1000)
+                        quizViewModel.quizQuestions[candidates[i].quizNum] = candidates[i];
+                        else{
+                          quizViewModel.quizQuestions[candidates[i].quizNum- 1000] = candidates[i];
+                        }
+                        print("quizQuestions${i} 진행완료?: ${quizViewModel.quizQuestions[candidates[i].quizNum].isSolved}");
+                      }
+
+                      await quizViewModel.updateQuiz(
+                        widget.quizKey,
+                        quizViewModel.quizQuestions,
+                      );
+
+                      // 저장 완료 알림
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('저장이 완료되었습니다'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+
+                    },
                     child: Container(
                         width: double.infinity,
                         height: double.infinity,
@@ -187,6 +221,36 @@ class _SolveState extends State<Solve> {
     );
   }
 
+  bool _done(){
+    print("Heool");
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('저장 및 재시작'),
+          content: Text('저장하고 처음부터 다시 시작하시겠습니까?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('저장하고 재시작'),
+              onPressed: () {
+                // 저장 로직 추가
+                Navigator.of(context).pop(); // Dialog 닫기
+                // 처음부터 다시 시작하는 로직 추가
+              },
+            ),
+            TextButton(
+              child: Text('나가기'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Dialog 닫기
+                Navigator.of(context).pop(); // 현재 화면 닫기 / 이전 화면으로 돌아가기
+              },
+            ),
+          ],
+        );
+      },
+    );
+    return true;
+  }
   bool _onSwipe(
     int previousIndex,
     int? currentIndex,
@@ -196,11 +260,14 @@ class _SolveState extends State<Solve> {
       'The card $previousIndex was swiped to the ${direction.name}. Now the card $currentIndex is on top',
     );
     if (currentIndex != null) {
+      if(direction == CardSwiperDirection.right){
+        candidates[idx-1].isSolved = true;
+      } else if(direction == CardSwiperDirection.left){
+        candidates[idx-1].isSolved = false;
+      }
       setState(() {
-        if(idx != widget.quizNum) {
+        if(idx != widget.curNum) {
           idx = idx + 1;
-        }else{
-          idx = 1;
         }
       });
     }
