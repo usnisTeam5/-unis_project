@@ -102,7 +102,8 @@ class _SolveState extends State<Solve> {
                 ),
                 color: Colors.white,
                 onPressed: () {
-                  // 문제 삭제
+                  controller.swipeTop();
+                  //여기 만들어야함
                 },
               ),
             ],
@@ -164,9 +165,20 @@ class _SolveState extends State<Solve> {
                         ),
                         child: const Icon(Icons.rotate_left)),
                   ),
+                  // FloatingActionButton(
+                  //   onPressed: controller.swipeLeft,
+                  //
+                  //   child: Container(
+                  //       width: double.infinity,
+                  //       height: double.infinity,
+                  //       decoration: BoxDecoration(
+                  //         shape: BoxShape.circle, // 원형 모양을 만들기 위해 사용
+                  //         gradient: MainGradient(),
+                  //       ),
+                  //       child: const Icon(Icons.keyboard_arrow_left)),
+                  // ),
                   FloatingActionButton(
-                    onPressed: controller.swipeLeft,
-
+                    onPressed: null,
                     child: Container(
                         width: double.infinity,
                         height: double.infinity,
@@ -174,18 +186,8 @@ class _SolveState extends State<Solve> {
                           shape: BoxShape.circle, // 원형 모양을 만들기 위해 사용
                           gradient: MainGradient(),
                         ),
-                        child: const Icon(Icons.keyboard_arrow_left)),
-                  ),
-                  FloatingActionButton(
-                    onPressed: controller.swipeRight,
-                    child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle, // 원형 모양을 만들기 위해 사용
-                          gradient: MainGradient(),
-                        ),
-                        child: const Icon(Icons.keyboard_arrow_right)),
+                        child: Center(child: const Text("저장", style: TextStyle(fontFamily: 'Bold'),)),
+                    ),
                   ),
                 ],
               ),
@@ -206,7 +208,11 @@ class _SolveState extends State<Solve> {
     );
     if (currentIndex != null) {
       setState(() {
-        idx = currentIndex + 1;
+        if(idx != widget.quizNum) {
+          idx = idx + 1;
+        }else{
+          idx = 1;
+        }
       });
     }
     return true;
@@ -221,7 +227,7 @@ class _SolveState extends State<Solve> {
       'The card $currentIndex was undod from the ${direction.name}',
     );
     setState(() {
-      idx = currentIndex + 1;
+      idx = idx - 1;
     });
     return true;
   }
