@@ -3,16 +3,19 @@ import '../models/quiz_model.dart'; // QuizInfoDto, QuizDto, QuizMakeDto가 정�
 
 class QuizViewModel extends ChangeNotifier {
   final QuizService _quizService = QuizService();
-  bool _isLoading = false;
+  bool isLoading = false;
 
   // 외부에서 로딩 상태를 읽을 수 있도록 getter 제공
-  bool get isLoading => _isLoading;
+  //bool get isLoading => _isLoading;
 
   // 로딩 상태 업데이트 메서드
   void setLoading(bool loading) {
-    _isLoading = loading;
+    isLoading = loading;
     notifyListeners();
   }
+  String course = ''; // 현재 수강하고있는 과목
+  int quizKey = -1; // 현재 보고있는 퀴즈 키
+  QuizDto? folder;
 
   List<QuizInfoDto> folderList = []; // // QuizInfoDto 모델(퀴즈 탭에서 과목을 선택했을 때 폴더 리스트)
   List<QuizDto> quizQuestions = []; // QuizDto 모델(퀴즈를 선택했을 때, 문제수, 문제,정답 리스트 반환)

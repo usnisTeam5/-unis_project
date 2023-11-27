@@ -232,10 +232,10 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                                     builder: (context) =>
                                         Solve(quizKey: folder.quizKey,
                                           isSolved: false,
-                                          quizNum: folder.quizNum,curNum: folder.curNum,)),
+                                          quizNum: folder.quizNum,curNum: folder.curNum, course:  widget.course)),
                               );
                             }
-                            quizViewModel.fetchMyQuiz(user.nickName, widget.course);
+                            await quizViewModel.fetchMyQuiz(user.nickName, widget.course);
                           },
                           child: Container(
                             margin: EdgeInsets.symmetric(vertical: 10.0,horizontal: 30),
@@ -374,9 +374,9 @@ class _QuizScreenState extends State<QuizFolderScreen> {
                                   builder: (context) =>
                                       Solve(quizKey: folder.quizKey,
                                         isSolved: true,
-                                        quizNum: folder.quizNum, curNum: folder.quizNum - folder.curNum)),
+                                        quizNum: folder.quizNum, curNum: folder.quizNum - folder.curNum, course:  widget.course)),
                             );
-                            quizViewModel.fetchMyQuiz(user.nickName, widget.course);
+                            await quizViewModel.fetchMyQuiz(user.nickName, widget.course);
                           }
                         },
                         child: Container(

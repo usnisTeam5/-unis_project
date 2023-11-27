@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:provider/provider.dart';
+import 'package:unis_project/view_model/user_profile_info_view_model.dart';
 import '../css/css.dart';
 import 'package:flutter_flip_card/flutter_flip_card.dart';
 import 'dart:math';
@@ -23,7 +24,8 @@ class Solve extends StatefulWidget {
   final bool isSolved;
   int curNum =0;
   int quizNum =0;
-  Solve({super.key, required this.quizKey, required this.isSolved, required this.quizNum, required this.curNum});
+  String course = '';
+  Solve({super.key, required this.quizKey, required this.isSolved, required this.quizNum, required this.curNum, required this.course});
 
   @override
   State<Solve> createState() => _SolveState();
@@ -48,6 +50,60 @@ class _SolveState extends State<Solve> {
 
     final quizViewModel = Provider.of<QuizViewModel>(context, listen: true);
 
+    Future<void> store() async{
+
+      for(int i=0;i<candidates.length;i++){
+        //print("candidates[i].quizNum : ${candidates[i].quizNum}");
+        if(candidates[i].quizNum < 10000){
+          quizViewModel.quizQuestions[candidates[i].quizNum] = candidates[i];
+        }
+        else{
+          //  print("candidates[i].quizNum : ${candidates[i].quizNum}");
+          int index = candidates[i].quizNum - 10000;
+          quizViewModel.quizQuestions[index] = candidates[i];
+          //print("candidates[i].quizNum : ${candidates[i].quizNum}");
+        }
+       // print("quizQuestions${i} 진행완료?: ${quizViewModel.quizQuestions[candidates[i].quizNum].isSolved}");
+      }
+
+      await quizViewModel.updateQuiz(
+        widget.quizKey,
+        quizViewModel.quizQuestions,
+      );
+
+      // 저장 완료 알림
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('저장이 완료되었습니다'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+    }
+    bool _done(){
+      idx = idx + 1;
+      print("Heool");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('저장 및 재시작'),
+            content: Text('저장하고 나가시겠습니까?'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('저장하고 나가기'),
+                onPressed: () async {
+                  await store();
+                  Navigator.pop(context); // Dialog 닫기
+                  Navigator.pop(context); // 현재 화면 닫기 / 이전 화면으로 돌아가기
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return true;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) async{ // 나중에 호출됨.
       //print("count");
       if(count == 0) {
@@ -65,6 +121,26 @@ class _SolveState extends State<Solve> {
       }
         cards = candidates.map(ExampleCard.new).toList();
         print("카드 길이 : ${cards.length}");
+        if(cards.length == 0){
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('경고'),
+                content: Text('카드가 하나도 없습니다.'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('확인'),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // 경고창 닫기
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+          Navigator.of(context).pop();
+        }
       }
     });
 
@@ -106,7 +182,8 @@ class _SolveState extends State<Solve> {
                 color: Colors.white,
                 onPressed: () {
                   controller.swipeTop();
-                  candidates[idx-1].quizNum += 1000;
+                  print("idx : $idx");
+                  candidates[idx-1].quizNum += 10000;
                   //여기 만들어야함
                 },
               ),
@@ -179,30 +256,8 @@ class _SolveState extends State<Solve> {
                   ),
                   TextButton( // 저장
                     onPressed: () async{
-
-                      for(int i=0;i<candidates.length;i++){
-                        if(candidates[i].quizNum < 1000)
-                        quizViewModel.quizQuestions[candidates[i].quizNum] = candidates[i];
-                        else{
-                          quizViewModel.quizQuestions[candidates[i].quizNum- 1000] = candidates[i];
-                        }
-                        print("quizQuestions${i} 진행완료?: ${quizViewModel.quizQuestions[candidates[i].quizNum].isSolved}");
-                      }
-
-                      await quizViewModel.updateQuiz(
-                        widget.quizKey,
-                        quizViewModel.quizQuestions,
-                      );
-
-                      // 저장 완료 알림
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('저장이 완료되었습니다'),
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
-
-                    },
+                      await store();
+                      },
                     child: Container(
                         width: 60,
                         height: 60,
@@ -222,43 +277,12 @@ class _SolveState extends State<Solve> {
     );
   }
 
-  bool _done(){
-    idx = idx + 1;
-    print("Heool");
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('저장 및 재시작'),
-          content: Text('저장하고 처음부터 다시 시작하시겠습니까?'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('재시작'),
-              onPressed: () {
-                // 저장 로직 추가
-                Navigator.of(context).pop(); // Dialog 닫기
-
-                // 처음부터 다시 시작하는 로직 추가
-              },
-            ),
-            TextButton(
-              child: Text('저장하고 나가기'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Dialog 닫기
-                Navigator.of(context).pop(); // 현재 화면 닫기 / 이전 화면으로 돌아가기
-              },
-            ),
-          ],
-        );
-      },
-    );
-    return true;
-  }
   bool _onSwipe(
     int previousIndex,
     int? currentIndex,
     CardSwiperDirection direction,
   ) {
+
     debugPrint(
       'The card $previousIndex was swiped to the ${direction.name}. Now the card $currentIndex is on top',
     );
@@ -273,6 +297,12 @@ class _SolveState extends State<Solve> {
           idx = idx + 1;
        // }
       });
+    }else{
+      if(direction == CardSwiperDirection.right){
+        candidates[idx-1].isSolved = true;
+      } else if(direction == CardSwiperDirection.left){
+        candidates[idx-1].isSolved = false;
+      }
     }
     return true;
   }
