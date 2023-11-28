@@ -13,9 +13,9 @@ import 'quiz_creator.dart';
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
-void main() {
-  runApp(MyApp());
-}
+// void main() {
+//   runApp(MyApp());
+// }
 
 class FileSelector {
   Future<File?> pickDocument(BuildContext context) async {
@@ -171,15 +171,17 @@ class _QuizScreenState extends State<QuizFolderScreen> {
               ),
             ),
           ),
-          body: FoldersScreen(widget.myStudyInfo.roomKey),
+          body: FoldersScreen(widget.myStudyInfo.roomKey, widget.myStudyInfo),
         );
       }
     );
   }
 }
+
 class FoldersScreen extends StatefulWidget {
   int roomkey;
-  FoldersScreen(this.roomkey, {
+  MyStudyInfo myStudyInfo;
+  FoldersScreen(this.roomkey, this.myStudyInfo, {
     Key? key,
   }) : super(key: key);
 
@@ -188,10 +190,10 @@ class FoldersScreen extends StatefulWidget {
 }
 
 class _FoldersScreenState extends State<FoldersScreen> {
-  List<StudyQuizListDto> folders = [];
+  List<StudyQuizListDto> folders = []; // 폴더
   FileSelector? fileSelector;
 
-  final Map<String, List<String>> folderDocuments = {};
+  final Map<String, List<String>> folderDocuments = {}; // 폴더 문서
   void _showDocumentList(List<String> users, int folderKey, String folderName, StudyQuizViewModel quizViewModel, String leader) {
     showDialog(
       context: context,
@@ -290,17 +292,26 @@ class _FoldersScreenState extends State<FoldersScreen> {
                             fileSelector ??= FileSelector();
                             File? file = await fileSelector?.pickDocument(context);
                             if (file != null) {
-                              await quizViewModel.enrollFile(
+                              String response = await quizViewModel.enrollFile(
                                   widget.roomkey, folder.folderKey,
                                   Provider.of<UserProfileViewModel>(context, listen: false).nickName,
                                   file);
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('문서 등록이 완료되었습니다.'),
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
+                              print("$response");
+                              if(response == 'already enroll'){
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('폴더에 이미 문서가 등록되어 있습니다.'),
+                                    duration: Duration(seconds: 2),
+                                  ),
+                                );
+                              } else if(response == 'ok') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('문서 등록이 완료되었습니다.'),
+                                    duration: Duration(seconds: 2),
+                                  ),
+                                );
+                              }
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -334,7 +345,7 @@ class _FoldersScreenState extends State<FoldersScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => QuizCreator(myStudyInfo)),
+                                  builder: (context) => QuizCreator(widget.myStudyInfo,folder.folderName)),
                             );
                           },
                           style: OutlinedButton.styleFrom(
