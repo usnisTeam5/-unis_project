@@ -351,8 +351,9 @@ class _SolveState extends State<Solve> {
 
 class ExampleCard extends StatelessWidget {
   final QuizDto candidate;
+  //late final FlipCardController con1;// = FlipCardController();
 
-  const ExampleCard(
+  ExampleCard(
     this.candidate, {
     Key? key,
   }) : super(key: key);
@@ -364,6 +365,7 @@ class ExampleCard extends StatelessWidget {
     //controller.flipcard();
 
     return FlipCard(
+      key: UniqueKey(),
       animationDuration: Duration(milliseconds: 200),
       rotateSide: RotateSide.right,
       onTapFlipping: true,

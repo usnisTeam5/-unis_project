@@ -325,6 +325,7 @@ class ExampleCard extends StatelessWidget {
     //controller.flipcard();
 
     return FlipCard(
+      key: UniqueKey(),
       animationDuration: Duration(milliseconds: 200),
       rotateSide: RotateSide.right,
       onTapFlipping: true,
