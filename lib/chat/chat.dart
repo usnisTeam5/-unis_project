@@ -211,7 +211,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   milliseconds: 500)); // Adjust the delay duration as needed
               await chatModel.refreshQaMessages(widget.qaKey, nickname, kcount, context);
               kcount =1;
-              if(chatModel.checker) {
+              if(chatModel.checker) { // 응답이 와서 미답 -> 진행으로 바뀔 때.
                 Navigator.of(context).pop();
                 Navigator.push(
                   context,

@@ -341,12 +341,36 @@ class _FoldersScreenState extends State<FoldersScreen> {
                         ),
                         SizedBox(width: 30,),
                         OutlinedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => QuizCreator(widget.myStudyInfo,folder.folderName)),
-                            );
+                          onPressed: () async {
+                            List<String> users = await quizViewModel.getEnrollUserList(widget.roomkey, folder.folderKey);
+                            if (users.isEmpty) {
+                              // 사용자 목록이 비어 있을 경우 경고창 표시
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('알림'),
+                                    content: Text('문서를 먼저 등록해주세요.'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop(); // 경고창 닫기
+                                        },
+                                        child: Text('확인'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        QuizCreator(widget.myStudyInfo,
+                                            folder.folderName, folder.folderKey)),
+                              );
+                            }
                           },
                           style: OutlinedButton.styleFrom(
                             padding: EdgeInsets.symmetric(horizontal: 30),

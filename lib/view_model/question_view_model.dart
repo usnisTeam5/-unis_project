@@ -180,7 +180,7 @@ class QaViewModel extends ChangeNotifier {
           // _friendProfileImage = await QaService.getProfileImage(_friendNickname);
         }
       }
-      if(temp.isNotEmpty && k == 1) {
+      if(temp.isNotEmpty && k == 1) { // 비어있지 않은 경우
         qaMessages.addAll(temp); // message에  추가함.
         notifyListeners();
       }

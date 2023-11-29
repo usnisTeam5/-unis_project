@@ -126,7 +126,23 @@ class _PostSettingsState extends State<PostSettings> {
                   children: [
                     Text('과목 선택', style: TextStyle(fontSize: 18, fontFamily: 'Bold', color: Colors.grey[600])),
                     selectedSubject != null
-                        ? Text(selectedSubject!, style: TextStyle(fontSize: 16))
+                        ? TextButton(
+                      onPressed: () async {
+                        final result = await Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SubjectSelector()),
+                        );
+                        if (result != null && result is String) {
+                          setState(() {
+                            selectedSubject = result;
+                          });
+                        }
+                      },
+                      child:
+                      Text(selectedSubject!,
+                         style: TextStyle(fontSize: 16, fontFamily: 'bold',)
+                      ),
+                    )
                         : IconButton(
                       onPressed: () async {
                         final result = await Navigator.push(

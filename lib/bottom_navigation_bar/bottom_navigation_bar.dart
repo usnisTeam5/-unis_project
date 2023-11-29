@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:unis_project/view_model/alram_view_model.dart';
 import 'package:unis_project/view_model/login_result_view_model.dart';
 import 'package:unis_project/view_model/user_profile_info_view_model.dart';
+import '../chat/chat.dart';
 import '../css/css.dart';
 import 'package:unis_project/find_study/find_study.dart';
 import 'package:unis_project/my_quiz/my_quiz.dart';
@@ -51,17 +53,30 @@ class HomeController {
   }
 }
 
+
 class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
+
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   final HomeController _controller = HomeController(); // HomeController 인스턴스 생성
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _isAlarmActive = true; // 알람 루프를 컨트롤하는 플래그
+  int count =0;
+
+  @override
+  void dispose() {
+    _isAlarmActive = false; // 알람 루프 중지
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
+
+
     final double width = min(MediaQuery.of(context).size.width,500.0);
     final double height = MediaQuery.of(context).size.height;
     double iconSize = width * 0.10; // 아이콘 크기 설정
@@ -73,6 +88,90 @@ class _MyHomePageState extends State<MyHomePage> {
    // print(key);
     print(nickname);
 
+    void startAlram() async{
+      final alarmViewModel  = Provider.of<AlarmViewModel>(context, listen: false);
+
+      OverlayEntry? overlayEntry;
+
+      while (_isAlarmActive) {
+        await Future.delayed(Duration(seconds: 5));
+        await alarmViewModel.fetchQaAlarms(nickname!);
+        print("알람을 5초에 한 번씩 체크합니다.");
+        if (alarmViewModel.qaAlarms.isNotEmpty) {
+          // OverlayEntry 객체를 생성합니다.
+          print("알람이 왔습니다!!");
+          overlayEntry = OverlayEntry(
+            builder: (context) => Positioned(
+              top: MediaQuery.of(context).padding.top + 5.0,
+              right: 0.0,
+              left: 0.0,
+              child: Material(
+                elevation: 10.0,
+                child: Container(
+                  padding: EdgeInsets.only(left: 5,right: 5),
+                  margin: EdgeInsets.only(left: 10,right: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20), // 모서리 둥글게 설정
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                        offset: Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      ' \"${alarmViewModel.qaAlarms[0].course} \" 답변이 왔습니다',
+                      style: TextStyle(color: Colors.grey[800]! ,fontFamily: 'Bold' ),
+                      overflow: TextOverflow.ellipsis, // 넘치면 ...으로 표시
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.close, color: Colors.black),
+                      onPressed: () {
+                        // 경고창을 닫습니다.
+                        overlayEntry?.remove();
+                        overlayEntry = null; // 상태를 다시 초기화합니다.
+                      },
+                    ),
+                    onTap: () {
+                      // 클릭 시 수행할 작업을 정의합니다. 예를 들어 새로운 화면으로 이동하거나,
+                      // 사용자에게 알림 내용을 보여주는 화면을 표시할 수 있습니다.
+                      overlayEntry?.remove();
+                      overlayEntry = null;
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ChatScreen(qaKey: alarmViewModel.qaAlarms[0].qaKey, forAns: false, course: alarmViewModel.qaAlarms[0].course,)
+                          )
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          );
+
+          // Overlay에 생성한 OverlayEntry를 삽입합니다.
+          Overlay.of(context)?.insert(overlayEntry!);
+
+          // 경고창을 일정 시간 후에 자동으로 닫기 원하는 경우 아래 코드를 사용합니다.
+          await Future.delayed(Duration(seconds: 20));
+          overlayEntry?.remove();
+        }
+      }
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (count == 0) {
+        print("카운트는 이제  1 입니다");
+        count ++;
+        startAlram();
+      }}
+      );
 
     return WillPopScope(
       onWillPop: () async {

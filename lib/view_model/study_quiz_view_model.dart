@@ -6,13 +6,19 @@ import '../models/study_quiz_model.dart';
 class StudyQuizViewModel with ChangeNotifier {
   final StudyApiService _apiService = StudyApiService();
   bool _isLoading = false;
+  bool making = false;
   List<StudyQuizListDto> folderList = [];
-
+  List<QuizDto> quizMade = [];
   // 로딩 상태 getter
   bool get isLoading => _isLoading;
 
   // 로딩 상태 setter
   void _setLoading(bool loading) {
+    _isLoading = loading;
+    notifyListeners();
+  }
+  void _setLoadingQuizMaking(bool loading) {
+    making = loading;
     _isLoading = loading;
     notifyListeners();
   }
@@ -96,16 +102,16 @@ class StudyQuizViewModel with ChangeNotifier {
   }
 
   // 퀴즈 생성
-  Future<List<QuizDto>> getQuiz(StudyQuizInfoDto info) async {
-    _setLoading(true);
+  Future<void> getQuiz(StudyQuizInfoDto info) async {
+    _setLoadingQuizMaking(true);
     try {
-      var quizzes = await _apiService.getQuiz(info);
-      _setLoading(false);
-      return quizzes;
+      quizMade = await _apiService.getQuiz(info);
+      _setLoadingQuizMaking(false);
+      return;
     } catch (e) {
       // 에러 처리
       print('Error getting quiz: $e');
-      _setLoading(false);
+      _setLoadingQuizMaking(false);
       throw e;
     }
   }

@@ -94,10 +94,10 @@ class StudyApiService {
     );
 
     // 필요한 헤더를 추가합니다.
-    request.headers['Content-Type'] = 'application/json';
+   request.headers['Content-Type'] = 'application/json';
 
     // 요청 본문에 데이터를 추가합니다.
-    //request.sink.add(utf8.encode(jsonEncode(info.toJson())));
+    request.sink.add(utf8.encode(jsonEncode(info.toJson())));
     request.sink.close();
 
     // 요청을 보냅니다.
@@ -140,6 +140,14 @@ class StudyQuizInfoDto {
   final int quizNum;
 
   StudyQuizInfoDto({required this.roomKey, required this.folderKey, required this.quizNum});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'roomKey': roomKey,
+      'folderKey': folderKey,
+      'quizNum': quizNum,
+    };
+  }
 }
 
 // QuizDto 모델( 서버가 보내는 값) // 퀴즈를 생성해서 받아올 때
