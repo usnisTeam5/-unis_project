@@ -72,7 +72,7 @@ class _QuizScreenState extends State<QuizCreator> {
 
           final user = Provider.of<UserProfileViewModel>(context,listen:false);
           final quizViewModel = Provider.of<QuizViewModel>(context,listen: true);
-          final studyQuizViewModel = Provider.of<StudyQuizViewModel>(context,listen: false);
+          final studyQuizViewModel = Provider.of<StudyQuizViewModel>(context,listen: true);
 
           WidgetsBinding.instance.addPostFrameCallback((_) async{ // 나중에 호출됨.
             // context를 사용하여 UserProfileViewModel에 접근
@@ -132,16 +132,17 @@ class _QuizScreenState extends State<QuizCreator> {
               ],
             ),
           ),
-          bottomNavigationBar:  Container(
+          bottomNavigationBar:
+          Container(
             height: 60,
             decoration: BoxDecoration(
-              gradient: MainGradient(),
+              gradient: (!(studyQuizViewModel.making)) ? MainGradient() : null,
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
                 borderRadius: BorderRadius.circular(16.0),
-                onTap: () async{
+                onTap: (!(studyQuizViewModel.making)) ? () async{
                   //quizViewModel.
 
                   if(quizViewModel.folderList.isEmpty){
@@ -168,13 +169,14 @@ class _QuizScreenState extends State<QuizCreator> {
                             answer: studyQuizViewModel.quizMade[i].answer,
                             isSolved: false));
                   }
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
                             Solve(
-                                quizKey: selectedfolder.quizKey,
-                                quizNum: selectedQuestionCount,
+                                quizKey: selectedfolder!.quizKey,
+                                curNum: selectedQuestionCount,
                                 course: widget.myStudyInfo.course,
                                 candidates: temp)
                     ),
@@ -183,7 +185,7 @@ class _QuizScreenState extends State<QuizCreator> {
                   print('선택된 개인 폴더: ${selectedfolder?.quizName}');
                   print('선택된 문제 유형: ${selectedQuestionType.value}');
                   print('선택된 문제 수: ${selectedQuestionCount}');
-                }, // 생성 로직 넣기
+                } : null, // 생성 로직 넣기
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12.0),

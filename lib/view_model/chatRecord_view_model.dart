@@ -34,6 +34,8 @@ class ChatListViewModel with ChangeNotifier {
       isLoading = false; // 로딩 완료
     }
   }
-
+  void notify(){
+    notifyListeners();
+  }
 // ViewModel 내 다른 메서드들...
 }

@@ -373,6 +373,7 @@ class ExampleCard extends StatelessWidget {
       frontWidget: Container(
         // 앞면
         clipBehavior: Clip.antiAlias,
+        padding: EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(40)),
           color: Colors.white,

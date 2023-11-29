@@ -7,6 +7,7 @@ import 'package:flutter_flip_card/flutter_flip_card.dart';
 import 'dart:math';
 
 import '../models/quiz_model.dart';
+import '../my_quiz/quiz_folder.dart';
 import '../view_model/quiz_view_model.dart';
 
 class Solve extends StatefulWidget {
@@ -42,20 +43,6 @@ class _SolveState extends State<Solve> {
     final quizViewModel = Provider.of<QuizViewModel>(context, listen: true);
 
     Future<void> store() async{
-
-      // for(int i=0;i<candidates.length;i++){
-      //   //print("candidates[i].quizNum : ${candidates[i].quizNum}");
-      //   if(candidates[i].quizNum < 10000){
-      //     quizViewModel.quizQuestions[candidates[i].quizNum] = candidates[i];
-      //   }
-      //   else{
-      //     //  print("candidates[i].quizNum : ${candidates[i].quizNum}");
-      //     int index = candidates[i].quizNum - 10000;
-      //     quizViewModel.quizQuestions[index] = candidates[i];
-      //     //print("candidates[i].quizNum : ${candidates[i].quizNum}");
-      //   }
-      //   // print("quizQuestions${i} 진행완료?: ${quizViewModel.quizQuestions[candidates[i].quizNum].isSolved}");
-      // }
 
       await quizViewModel.addQuiz(
         widget.quizKey,
@@ -94,7 +81,15 @@ class _SolveState extends State<Solve> {
                 child: Text('퀴즈 풀러가기'),
                 onPressed: () async {
                   await store();
-
+                  Navigator.pop(context); // Dialog 닫기
+                  Navigator.pop(context); // 퀴즈 나가기
+                  Navigator.pop(context); // 퀴즈 생성에서 나가기
+                  Navigator.pop(context); // 퀴즈 생성에서 나가기
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => QuizFolderScreen(widget.course)),
+                  );
                 },
               ),
             ],
@@ -106,8 +101,11 @@ class _SolveState extends State<Solve> {
     WidgetsBinding.instance.addPostFrameCallback((_) async{ // 나중에 호출됨.
       print("count !!!");
       if(count == 0) {
-        count ++;
+        setState(() {
+          count ++;
+        });
         print("count: ${count}");
+        candidates = widget.candidates;
         if(candidates.length == 0){
           Navigator.of(context).pop();
           showDialog(
@@ -231,7 +229,7 @@ class _SolveState extends State<Solve> {
                     onPressed: (){
                       controller.undo();
                       print("idx : $idx, 문제: ${candidates[idx-1].question}");
-                      candidates[idx-1].isSolved = widget.isSolved;
+                      candidates[idx-1].isSolved = false;
                       if(candidates[idx-1].quizNum > 1000) candidates[idx-1].quizNum - 1000;
                     },
                     child: Container(
@@ -335,6 +333,7 @@ class ExampleCard extends StatelessWidget {
       controller: con1,
       frontWidget: Container(
         // 앞면
+        padding: EdgeInsets.symmetric(horizontal: 10),
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(40)),

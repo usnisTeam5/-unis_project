@@ -12,6 +12,7 @@ import '../models/alram_model.dart';
 class AlarmViewModel with ChangeNotifier {
   List<QaAlarmDto> _qaAlarms = [];
   bool _isLoading = false;
+  List<QaAlarmDto> qaAlarmsStore = [];
 
   List<QaAlarmDto> get qaAlarms => _qaAlarms;
   bool get isLoading => _isLoading;
@@ -26,9 +27,10 @@ class AlarmViewModel with ChangeNotifier {
     setLoading(true);
     try {
       _qaAlarms = await getQaAlarm(nickname);
-      // if(_qaAlarms.isNotEmpty) { // 비어있지 않은 경우
-      //   notifyListeners();
-      // }
+
+      if(_qaAlarms.isNotEmpty) { // 비어있지 않은 경우
+        qaAlarmsStore.addAll(_qaAlarms);
+      }
     } catch (e) {
       print(e); // Handle any errors here
     }

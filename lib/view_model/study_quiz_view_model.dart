@@ -106,6 +106,7 @@ class StudyQuizViewModel with ChangeNotifier {
     _setLoadingQuizMaking(true);
     try {
       quizMade = await _apiService.getQuiz(info);
+      print("${quizMade[0].answer}");
       _setLoadingQuizMaking(false);
       return;
     } catch (e) {

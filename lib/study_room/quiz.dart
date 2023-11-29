@@ -249,7 +249,8 @@ class _FoldersScreenState extends State<FoldersScreen> {
     final quizViewModel = Provider.of<StudyQuizViewModel>(context, listen: true);
     folders = quizViewModel.folderList;
     return SingleChildScrollView(
-      child: Column(
+      child: (folders.isNotEmpty)
+          ? Column(
         children: [
           SizedBox(height: 20,),
           ...folders.map((folder) {
@@ -417,7 +418,7 @@ class _FoldersScreenState extends State<FoldersScreen> {
             );
           }).toList(),
         ],
-      ),
+      ) :  Center(child: Container( padding: EdgeInsets.only(top: 20), child: Text("폴더를 생성해주세요", style: TextStyle(fontSize: 17,fontFamily: 'Bold')))),
     );
   }
 }

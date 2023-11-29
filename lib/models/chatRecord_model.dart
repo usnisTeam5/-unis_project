@@ -5,7 +5,7 @@ import 'url.dart';
 
 class ChatListDto {
   final String nickname; // 상대방 닉네임
-  final String time; // 메세지 날짜
+  String time; // 메세지 날짜
   final String? msg; // 가장 마지막에 나눴던 대화, 이미지일 경우 null
   final bool alarm; // 상대방한테서 온 메세지가 있는지 여부
 
@@ -20,7 +20,7 @@ class ChatListDto {
     return ChatListDto(
       nickname: json['nickname'],
       time: json['time'],
-      msg: json['msg'],
+      msg: json['msg'] ?? "이미지",
       alarm: json['alarm'],
     );
   }
@@ -36,8 +36,11 @@ class ChatService {
     List<ChatListDto> chatList = [];
 
     try {
-      final response = await http.get(url);
-
+      final response = await http.get(
+          url,
+        headers: {'Content-Type': 'application/json'},
+      );
+      print(response.body);
       if (response.statusCode == 200) {
         // UTF-8로 디코드한 후 JSON으로 파싱합니다.
         Iterable l = json.decode(utf8.decode(response.bodyBytes));

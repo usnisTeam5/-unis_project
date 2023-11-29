@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:unis_project/view_model/user_profile_info_view_model.dart';
 import '../css/css.dart';
+import '../models/study_info.dart';
 import '../subject_selector/subject_selector.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';
 
 import '../view_model/find_study_view_model.dart';
 import '../models/find_study.dart';
+import '../view_model/study_info_view_model.dart';
 
 
 
@@ -163,7 +165,27 @@ class _CreateStudyState extends State<CreateStudy> {
                     );
                     return;
                   }
+                  //
 
+                  List<MyStudyInfo> myStudyList =
+                      Provider.of<MyStudyInfoViewModel>(context, listen: false)
+                          .MyStudyInfoList;
+                  bool alreadyJoined = false;
+
+                  for (int i = 0; i < myStudyList.length; i++) {
+                    if (myStudyList[i].course == subject) {
+                      alreadyJoined = true;
+                      break;
+                    }
+                  }
+
+                  if (alreadyJoined) {
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text('해당 과목 스터디에 이미 가입했습니다.')));
+                    return;
+                  }
+
+                  //
                   bool isOpen = false;
                   if (passwordController.text.isEmpty)
                     isOpen = true;
