@@ -94,7 +94,7 @@ class _QuizScreenState extends State<QuizFolderScreen> {
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         centerTitle: true,  // Title을 중앙에 배치
-        title: GradientText(width: width, text: 'Quiz', tSize: 0.06, tStyle: 'Bold'),
+        title: GradientText(width: width, text: widget.course, tSize: 0.06, tStyle: 'Bold'),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1.0),  // Set the height of the underline
           child: Container(

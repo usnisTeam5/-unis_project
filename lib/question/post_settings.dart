@@ -159,29 +159,29 @@ class _PostSettingsState extends State<PostSettings> {
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('찜 (선택)', style: TextStyle(fontSize: 18, fontFamily: 'Bold', color: Colors.grey[600])),
-                    selectedFriend != null
-                        ? Text(selectedFriend!, style: TextStyle(fontSize: 16))
-                        : IconButton(
-                      onPressed: () async {
-                        final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => MyListScreen()),
-                        );
-                        if (result != null && result is String) {
-                          setState(() {
-                            selectedFriend = result;
-                          });
-                        }
-                      },
-                      icon: Icon(Icons.keyboard_arrow_right),
-                    ),
-                  ],
-                ),
+                // SizedBox(height: 16),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     Text('찜 (선택)', style: TextStyle(fontSize: 18, fontFamily: 'Bold', color: Colors.grey[600])),
+                //     selectedFriend != null
+                //         ? Text(selectedFriend!, style: TextStyle(fontSize: 16))
+                //         : IconButton(
+                //       onPressed: () async {
+                //         final result = await Navigator.push(
+                //           context,
+                //           MaterialPageRoute(builder: (context) => MyListScreen()),
+                //         );
+                //         if (result != null && result is String) {
+                //           setState(() {
+                //             selectedFriend = result;
+                //           });
+                //         }
+                //       },
+                //       icon: Icon(Icons.keyboard_arrow_right),
+                //     ),
+                //   ],
+                // ),
                 SizedBox(height: 24),
                 Text('질문 유형 선택', style: TextStyle(fontSize: 18, fontFamily: 'Bold', color: Colors.grey[600])),
                 SizedBox(height: 12),
