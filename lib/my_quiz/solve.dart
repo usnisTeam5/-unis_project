@@ -373,7 +373,7 @@ class ExampleCard extends StatelessWidget {
       frontWidget: Container(
         // 앞면
         clipBehavior: Clip.antiAlias,
-        padding: EdgeInsets.symmetric(horizontal: 10),
+        padding: EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(40)),
           color: Colors.white,
@@ -399,10 +399,11 @@ class ExampleCard extends StatelessWidget {
       backWidget:
       Container(
         // 뒷면
+        padding: EdgeInsets.symmetric(horizontal: 30),
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(40)),
-          color: Colors.white,
+          color: Colors.blue[100],
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.2),

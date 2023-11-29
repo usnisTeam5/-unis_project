@@ -121,7 +121,6 @@ class UserProfileViewModel with ChangeNotifier {
     }
   }
 
-
   Future<void> getPoint(String nickname) async {
     try {
       _profileInfo!.point = await _profileInfo!.getUserPoints(nickName);

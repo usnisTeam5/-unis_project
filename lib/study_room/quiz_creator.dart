@@ -118,6 +118,7 @@ class _QuizScreenState extends State<QuizCreator> {
                 CircularProgressIndicator(), // 로딩 인디케이터
                 SizedBox(height: 10), // 텍스트와 인디케이터 사이의 간격
                 Text("퀴즈를 만들고 있어요"), // 상태를 설명하는 텍스트
+                Text("20~30초가 소요됩니다."),
               ],
             ),
           )

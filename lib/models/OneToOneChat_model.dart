@@ -139,6 +139,7 @@ class OneToOneChatModel {
     final response = await http.get(
       Uri.parse('$BASE_URL/chat?nickname1=$myNickname&nickname2=$friendNickname'),
     );
+    print(response.body);
     if (response.statusCode == 200) {
 
       final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
