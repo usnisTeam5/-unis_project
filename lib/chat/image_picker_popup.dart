@@ -3,29 +3,29 @@
  */
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
+//import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'dart:io';
 
-Future<File> compressImage(File file) async {
-  final filePath = file.absolute.path;
-
-  // 새 파일 경로 생성 (원본 파일명 뒤에 _compressed 추가)
-  final lastIndex = filePath.lastIndexOf(RegExp(r'.png|.jpg'));
-  final splitted = filePath.substring(0, lastIndex);
-  final outPath = "${splitted}_compressed${filePath.substring(lastIndex)}";
-
-  // 이미지 압축
-  var result = await FlutterImageCompress.compressAndGetFile(
-    filePath,
-    outPath,
-    quality: 88, // 품질 설정 (0-100)
-    // 원하는 크기로 조절
-    minWidth: 1000,
-    minHeight: 1000,
-  );
-
-  return result!;
-}
+// Future<File> compressImage(File file) async {
+//   final filePath = file.absolute.path;
+//
+//   // 새 파일 경로 생성 (원본 파일명 뒤에 _compressed 추가)
+//   final lastIndex = filePath.lastIndexOf(RegExp(r'.png|.jpg'));
+//   final splitted = filePath.substring(0, lastIndex);
+//   final outPath = "${splitted}_compressed${filePath.substring(lastIndex)}";
+//
+//   // 이미지 압축
+//   var result = await FlutterImageCompress.compressAndGetFile(
+//     filePath,
+//     outPath,
+//     quality: 88, // 품질 설정 (0-100)
+//     // 원하는 크기로 조절
+//     minWidth: 1000,
+//     minHeight: 1000,
+//   );
+//
+//   return result!;
+// }
 
 class ImagePickerPopup extends StatelessWidget {
   final Function(File?) onImagePicked; // XFile 받음
@@ -37,7 +37,7 @@ class ImagePickerPopup extends StatelessWidget {
     final pickedFile = await ImagePicker().pickImage(source: source); // 파일을 받아옴
     if (pickedFile != null) {
       File originalImage = File(pickedFile.path);
-      String extension = pickedFile.path.split('.').last.toLowerCase();
+     // String extension = pickedFile.path.split('.').last.toLowerCase();
 
       // 확장자가 jpg 또는 jpeg인 경우에만 이미지 압축
       // if (extension == 'jpg' || extension == 'jpeg') {

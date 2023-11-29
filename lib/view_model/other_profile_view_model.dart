@@ -11,18 +11,7 @@ class UserProfileOtherViewModel extends ChangeNotifier {
   //
   String get myNickname => _myNickname;
 
-  // String get friendNickname => _friendNickname;
-  //
-  //
-  // void setUserNickname(String nickname) { // 내 닉네임 set
-  //   _userNickname = nickname;
-  //   notifyListeners();
-  // }
-  //
-  // void setFriendNickname(String friendNickname) { // 상대방 닉네임
-  //   _friendNickname = friendNickname;
-  //   notifyListeners();
-  // }
+  double review = 0.0;
 
   UserProfileInfoForShow? _profileInfo = UserProfileInfoForShow
       .defaultValues(); // _profileInfo를 null로 초기화
@@ -64,6 +53,7 @@ class UserProfileOtherViewModel extends ChangeNotifier {
       // _profileInfo를 UserProfileInfoForShow 클래스의 인스턴스로 초기
       _profileInfo = await UserProfileInfoForShow.fetchUserProfile(
           userNickname, friendNickname);
+      review = await  UserProfileInfoForShow.getUserReview(friendNickname);
       _myNickname = userNickname;
       _isLoading = false;
       notifyListeners();
@@ -128,6 +118,18 @@ class UserProfileOtherViewModel extends ChangeNotifier {
         throw Exception('Failed to update block status on server');
       }
     } catch (e) {
+      print('Error setting block: $e');
+    }
+  }
+
+  Future<void> getReivew(String nickname) async {
+    // 차단
+    try {
+      double response = await UserProfileInfoForShow.getUserReview(
+          nickname);
+        review = response;
+        notifyListeners(); // UI 업데이트를 위해 호출
+      } catch (e) {
       print('Error setting block: $e');
     }
   }

@@ -396,8 +396,7 @@ class ExampleCard extends StatelessWidget {
           ),
         ),
       ),
-      backWidget:
-      Container(
+      backWidget: Container(
         // 뒷면
         padding: EdgeInsets.symmetric(horizontal: 30),
         clipBehavior: Clip.antiAlias,

@@ -112,7 +112,7 @@ class OthersProfilePage extends StatelessWidget {
                       children: [
                         OthersProfileInfoSection(),
                         StatsSection(),
-                        SatisfactionAndReportSection(),
+                        SatisfactionAndReportSection(review: viewModel.review,),
                       ],
                     ),
                   ),
@@ -406,10 +406,15 @@ class _InteractionButtonState extends State<InteractionButton> {
 }
 
 class SatisfactionAndReportSection extends StatelessWidget {
+
+  final double review;
+
+  SatisfactionAndReportSection({required this.review});
+
   @override
   Widget build(BuildContext context) {
     double width = min(MediaQuery.of(context).size.width, 500.0);
-
+    String formattedValue = review.toStringAsFixed(1);
     return Container(
       padding: EdgeInsets.all(16.0),
       margin: EdgeInsets.all(16.0),
@@ -430,7 +435,7 @@ class SatisfactionAndReportSection extends StatelessWidget {
                     fontSize: width * 0.04),
               ),
               Text(
-                "5.0",
+                formattedValue,
                 style: TextStyle(
                     color: Color(0xFF678DBE),
                     fontFamily: 'Bold',

@@ -630,6 +630,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               await chatModel.sendQaMessageList(
                                   widget.qaKey, _messages);
                               await chatModel.solveQa(widget.qaKey);
+                              Provider.of<UserProfileViewModel>(context,listen: false).incrementAnswer();
                               await chatModel.fetchAllMsg(widget.qaKey, nickname);
                               setState(() {
                                 _time = chatModel.time;

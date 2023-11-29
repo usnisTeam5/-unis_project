@@ -64,12 +64,12 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
     final width = min(MediaQuery.of(context).size.width,500.0);
     final height = min(MediaQuery.of(context).size.height,700.0);
 
-    final quizViewModel = Provider.of<QuizViewModel>(context, listen: true);
+    final quizViewModel = Provider.of<QuizViewModel>(context, listen: false);
     //final user =  Provider.of<UserProfileViewModel>(context, listen: false);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async{ // 나중에 호출됨.
-      //print("count");
       if(count == 0) {
+       // print("count");
         count ++;
         print("count: ${count}");
         quizViewModel.fetchQuiz(widget.folder.quizKey);
@@ -78,9 +78,8 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
       }
     });
 
-    print("count :$count, quizViewModel.isLoading: ${quizViewModel.isLoading}");
+   // print("count :$count, quizViewModel.isLoading: ${quizViewModel.isLoading}");
     return Scaffold(
-
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.keyboard_arrow_left, size: 30,),
@@ -116,9 +115,7 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
         ),
 
       ),
-      body:(quizViewModel.isLoading || count == 0)
-          ?  Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
+      body:SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -128,7 +125,6 @@ class _EditQuizScreenState extends State<EditQuizScreen> {
                     ?  _buildQuestionField(i, quizViewModel.quizQuestions[i])
                     : Container(),
               SizedBox(height: 20.0),
-
             ],
           ),
         ),

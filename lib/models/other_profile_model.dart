@@ -127,6 +127,8 @@ class UserProfileInfoForShow {
       body: {'otherNickname': otherNickname},
     );
 
+    print(response.body);
+
     if (response.statusCode == 200) {
       return "ok";
 
@@ -163,4 +165,14 @@ class UserProfileInfoForShow {
     }
   }
 
+  static Future<double> getUserReview(String nickname) async { // 차단
+    final url = Uri.parse('$BASE_URL/user/qa/review?nickname=$nickname');
+    final response = await http.get(url);
+    print(response.body);
+    if (response.statusCode == 200) {
+      return double.parse(response.body);
+    } else {
+      throw Exception('Failed to getUserReview');
+    }
+  }
 }

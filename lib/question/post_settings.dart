@@ -318,6 +318,7 @@ class _PostSettingsState extends State<PostSettings> {
                       msg: widget.msg,
                     ));
                     user.minusPoint(user.nickName, postPrice!);
+                    user.incrementQuestion();
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
