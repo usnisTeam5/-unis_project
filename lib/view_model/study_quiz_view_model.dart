@@ -8,7 +8,7 @@ class StudyQuizViewModel with ChangeNotifier {
   bool _isLoading = false;
   bool making = false;
   List<StudyQuizListDto> folderList = [];
-  List<QuizDto> quizMade = [];
+  List<QuizDtoStudy> quizMade = [];
   // 로딩 상태 getter
   bool get isLoading => _isLoading;
 

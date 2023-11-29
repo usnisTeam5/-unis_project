@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:unis_project/models/study_info.dart';
-import 'package:unis_project/my_quiz/solve.dart';
+import 'package:unis_project/study_room/solve_for_add.dart';
 import 'package:unis_project/view_model/user_profile_info_view_model.dart';
 import '../css/css.dart';
 import 'dart:math';
@@ -158,6 +158,27 @@ class _QuizScreenState extends State<QuizCreator> {
                       roomKey: widget.myStudyInfo.roomKey,
                       folderKey: widget.folderKey,
                       quizNum: selectedQuestionCount));
+
+                  List<QuizDto> temp = [];
+                  for(int i=0;i< studyQuizViewModel.quizMade.length;i++){
+                    temp.add(
+                        QuizDto(
+                            quizNum: studyQuizViewModel.quizMade[i].quizNum,
+                            question: studyQuizViewModel.quizMade[i].question,
+                            answer: studyQuizViewModel.quizMade[i].answer,
+                            isSolved: false));
+                  }
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            Solve(
+                                quizKey: selectedfolder.quizKey,
+                                quizNum: selectedQuestionCount,
+                                course: widget.myStudyInfo.course,
+                                candidates: temp)
+                    ),
+                  );
 
                   print('선택된 개인 폴더: ${selectedfolder?.quizName}');
                   print('선택된 문제 유형: ${selectedQuestionType.value}');

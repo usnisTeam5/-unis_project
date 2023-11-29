@@ -152,7 +152,6 @@ class QuizService {
     }
   }
 
-
   // 퀴즈 종료
   Future<void> finishQuiz(int quizKey, int curNum) async {
     final url = Uri.parse('$BASE_URL/user/quiz/finish/$quizKey');
@@ -177,6 +176,29 @@ class QuizService {
       print(response.body); // 응답 본문 출력
     } else {
       throw Exception('Failed to delete quiz folder.');
+    }
+  }
+
+    // 퀴즈 챗 지피티한테 받아서 추가하는 로직
+  Future<void> addQuiz(int quizKey, List<QuizDto> quiz) async { // 퀴즈 키는 폴더, quiz는 퀴즈 내용
+
+    for (int i = quiz.length - 1; i >= 0; i--) { // 역순으로 순회하며 삭제
+      if (quiz[i].quizNum > 1000) {
+        quiz.removeAt(i);
+      }
+    }
+
+    final url = Uri.parse('$BASE_URL/study/quiz/add/$quizKey');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode(quiz.map((e) => e.toJson()).toList());
+
+    final response = await http.post(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      print('Quiz added successfully.');
+
+    } else {
+      throw Exception('Failed to add quiz: ${response.statusCode}');
     }
   }
 }

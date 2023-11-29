@@ -126,4 +126,21 @@ class QuizViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // 새로운 메서드: 서버에 퀴즈를 추가하는 함수
+  Future<void> addQuiz(int quizKey, List<QuizDto> quiz) async {
+    setLoading(true); // 로딩 상태를 true로 설정
+    try {
+      // QuizService의 addQuiz 함수를 사용하여 서버에 퀴즈 추가 요청
+      await _quizService.addQuiz(quizKey, quiz);
+
+      // 성공적으로 추가되면 사용자에게 알림을 보냄
+      // (예: 상태 업데이트, UI에 메시지 표시 등)
+    } catch (e) {
+      // 에러 발생 시 처리
+      print('Error adding quiz: $e');
+    } finally {
+      setLoading(false); // 로딩 상태를 false로 설정
+    }
+  }
 }

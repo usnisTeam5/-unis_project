@@ -86,7 +86,7 @@ class StudyApiService {
   }
 
   // 퀴즈 생성 메소드
-  Future<List<QuizDto>> getQuiz(StudyQuizInfoDto info) async {
+  Future<List<QuizDtoStudy>> getQuiz(StudyQuizInfoDto info) async {
     // StreamedRequest 객체를 생성하고, 메서드와 URI를 지정합니다.
     final request = http.StreamedRequest(
       'GET',
@@ -110,13 +110,12 @@ class StudyApiService {
     // 응답 처리
     if (response.statusCode == 200) {
       List jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
-      return jsonResponse.map((data) => QuizDto.fromJson(data)).toList();
+      return jsonResponse.map((data) => QuizDtoStudy.fromJson(data)).toList();
     } else {
       throw Exception('Failed to load quiz');
     }
   }
 }
-
 
 // StudyQuizListDto(폴더 목록을 가져올 때 사용 )
 class StudyQuizListDto {
@@ -151,15 +150,15 @@ class StudyQuizInfoDto {
 }
 
 // QuizDto 모델( 서버가 보내는 값) // 퀴즈를 생성해서 받아올 때
-class QuizDto {
+class QuizDtoStudy {
   final int quizNum;
   final String question;
   final String answer;
 
-  QuizDto({required this.quizNum, required this.question, required this.answer});
+  QuizDtoStudy({required this.quizNum, required this.question, required this.answer});
 
-  factory QuizDto.fromJson(Map<String, dynamic> json) {
-    return QuizDto(
+  factory QuizDtoStudy.fromJson(Map<String, dynamic> json) {
+    return QuizDtoStudy(
       quizNum: json['quizNum'],
       question: json['question'],
       answer: json['answer'],
