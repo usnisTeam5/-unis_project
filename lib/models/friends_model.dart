@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../models/url.dart'; // BASE_URL을 포함하는 파일을 임포트
 
@@ -58,7 +59,7 @@ class UserInfoMinimumDto {
   factory UserInfoMinimumDto.fromJson(Map<String, dynamic> json) {
     return UserInfoMinimumDto(
       nickname: json['nickname'],
-      image: json['image'],
+      image: json['image'] ?? base64Encode(File('image/unis.png').readAsBytesSync()),
     );
   }
 }
