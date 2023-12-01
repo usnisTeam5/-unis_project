@@ -155,6 +155,7 @@ class _QuizScreenState extends State<QuizCreator> {
                       ),
                     );
                     await quizViewModel.fetchMyQuiz(user.nickName, widget.myStudyInfo.course); //
+                    selectedfolder = quizViewModel.folderList[0];
                   }
                   await studyQuizViewModel.getQuiz(StudyQuizInfoDto(
                       roomKey: widget.myStudyInfo.roomKey,
