@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'url.dart'; // BASE_URL이 정의된 파일
@@ -196,6 +197,9 @@ class QaService {
         Uri.parse('$BASE_URL/user/profile/image?nickname=$nickname'));
 
     if (response.statusCode == 200) {
+      if(response.body == null){
+        return File('image/unis.png').readAsBytesSync();
+      }
       return base64Decode(response.body);
     } else {
       throw Exception('Failed to load profile image');

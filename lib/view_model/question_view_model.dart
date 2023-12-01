@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 //import 'dart:html';
 
 import 'package:flutter/foundation.dart';
@@ -217,7 +218,8 @@ class QaViewModel extends ChangeNotifier {
     try {
       _isLoading = true;
       notifyListeners(); // Hide loading indicator
-      _friendProfileImage = await QaService.getProfileImage(nickname);
+      Uint8List? temp = await QaService.getProfileImage(nickname);
+      _friendProfileImage = temp ??  File('image/unis.png').readAsBytesSync();
 
     } catch (e) {
       // Handle any errors here
