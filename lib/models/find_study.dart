@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'url.dart';
+import 'dart:io';
 
 class StudyInfoDto { // 스터디 찾기 들어갔을 때 필요
   int roomKey; // 스터디 고유키
@@ -187,7 +188,7 @@ class UserInfoMinimumDto { // 가입 스터디 입장 했을 때
   factory UserInfoMinimumDto.fromJson(Map<String, dynamic> json) {
     return UserInfoMinimumDto(
       nickname: json['nickname'],
-      image: json['image'],
+      image: json['image'] ?? base64Encode(File('image/unis.png').readAsBytesSync()),
     );
   }
 
