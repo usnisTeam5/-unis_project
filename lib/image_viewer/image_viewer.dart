@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import '../css/css.dart';
 
 class PhotoView extends StatefulWidget {
   final Uint8List photoData;
@@ -19,7 +20,28 @@ class _PhotoViewState extends State<PhotoView> {
     
     return Scaffold(
       appBar: AppBar(
-        title: Text('Photo Viewer'),
+        leading: IconButton(
+          icon: Icon(Icons.keyboard_arrow_left, size: 30,),
+
+          color: Colors.grey,
+          onPressed: () {
+            Navigator.pop(context);  // 로그인 화면으로 되돌아가기
+          },
+        ),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        centerTitle: true,  // Title을 중앙에 배치
+        title: GradientText(width: screenWidth, text: '사진', tSize: 0.06, tStyle: 'Bold'),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(1.0),  // Set the height of the underline
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: MainGradient(),
+            ),
+            height: 2.0,  // Set the thickness of the undedsrline
+          ),
+        ),
       ),
       body: Container(
         width: screenWidth,
