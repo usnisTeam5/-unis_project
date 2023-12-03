@@ -254,14 +254,15 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
                                   maxHeight: height * 0.5,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.lightBlue,
+                                  color:(message.type == 'img')
+                                     ? Colors.grey[200] :Colors.lightBlue,
                                   borderRadius: BorderRadius.circular(15),
-                                  image:
-                                  message.type == 'text' ? null :
-                                  DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: MemoryImage(byteImage),
-                                  ),
+                                  // image:
+                                  // message.type == 'text' ? null :
+                                  // DecorationImage(
+                                  //   fit: BoxFit.cover,
+                                  //   image: MemoryImage(byteImage),
+                                  // ),
                                 ),
                                 padding: const EdgeInsets.all(8.0),
                                 child: message.type == 'text'
@@ -271,17 +272,32 @@ class _PostQuestionPageState extends State<PostQuestionPage> {
                                   style: const TextStyle(
                                       color: Colors.white, fontFamily: 'Round'),
                                 )
-                                    : GestureDetector( // 사진인 경우
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              PhotoView(
-                                                photoData: byteImage,
-                                              ),
-                                        ));
-                                  },
-                                ),
+                                    : ClipRRect(
+                                  borderRadius:
+                                  BorderRadius.circular(
+                                      15),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .push(
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) =>
+                                                PhotoView(
+                                                  photoData:
+                                                  byteImage,
+                                                ),
+                                          ));
+                                    },
+                                    child: Image.memory(
+                                      byteImage,
+                                      width: width * 0.6,
+                                      height: height * 0.3,
+                                      fit: BoxFit.cover,
+                                      gaplessPlayback: true,
+                                    ),
+                                  ),
+                                )
                               ),
                             ],
                           ),

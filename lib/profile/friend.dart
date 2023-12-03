@@ -147,9 +147,9 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
                         child: TabBar(
                           controller: _tabController,
                           tabs: [
-                            Tab(child: gradientTabText(width, '찜', 0)),
-                            Tab(child: gradientTabText(width, '친구', 1)),
-                            Tab(child: gradientTabText(width, '차단', 2)),
+                            //Tab(child: gradientTabText(width, '찜', 0)),
+                            Tab(child: gradientTabText(width, '친구', 0)),
+                            Tab(child: gradientTabText(width, '차단', 1)),
                           ],
                           indicatorColor: Colors.white,
                           labelColor: Colors.white,
@@ -171,7 +171,7 @@ class _MyListScreenState extends State<MyListScreen> with SingleTickerProviderSt
                   child: TabBarView(
                     controller: _tabController,
                     children: [
-                      buildListView(friendsViewModel, '찜'),
+                      // buildListView(friendsViewModel, '찜'),
                       buildListView(friendsViewModel, '친구' ),
                       buildListView(friendsViewModel, '차단'),
                     ],

@@ -205,43 +205,43 @@ class _OthersProfileInfoSectionState extends State<OthersProfileInfoSection> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          children: [
-                            IconButton(
-                              padding: EdgeInsets.only(bottom: 0),
-                              constraints: BoxConstraints(),
-                              icon: Icon(
-                                viewModel.isPick
-                                    ? Icons.favorite_rounded
-                                    : Icons.favorite_border_rounded,
-                                color: viewModel.isBlock
-                                    ? Colors.grey
-                                    : (viewModel.isPick
-                                    ? Colors.red
-                                    : Colors.grey),
-                              ),
-                              onPressed: viewModel.isBlock
-                                  ? null
-                                  : () async {
-                                await viewModel.setPick(
-                                    viewModel.myNickname,
-                                    viewModel.nickname);
-                              },
-                            ),
-                            Container(
-                              child: Text(
-                                '찜',
-                                style: TextStyle(
-                                    fontSize: 11,
-                                    color: viewModel.isBlock
-                                        ? Colors.grey
-                                        : (viewModel.isPick
-                                        ? Colors.red
-                                        : Colors.grey)),
-                              ),
-                            ),
-                          ],
-                        ),
+                        // Column(
+                        //   children: [
+                        //     IconButton(
+                        //       padding: EdgeInsets.only(bottom: 0),
+                        //       constraints: BoxConstraints(),
+                        //       icon: Icon(
+                        //         viewModel.isPick
+                        //             ? Icons.favorite_rounded
+                        //             : Icons.favorite_border_rounded,
+                        //         color: viewModel.isBlock
+                        //             ? Colors.grey
+                        //             : (viewModel.isPick
+                        //             ? Colors.red
+                        //             : Colors.grey),
+                        //       ),
+                        //       onPressed: viewModel.isBlock
+                        //           ? null
+                        //           : () async {
+                        //         await viewModel.setPick(
+                        //             viewModel.myNickname,
+                        //             viewModel.nickname);
+                        //       },
+                        //     ),
+                        //     Container(
+                        //       child: Text(
+                        //         '찜',
+                        //         style: TextStyle(
+                        //             fontSize: 11,
+                        //             color: viewModel.isBlock
+                        //                 ? Colors.grey
+                        //                 : (viewModel.isPick
+                        //                 ? Colors.red
+                        //                 : Colors.grey)),
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
                         Column(
                           children: [
                             IconButton(
