@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
       while (_isAlarmActive) {
         await Future.delayed(Duration(seconds: 5));
         await alarmViewModel.fetchQaAlarms(nickname!);
-        //print("알람을 5초에 한 번씩 체크합니다.");
+        print("알람을 5초에 한 번씩 체크합니다.");
         if (alarmViewModel.qaAlarms.isNotEmpty) {
           // OverlayEntry 객체를 생성합니다.
           print("알람이 왔습니다!!");

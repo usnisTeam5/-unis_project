@@ -256,219 +256,225 @@ class _FindStudyScreenState extends State<FindStudyScreen>
             : Container(
                 padding: EdgeInsets.only(top: 10.0),
                 color: Colors.grey[200],
-                child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  itemCount: info.studyRoomlist.length,
-                  itemBuilder: (context, index) {
-                    final selectedStudy = info.studyRoomlist[index];
-                    return GestureDetector(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                              title: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    selectedStudy!.roomName,
-                                    style: TextStyle(
-                                        fontFamily: 'Bold', fontSize: 21, color: Colors.grey[600]),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text('그룹장: ${selectedStudy!.leader}',
-                                      style: TextStyle(
-                                          fontFamily: 'Bold',
-                                          fontSize: 15,
-                                          color: Colors.grey[600])),// 그룹장
-                                  SizedBox(height: 8.0),
-                                  Text('시작일: ${selectedStudy!.startDate}',
-                                      style: TextStyle(
-                                          fontFamily: 'Bold',
-                                          fontSize: 15,
-                                          color: Colors.grey[600])), // 시작일
-                                  SizedBox(height: 10.0),
-                                  Divider(
-                                    thickness: 1.3,
-                                  ),
-                                  SizedBox(height: 13.0),
-                                  Text(
-                                    '${selectedStudy!.studyIntroduction}',
-                                    style: TextStyle(
-                                        fontFamily: 'Bold',
-                                        fontSize: 14,
-                                        color: Colors.grey[600],
-                                        height: 1.2),
-                                    maxLines: 20,
-                                    overflow: TextOverflow.ellipsis,
-                                  ), // 소개글
-                                ],
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () async {
-                                    // 스터디 리더의 닉네임을 가져온다
-                                    String leaderNickname = await info.getLeader(selectedStudy.roomKey);
-
-                                    // 리더와 대화
-                                    if (leaderNickname.isNotEmpty) {
-                                      Navigator.push(context, MaterialPageRoute(
-                                          builder: (context) => OneToOneChatScreen(friendName: leaderNickname,)
-                                      ));
-                                    } else {
-                                      // 리더 정보를 가져오지 못한 경우 에러 메시지 표시
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text('스터디 리더 정보를 가져오는 데 실패했습니다.')));
-                                    }
-                                  },
-                                  child: Text('쪽지 보내기',
-                                      style: TextStyle(
-                                          fontFamily: 'Bold',
-                                          fontSize: 14,
-                                          color: Color(0xFF3D6094))),
-                                ), // 쪽지보내기
-                                TextButton(
-                                  onPressed: () {
-                                    if (!(selectedStudy.isOpen)) {
-                                      // 비밀번호가 있는 경우, 팝업을 보여준다
-                                      _showPasswordDialog(selectedStudy,info);
-                                    } else {
-                                      _joinStudy('',selectedStudy,info);
-                                    }
-                                  },
-                                  child: Text('스터디 가입',
-                                      style: TextStyle(
-                                          fontFamily: 'Bold',
-                                          fontSize: 14,
-                                          color: Color(0xFF3D6094))),
-                                ),  // 스터디 가입
-                                TextButton(
-                                  onPressed: () => Navigator.of(context).pop(),
-                                  child: Text('취소',
-                                      style: TextStyle(
-                                          fontFamily: 'Bold',
-                                          fontSize: 14,
-                                          color: Colors.grey[500])),
-                                ), // 취소 버튼
-                              ],
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                            );
-                          }
-                        );
+                child:
+                      RefreshIndicator(
+                      onRefresh: () async {
+                      await info.getStudyRoomList(Provider.of<UserProfileViewModel>(context, listen: false).nickName, roomStatus);
                       },
-                      child: Card(
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(35.0),
-                        ),
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 35, vertical: 23),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.baseline,
-                                textBaseline: TextBaseline.alphabetic,
-                                children: [
-                                  Text(selectedStudy.roomName, // 스터디명
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: info.studyRoomlist.length,
+                    itemBuilder: (context, index) {
+                      final selectedStudy = info.studyRoomlist[index];
+                      return GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                title: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      selectedStudy!.roomName,
                                       style: TextStyle(
-                                          color: Colors.grey[600],
-                                          fontFamily: 'Bold',
-                                          fontSize: width * 0.055)),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      selectedStudy.course, // 과목명
+                                          fontFamily: 'Bold', fontSize: 21, color: Colors.grey[600]),
+                                      maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: Color(0xFF3D6094),
-                                          fontFamily: 'Bold',
-                                          fontSize: width * 0.03),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 20, height: 23,
-                                    child: !selectedStudy.isOpen ? IconButton(
-                                      icon: Icon(
-                                        Icons.lock,
-                                        size: 20,
-                                      ),
-                                      color: Colors.grey[500],
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () {},
-                                    ) : SizedBox.shrink(),  // true이면 표시xx
-                                  ),
+                                  ],
+                                ),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text('그룹장: ${selectedStudy!.leader}',
+                                        style: TextStyle(
+                                            fontFamily: 'Bold',
+                                            fontSize: 15,
+                                            color: Colors.grey[600])),// 그룹장
+                                    SizedBox(height: 8.0),
+                                    Text('시작일: ${selectedStudy!.startDate}',
+                                        style: TextStyle(
+                                            fontFamily: 'Bold',
+                                            fontSize: 15,
+                                            color: Colors.grey[600])), // 시작일
+                                    SizedBox(height: 10.0),
+                                    Divider(
+                                      thickness: 1.3,
+                                    ),
+                                    SizedBox(height: 13.0),
+                                    Text(
+                                      '${selectedStudy!.studyIntroduction}',
+                                      style: TextStyle(
+                                          fontFamily: 'Bold',
+                                          fontSize: 14,
+                                          color: Colors.grey[600],
+                                          height: 1.2),
+                                      maxLines: 20,
+                                      overflow: TextOverflow.ellipsis,
+                                    ), // 소개글
+                                  ],
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () async {
+                                      // 스터디 리더의 닉네임을 가져온다
+                                      String leaderNickname = await info.getLeader(selectedStudy.roomKey);
+
+                                      // 리더와 대화
+                                      if (leaderNickname.isNotEmpty) {
+                                        Navigator.push(context, MaterialPageRoute(
+                                            builder: (context) => OneToOneChatScreen(friendName: leaderNickname,)
+                                        ));
+                                      } else {
+                                        // 리더 정보를 가져오지 못한 경우 에러 메시지 표시
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text('스터디 리더 정보를 가져오는 데 실패했습니다.')));
+                                      }
+                                    },
+                                    child: Text('쪽지 보내기',
+                                        style: TextStyle(
+                                            fontFamily: 'Bold',
+                                            fontSize: 14,
+                                            color: Color(0xFF3D6094))),
+                                  ), // 쪽지보내기
+                                  TextButton(
+                                    onPressed: () {
+                                      if (!(selectedStudy.isOpen)) {
+                                        // 비밀번호가 있는 경우, 팝업을 보여준다
+                                        _showPasswordDialog(selectedStudy,info);
+                                      } else {
+                                        _joinStudy('',selectedStudy,info);
+                                      }
+                                    },
+                                    child: Text('스터디 가입',
+                                        style: TextStyle(
+                                            fontFamily: 'Bold',
+                                            fontSize: 14,
+                                            color: Color(0xFF3D6094))),
+                                  ),  // 스터디 가입
+                                  TextButton(
+                                    onPressed: () => Navigator.of(context).pop(),
+                                    child: Text('취소',
+                                        style: TextStyle(
+                                            fontFamily: 'Bold',
+                                            fontSize: 14,
+                                            color: Colors.grey[500])),
+                                  ), // 취소 버튼
                                 ],
-                              ),
-                              SizedBox(height: 14),
-                              Text(
-                                selectedStudy.studyIntroduction, // 스터디 소개
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    color: Colors.grey[600],
-                                    fontFamily: 'Bold',
-                                    fontSize: width * 0.025),
-                              ),
-                              SizedBox(height: 14),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.person,
-                                        color: Colors.grey,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                              );
+                            }
+                          );
+                        },
+                        child: Card(
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(35.0),
+                          ),
+                          margin:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 35, vertical: 23),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                                  textBaseline: TextBaseline.alphabetic,
+                                  children: [
+                                    Text(selectedStudy.roomName, // 스터디명
+                                        style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontFamily: 'Bold',
+                                            fontSize: width * 0.055)),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        selectedStudy.course, // 과목명
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            color: Color(0xFF3D6094),
+                                            fontFamily: 'Bold',
+                                            fontSize: width * 0.03),
                                       ),
-                                      SizedBox(width: 4),
-                                      Text("${selectedStudy.curNum}/${selectedStudy.maxNum}명",
+                                    ),
+                                    SizedBox(
+                                      width: 20, height: 23,
+                                      child: !selectedStudy.isOpen ? IconButton(
+                                        icon: Icon(
+                                          Icons.lock,
+                                          size: 20,
+                                        ),
+                                        color: Colors.grey[500],
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {},
+                                      ) : SizedBox.shrink(),  // true이면 표시xx
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 14),
+                                Text(
+                                  selectedStudy.studyIntroduction, // 스터디 소개
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontFamily: 'Bold',
+                                      fontSize: width * 0.025),
+                                ),
+                                SizedBox(height: 14),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.person,
+                                          color: Colors.grey,
+                                        ),
+                                        SizedBox(width: 4),
+                                        Text("${selectedStudy.curNum}/${selectedStudy.maxNum}명",
+                                            style: TextStyle(
+                                                fontFamily: 'Round',
+                                                fontSize: 13)),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          '시작일',
                                           style: TextStyle(
-                                              fontFamily: 'Round',
-                                              fontSize: 13)),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        '시작일',
-                                        style: TextStyle(
-                                            fontFamily: 'Bold',
-                                            fontSize: 13,
-                                            color: Colors.grey[600]),
-                                      ),
-                                      SizedBox(width: 4),
-                                      Text(
-                                        selectedStudy.startDate,
-                                        style: TextStyle(
-                                            fontFamily: 'Bold',
-                                            fontSize: 13,
-                                            color: Colors.grey[500]),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
+                                              fontFamily: 'Bold',
+                                              fontSize: 13,
+                                              color: Colors.grey[600]),
+                                        ),
+                                        SizedBox(width: 4),
+                                        Text(
+                                          selectedStudy.startDate,
+                                          style: TextStyle(
+                                              fontFamily: 'Bold',
+                                              fontSize: 13,
+                                              color: Colors.grey[500]),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               );
       },
